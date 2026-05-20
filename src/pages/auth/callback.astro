@@ -4,21 +4,41 @@ import { createClient } from "@/lib/supabase";
 
 const supabase = createClient(Astro.request.headers, Astro.cookies);
 
+if (!supabase) {
+  return Astro.redirect("/auth/signin?error=" + encodeURIComponent("Supabase is not configured"));
+}
+
 const requestUrl = new URL(Astro.request.url);
 const token_hash = requestUrl.searchParams.get("token_hash");
 const type = requestUrl.searchParams.get("type") as EmailOtpType | null;
+const code = requestUrl.searchParams.get("code");
 const next = requestUrl.searchParams.get("next") ?? "/dashboard";
 
-if (supabase && token_hash && type) {
-  const { error } = await supabase.auth.verifyOtp({
-    token_hash,
-    type,
-  });
-
+// PKCE: link from {{ .ConfirmationURL }} often lands here with ?code= after Supabase /auth/v1/verify
+if (code) {
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (!error) {
     return Astro.redirect(next);
   }
 }
 
-return Astro.redirect("/auth/signin?error=" + encodeURIComponent("Email confirmation failed. Try signing in."));
+// Direct template link: {{ .SiteURL }}/auth/callback?token_hash=...&type=signup|email
+if (token_hash && type) {
+  const { error } = await supabase.auth.verifyOtp({ token_hash, type });
+  if (!error) {
+    return Astro.redirect(next);
+  }
+}
+
+// Email may already be confirmed by Supabase before redirect (ConfirmationURL flow)
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+if (user) {
+  return Astro.redirect(next);
+}
+
+return Astro.redirect(
+  "/auth/signin?info=" + encodeURIComponent("Email confirmed. You can sign in now."),
+);
 ---
