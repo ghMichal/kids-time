@@ -1,0 +1,24 @@
+---
+import type { EmailOtpType } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase";
+
+const supabase = createClient(Astro.request.headers, Astro.cookies);
+
+const requestUrl = new URL(Astro.request.url);
+const token_hash = requestUrl.searchParams.get("token_hash");
+const type = requestUrl.searchParams.get("type") as EmailOtpType | null;
+const next = requestUrl.searchParams.get("next") ?? "/dashboard";
+
+if (supabase && token_hash && type) {
+  const { error } = await supabase.auth.verifyOtp({
+    token_hash,
+    type,
+  });
+
+  if (!error) {
+    return Astro.redirect(next);
+  }
+}
+
+return Astro.redirect("/auth/signin?error=" + encodeURIComponent("Email confirmation failed. Try signing in."));
+---

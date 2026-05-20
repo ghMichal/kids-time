@@ -10,10 +10,28 @@ export const POST: APIRoute = async (context) => {
   if (!supabase) {
     return context.redirect(`/auth/signup?error=${encodeURIComponent("Supabase is not configured")}`);
   }
-  const { error } = await supabase.auth.signUp({ email, password });
+  const origin = new URL(context.request.url).origin;
+  const emailRedirectTo = `${origin}/auth/callback`;
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo },
+  });
 
   if (error) {
     return context.redirect(`/auth/signup?error=${encodeURIComponent(error.message)}`);
+  }
+
+  // Supabase returns success without a new email when the address already exists
+  // (empty identities). Resend confirmation for unconfirmed users.
+  const isNewUser = (data.user?.identities?.length ?? 0) > 0;
+  if (!isNewUser) {
+    await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo },
+    });
   }
 
   return context.redirect("/auth/confirm-email");
