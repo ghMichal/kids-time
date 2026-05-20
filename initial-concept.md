@@ -2,9 +2,7 @@ kids-time MVP
 
 ### Główny problem
 
-Jako rodzic często mam problem z tym co w najbliższych dniach robić z dziećmi po przedszkolu/szkole albo w weekend. Szukanie informacji w internecie albo pytanie znajomych o pomysły jest żmudne i czasochłonne. 
-
-
+Jako rodzic często mam problem z tym co w najbliższych dniach robić z dziećmi po przedszkolu/szkole albo w weekend. Szukanie informacji w internecie albo pytanie znajomych o pomysły jest żmudne i czasochłonne.
 
 ### Najmniejszy zestaw funkcjonalności
 
@@ -22,11 +20,8 @@ Jako rodzic często mam problem z tym co w najbliższych dniach robić z dziećm
 - Komunikacja między użytkownikami (prywatne wiadomości, czat itp)
 - Aplikacje mobilne (na początek tylko web)
 
-
-
 ### Kryteria sukcesu
 
 - 70% wydarzeń wygenerowanych przez AI jest akceptowane przez użytkowników
 - Użytkownicy tworzą 75% wydarzeń przy pomocy AI
 - Użytkownicy wracają do aplikacji i pojawia się coraz więcej treści
-

@@ -54,7 +54,14 @@ npm run dev
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint with type-checked rules
 - `npm run lint:fix` - Auto-fix ESLint issues
-- `npm run format` - Run Prettier
+- `npm run format` - Run Prettier (write)
+- `npm run format:check` - Prettier check only (no writes)
+
+### Git hooks (pre-commit)
+
+After `npm install`, Husky runs **lint-staged on staged files only**. The hook **blocks** the commit on failure and prints fix commands; it does **not** modify your files.
+
+If the hook fails, run `npm run lint:fix` and/or `npm run format`, review the diff, `git add`, and commit again. Skip only when intentional: `git commit --no-verify`.
 
 ## Project Structure
 

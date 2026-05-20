@@ -25,16 +25,16 @@ Plan pierwszego wdrożenia produkcyjnego dla **Astro 6 SSR** z adapterem `@astro
 
 ## Ocena poprzedniej wersji planu
 
-| Obszar | Ocena | Uwagi |
-|--------|--------|--------|
-| Platforma / komenda deploy | OK | `npx wrangler deploy` — zgodne z infrastructure |
-| Worker + assets | OK | `wrangler.jsonc`: `kids-time-mvp`, entrypoint Astro |
-| Sekrety `SUPABASE_*` | OK | Zgodne z `astro.config.mjs` (`astro:env`) |
-| CI lint/build | Częściowo | Workflow na `main`, Node 24 — brak joba deploy |
-| Supabase Auth URLs | Uzupełnione | Site URL, redirect URLs, szablon maila, PKCE |
-| Auth callback | Uzupełnione | `/auth/callback` + `emailRedirectTo` w signup |
-| `nodejs_compat_populate_process_env` | Uzupełnione | Wymagane dla sekretów `astro:env` na Workerze |
-| OpenRouter | Poza zakresem | Faza późniejsza (tech-stack `has_ai: true`) |
+| Obszar                               | Ocena         | Uwagi                                               |
+| ------------------------------------ | ------------- | --------------------------------------------------- |
+| Platforma / komenda deploy           | OK            | `npx wrangler deploy` — zgodne z infrastructure     |
+| Worker + assets                      | OK            | `wrangler.jsonc`: `kids-time-mvp`, entrypoint Astro |
+| Sekrety `SUPABASE_*`                 | OK            | Zgodne z `astro.config.mjs` (`astro:env`)           |
+| CI lint/build                        | Częściowo     | Workflow na `main`, Node 24 — brak joba deploy      |
+| Supabase Auth URLs                   | Uzupełnione   | Site URL, redirect URLs, szablon maila, PKCE        |
+| Auth callback                        | Uzupełnione   | `/auth/callback` + `emailRedirectTo` w signup       |
+| `nodejs_compat_populate_process_env` | Uzupełnione   | Wymagane dla sekretów `astro:env` na Workerze       |
+| OpenRouter                           | Poza zakresem | Faza późniejsza (tech-stack `has_ai: true`)         |
 
 **Wniosek:** Infrastruktura Workera jest wdrożona. Ten plan opisuje pełną ścieżkę produkcyjną: sekrety, Supabase Auth, weryfikacja E2E oraz follow-up CI/CD.
 
@@ -62,29 +62,29 @@ flowchart TB
   WranglerCLI[wrangler deploy] --> Worker
 ```
 
-| Warstwa | Technologia | Źródło |
-|---------|-------------|--------|
-| HTTP/SSR | Cloudflare Worker + `@astrojs/cloudflare` ^13.5 | infrastructure, tech-stack |
-| Statyki | `./dist` → binding `ASSETS` | wrangler.jsonc |
-| Sesje Astro | KV `SESSION` (auto-provisioned przy deploy) | pierwszy deploy Wrangler |
-| Auth/dane | Supabase (hosted) | tech-stack `has_auth: true` |
-| AI | OpenRouter (HTTP) | tech-stack `has_ai: true` — faza późniejsza |
+| Warstwa     | Technologia                                     | Źródło                                      |
+| ----------- | ----------------------------------------------- | ------------------------------------------- |
+| HTTP/SSR    | Cloudflare Worker + `@astrojs/cloudflare` ^13.5 | infrastructure, tech-stack                  |
+| Statyki     | `./dist` → binding `ASSETS`                     | wrangler.jsonc                              |
+| Sesje Astro | KV `SESSION` (auto-provisioned przy deploy)     | pierwszy deploy Wrangler                    |
+| Auth/dane   | Supabase (hosted)                               | tech-stack `has_auth: true`                 |
+| AI          | OpenRouter (HTTP)                               | tech-stack `has_ai: true` — faza późniejsza |
 
 ---
 
 ## Stan wykonania
 
-| Element | Status |
-|---------|--------|
-| Worker `kids-time-mvp` deployed | Done |
-| `nodejs_compat` + `nodejs_compat_populate_process_env` | Done |
-| Sekrety Supabase cloud na Worker | Done |
-| Supabase Site URL + redirect URLs | Checklist — weryfikacja ręczna |
-| Szablon maila Confirm signup (TokenHash) | Checklist — weryfikacja ręczna |
-| Auth PKCE callback w kodzie | Done — wymaga redeploy po push |
-| CI workflow na `main` w repo | Done |
-| GitHub secrets + zielony CI | Do weryfikacji |
-| Auto-deploy on merge | Nie zrobione (Faza 4) |
+| Element                                                | Status                         |
+| ------------------------------------------------------ | ------------------------------ |
+| Worker `kids-time-mvp` deployed                        | Done                           |
+| `nodejs_compat` + `nodejs_compat_populate_process_env` | Done                           |
+| Sekrety Supabase cloud na Worker                       | Done                           |
+| Supabase Site URL + redirect URLs                      | Checklist — weryfikacja ręczna |
+| Szablon maila Confirm signup (TokenHash)               | Checklist — weryfikacja ręczna |
+| Auth PKCE callback w kodzie                            | Done — wymaga redeploy po push |
+| CI workflow na `main` w repo                           | Done                           |
+| GitHub secrets + zielony CI                            | Do weryfikacji                 |
+| Auto-deploy on merge                                   | Nie zrobione (Faza 4)          |
 
 **Production URL:** https://kids-time-mvp.michal-machlowski.workers.dev
 
@@ -136,21 +136,19 @@ Weryfikacja: `npx wrangler secret list`
 
 Dashboard: **Authentication → URL configuration**
 
-| Pole | Wartość |
-|------|---------|
-| **Site URL** | `https://kids-time-mvp.michal-machlowski.workers.dev` |
-| **Redirect URLs** | `https://kids-time-mvp.michal-machlowski.workers.dev/**` |
-| | `https://kids-time-mvp.michal-machlowski.workers.dev/auth/callback` |
-| | `http://localhost:4321/**` |
+| Pole              | Wartość                                                             |
+| ----------------- | ------------------------------------------------------------------- |
+| **Site URL**      | `https://kids-time-mvp.michal-machlowski.workers.dev`               |
+| **Redirect URLs** | `https://kids-time-mvp.michal-machlowski.workers.dev/**`            |
+|                   | `https://kids-time-mvp.michal-machlowski.workers.dev/auth/callback` |
+|                   | `http://localhost:4321/**`                                          |
 
 **Szablon Confirm signup** (zalecany dla SSR/PKCE):
 
 ```html
 <h2>Confirm your email address</h2>
 <p>
-  <a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup">
-    Confirm email address
-  </a>
+  <a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=signup"> Confirm email address </a>
 </p>
 ```
 
@@ -168,14 +166,14 @@ Aplikacja: [`signup.ts`](../../src/pages/api/auth/signup.ts) ustawia `emailRedir
 
 ## Faza 3 — Weryfikacja po wdrożeniu
 
-| # | Test | Oczekiwany wynik |
-|---|------|------------------|
-| 1 | `GET /` | HTTP 200 |
-| 2 | `GET /auth/signin`, `/auth/signup` | HTTP 200 |
-| 3 | `GET /dashboard` bez sesji | HTTP 302 → `/auth/signin` |
-| 4 | Rejestracja → mail → `/auth/callback` | Redirect `/dashboard` lub `/auth/signin?info=...` + logowanie |
-| 5 | Logowanie hasłem | Sukces, sesja w cookies |
-| 6 | `npx wrangler tail` | Brak 5xx podczas auth |
+| #   | Test                                  | Oczekiwany wynik                                              |
+| --- | ------------------------------------- | ------------------------------------------------------------- |
+| 1   | `GET /`                               | HTTP 200                                                      |
+| 2   | `GET /auth/signin`, `/auth/signup`    | HTTP 200                                                      |
+| 3   | `GET /dashboard` bez sesji            | HTTP 302 → `/auth/signin`                                     |
+| 4   | Rejestracja → mail → `/auth/callback` | Redirect `/dashboard` lub `/auth/signin?info=...` + logowanie |
+| 5   | Logowanie hasłem                      | Sukces, sesja w cookies                                       |
+| 6   | `npx wrangler tail`                   | Brak 5xx podczas auth                                         |
 
 **CI:** push na `main` → workflow CI zielony (sekrety GitHub).
 
@@ -193,11 +191,11 @@ Poza pierwszym deployem:
 
 ## Macierz sekretów
 
-| Zmienna | `.env` / `.dev.vars` | Worker | GitHub Actions |
-|---------|----------------------|--------|----------------|
-| `SUPABASE_URL` | dev / cloud | prod cloud | build CI |
-| `SUPABASE_KEY` | anon | anon | build CI |
-| `OPENROUTER_API_KEY` | później | później | później |
+| Zmienna              | `.env` / `.dev.vars` | Worker     | GitHub Actions |
+| -------------------- | -------------------- | ---------- | -------------- |
+| `SUPABASE_URL`       | dev / cloud          | prod cloud | build CI       |
+| `SUPABASE_KEY`       | anon                 | anon       | build CI       |
+| `OPENROUTER_API_KEY` | później              | później    | później        |
 
 **Rotacja:** Supabase → GitHub secrets → `wrangler secret put` → opcjonalnie redeploy → smoke test auth.
 
@@ -217,13 +215,13 @@ Migracje Supabase **nie** cofają się z rollbackiem Workera.
 
 ## Rejestr ryzyk
 
-| Ryzyko | L | I | Mitigacja |
-|--------|---|---|-----------|
-| CPU Workera przy OpenRouter | M | H | Streaming, timeouts, paid Workers |
-| Rozjazd sekretów local/CI/prod | M | H | Macierz + checklist po rotacji |
-| PKCE / Site URL / szablon maila | M | M | Faza 2 |
-| Preview → prod Supabase | M | H | Osobny projekt na preview |
-| Brak auto-deploy | L | M | Faza 4 |
+| Ryzyko                          | L   | I   | Mitigacja                         |
+| ------------------------------- | --- | --- | --------------------------------- |
+| CPU Workera przy OpenRouter     | M   | H   | Streaming, timeouts, paid Workers |
+| Rozjazd sekretów local/CI/prod  | M   | H   | Macierz + checklist po rotacji    |
+| PKCE / Site URL / szablon maila | M   | M   | Faza 2                            |
+| Preview → prod Supabase         | M   | H   | Osobny projekt na preview         |
+| Brak auto-deploy                | L   | M   | Faza 4                            |
 
 Źródło: [infrastructure.md](../foundation/infrastructure.md) — rejestr ryzyk i anti-bias cross-check.
 

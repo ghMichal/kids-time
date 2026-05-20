@@ -1,5 +1,4 @@
 ---
-import type { EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase";
 
 const supabase = createClient(Astro.request.headers, Astro.cookies);
@@ -10,7 +9,7 @@ if (!supabase) {
 
 const requestUrl = new URL(Astro.request.url);
 const token_hash = requestUrl.searchParams.get("token_hash");
-const type = requestUrl.searchParams.get("type") as EmailOtpType | null;
+const type = requestUrl.searchParams.get("type");
 const code = requestUrl.searchParams.get("code");
 const next = requestUrl.searchParams.get("next") ?? "/dashboard";
 
@@ -38,7 +37,5 @@ if (user) {
   return Astro.redirect(next);
 }
 
-return Astro.redirect(
-  "/auth/signin?info=" + encodeURIComponent("Email confirmed. You can sign in now."),
-);
+return Astro.redirect("/auth/signin?info=" + encodeURIComponent("Email confirmed. You can sign in now."));
 ---

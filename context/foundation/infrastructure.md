@@ -24,14 +24,14 @@ The repository is already wired for this path: `output: "server"` with `adapter:
 
 Scores use **Pass / Partial / Fail** against the five agent-friendly criteria (CLI-first, managed/serverless, agent-accessible docs, stable deploy API, MCP/integration). “Total” counts **Pass** as 1, **Partial** as ½.
 
-| Platform              | CLI-first | Managed / serverless | Agent-readable docs | Stable deploy API | MCP / integration | Total |
-| --------------------- | --------- | -------------------- | ------------------- | ----------------- | ----------------- | ----- |
-| **Cloudflare**        | Pass      | Pass                 | Pass                | Pass              | Pass              | **5** |
-| **Vercel**            | Pass      | Pass                 | Pass                | Pass              | Partial           | **4½** |
-| **Netlify**           | Pass      | Pass                 | Pass                | Pass              | Pass              | **5** |
-| **Fly.io**            | Pass      | Pass                 | Pass                | Pass              | Partial           | **4½** |
-| **Railway**           | Pass      | Pass                 | Pass                | Pass              | Partial           | **4½** |
-| **Render**            | Pass      | Pass                 | Pass                | Partial           | Partial           | **3½** |
+| Platform       | CLI-first | Managed / serverless | Agent-readable docs | Stable deploy API | MCP / integration | Total  |
+| -------------- | --------- | -------------------- | ------------------- | ----------------- | ----------------- | ------ |
+| **Cloudflare** | Pass      | Pass                 | Pass                | Pass              | Pass              | **5**  |
+| **Vercel**     | Pass      | Pass                 | Pass                | Pass              | Partial           | **4½** |
+| **Netlify**    | Pass      | Pass                 | Pass                | Pass              | Pass              | **5**  |
+| **Fly.io**     | Pass      | Pass                 | Pass                | Pass              | Partial           | **4½** |
+| **Railway**    | Pass      | Pass                 | Pass                | Pass              | Partial           | **4½** |
+| **Render**     | Pass      | Pass                 | Pass                | Partial           | Partial           | **3½** |
 
 **Cloudflare:** `wrangler` covers deploy/logs/rollback; Workers/Pages are fully managed; docs expose `llms.txt` and markdown-oriented flows; deployment is deterministic from CI or CLI; Cloudflare publishes MCP servers for docs/bindings/observability ([Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/), [Pages Functions pricing note](https://developers.cloudflare.com/pages/functions/pricing), [Workers llms.txt](https://developers.cloudflare.com/workers/llms.txt), [mcp-server-cloudflare](https://github.com/cloudflare/mcp-server-cloudflare)).
 
@@ -92,13 +92,13 @@ Concrete day-to-day actions (tune to your org’s access model).
 
 ## Risk Register
 
-| Risk                                                                                   | Source                         | Likelihood | Impact | Mitigation                                                                                                                                       |
-| -------------------------------------------------------------------------------------- | ------------------------------ | ---------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| AI routes exceed Worker **CPU/time** budgets                                           | Devil's advocate / Pre-mortem  | M          | H      | Stream responses; keep orchestration shallow; move heavy post-processing behind shorter steps; upgrade Workers plan if sustained CPU is needed.   |
-| Dependency assumes **Node APIs** incompatible with Workers                             | Devil's advocate / Research    | M          | M      | Prefer edge-safe libs; enforce `nodejs_compat` discipline; pin and CI-build against Workers runtime.                                             |
-| **Secrets mismatch** between local, CI, and prod                                       | Unknown unknowns               | M          | H      | Single source of truth for names; documented rotation checklist; smoke test prod config after secret changes.                                   |
-| **Supabase session** bugs specific to SSR at the edge                                  | Unknown unknowns               | L          | M      | Follow `@supabase/ssr` patterns; add minimal integration tests for auth cookie flows on deployed previews.                                      |
-| **Vendor billing surprises** from egress or paid Workers                               | Devil's advocate               | L          | M      | Monitor dashboards; set billing alerts; keep AI payloads concise per PRD guardrails.                                                           |
+| Risk                                                       | Source                        | Likelihood | Impact | Mitigation                                                                                                                                      |
+| ---------------------------------------------------------- | ----------------------------- | ---------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| AI routes exceed Worker **CPU/time** budgets               | Devil's advocate / Pre-mortem | M          | H      | Stream responses; keep orchestration shallow; move heavy post-processing behind shorter steps; upgrade Workers plan if sustained CPU is needed. |
+| Dependency assumes **Node APIs** incompatible with Workers | Devil's advocate / Research   | M          | M      | Prefer edge-safe libs; enforce `nodejs_compat` discipline; pin and CI-build against Workers runtime.                                            |
+| **Secrets mismatch** between local, CI, and prod           | Unknown unknowns              | M          | H      | Single source of truth for names; documented rotation checklist; smoke test prod config after secret changes.                                   |
+| **Supabase session** bugs specific to SSR at the edge      | Unknown unknowns              | L          | M      | Follow `@supabase/ssr` patterns; add minimal integration tests for auth cookie flows on deployed previews.                                      |
+| **Vendor billing surprises** from egress or paid Workers   | Devil's advocate              | L          | M      | Monitor dashboards; set billing alerts; keep AI payloads concise per PRD guardrails.                                                            |
 
 ## Getting Started
 

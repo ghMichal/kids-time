@@ -21,7 +21,7 @@ kids-time MVP helps parents plan child activities with AI-assisted suggestions, 
 
 `npm run dev` — local dev. `npm run build` — production (requires Supabase env). `npm run lint` / `lint:fix` / `format` — ESLint + Prettier per `@eslint.config.js`. `npx astro sync` before lint in CI. `npx supabase start` for local DB (Docker).
 
-Husky pre-commit: lint-staged on `*.{ts,tsx,astro}` and `*.{json,css,md}` (`@package.json`).
+Husky pre-commit: lint-staged **check only** (no auto-fix) on staged `*.{ts,tsx,astro}` (ESLint) and `*.{json,css,md}` (Prettier `--check`). On failure, hook prints `npm run lint:fix` / `npm run format`. Activate hooks: `npm install` (`prepare`: husky).
 
 ## Coding Style & Naming Conventions
 

@@ -162,4 +162,3 @@ None captured.
 - Success Criteria: present; Primary updated for FR-008/009.
 - User stories: US-01, US-02, US-03 present.
 - FR set: 9 FRs (FR-008, FR-009 added 2026-05-19).
-

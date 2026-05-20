@@ -1,1 +1,27 @@
-npx lint-staged
+#!/usr/bin/env sh
+
+if npx lint-staged; then
+  exit 0
+fi
+
+cat <<'EOF'
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Pre-commit failed — staged files did not pass lint/format checks.
+  Nothing was auto-fixed. Fix the issues below, then commit again.
+
+  How to fix:
+    npm run lint:fix       # ESLint autofix (TypeScript, TSX, Astro)
+    npm run format         # Prettier write (JSON, CSS, MD, and rest)
+
+  Or check without writing (same rules as CI / pre-commit):
+    npm run lint
+    npm run format:check
+
+  Then stage fixes and retry:
+    git add -u && git commit
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EOF
+
+exit 1
