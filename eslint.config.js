@@ -62,6 +62,8 @@ const reactConfig = tseslint.config({
 const astroConfig = tseslint.config({
   files: ["**/*.astro"],
   rules: {
+    // Astro.redirect() in frontmatter triggers a parser crash in no-misused-promises (CI ESLint 9.39+)
+    "@typescript-eslint/no-misused-promises": "off",
     "astro/no-set-html-directive": "error",
     "astro/no-unused-css-selector": "warn",
     "astro/prefer-class-list-directive": "warn",
