@@ -1,0 +1,19 @@
+---
+interface Props {
+  class?: string;
+  maxWidth?: "sm" | "md";
+}
+
+const { class: className = "", maxWidth = "sm" } = Astro.props;
+const widthClass = maxWidth === "md" ? "max-w-lg" : "max-w-sm";
+---
+
+<div
+  class:list={[
+    "mx-auto w-full rounded-2xl border border-amber-100/80 bg-white/90 p-8 shadow-sm",
+    widthClass,
+    className,
+  ]}
+>
+  <slot />
+</div>

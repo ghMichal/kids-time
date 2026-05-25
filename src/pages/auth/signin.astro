@@ -1,4 +1,6 @@
 ---
+import AppShell from "@/components/AppShell.astro";
+import PanelCard from "@/components/PanelCard.astro";
 import Layout from "@/layouts/Layout.astro";
 import SignInForm from "@/components/auth/SignInForm";
 
@@ -6,25 +8,22 @@ const error = Astro.url.searchParams.get("error");
 const info = Astro.url.searchParams.get("info");
 ---
 
-<Layout title="Sign in">
-  <div class="bg-cosmic flex min-h-screen items-center justify-center p-4">
-    <div class="w-full max-w-sm rounded-2xl border border-white/10 bg-white/10 p-8 text-white backdrop-blur-xl">
-      <h1
-        class="mb-6 bg-gradient-to-r from-blue-200 to-purple-200 bg-clip-text text-center text-2xl font-bold text-transparent"
-      >
-        Sign in
-      </h1>
-      {
-        info && (
-          <p class="mb-4 rounded-lg border border-green-500/30 bg-green-900/30 px-3 py-2 text-sm text-green-200">
-            {info}
-          </p>
-        )
-      }
-      <SignInForm serverError={error} client:load />
-      <p class="mt-4 text-center text-sm text-blue-100/60">
-        Don't have an account? <a href="/auth/signup" class="text-purple-300 hover:underline">Sign up</a>
-      </p>
+<Layout title="Zaloguj się — kids-time">
+  <AppShell>
+    <div class="flex min-h-[calc(100vh-6rem)] items-center justify-center py-8">
+      <PanelCard>
+        <h1 class="mb-6 text-center text-2xl font-bold text-slate-900">Zaloguj się</h1>
+        {
+          info && (
+            <p class="mb-4 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">{info}</p>
+          )
+        }
+        <SignInForm serverError={error} client:load />
+        <p class="mt-4 text-center text-sm text-slate-600">
+          Nie masz konta?{" "}
+          <a href="/auth/signup" class="font-medium text-amber-800 hover:underline"> Załóż konto </a>
+        </p>
+      </PanelCard>
     </div>
-  </div>
+  </AppShell>
 </Layout>
