@@ -153,7 +153,7 @@ Users can then sign in immediately after sign-up without clicking a confirmation
 | `/auth/confirm-email` | Post-signup "check your inbox" page                                     |
 | `/dashboard`          | Example protected page (redirects to `/auth/signin` if unauthenticated) |
 
-Route protection is handled in `src/middleware.ts`. Add paths to the `PROTECTED_ROUTES` array there to require authentication.
+Route protection uses a public allowlist in `src/lib/route-access.ts` (default deny). New product pages are protected automatically; add exceptions to the allowlist for public paths only.
 
 ## Deployment
 
