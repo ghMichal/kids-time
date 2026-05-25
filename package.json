@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "push": "sh scripts/push-with-ci-link.sh",
+    "setup:push-alias": "git config --local alias.push '!sh scripts/push-with-ci-link.sh'"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",

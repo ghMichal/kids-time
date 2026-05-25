@@ -63,6 +63,18 @@ After `npm install`, Husky runs **lint-staged on staged files only**. The hook *
 
 If the hook fails, run `npm run lint:fix` and/or `npm run format`, review the diff, `git add`, and commit again. Skip only when intentional: `git commit --no-verify`.
 
+### CI link after push
+
+Requires [GitHub CLI](https://cli.github.com/) (`gh auth login`).
+
+| Method                     | Behavior                                                                                                                  |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `git push`                 | Husky **pre-push** schedules a background job; ~few seconds after push you should see the Actions run URL in the terminal |
+| `npm run push`             | Same as `git push`, but waits for the link synchronously (more reliable)                                                  |
+| `npm run setup:push-alias` | Sets `git push` → wrapper (optional; use if the pre-push timing is flaky)                                                 |
+
+The link targets workflow **CI** (`.github/workflows/ci.yml`) on the current branch.
+
 ## Project Structure
 
 ```md
