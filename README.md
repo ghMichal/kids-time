@@ -56,6 +56,8 @@ npm run dev
 - `npm run lint:fix` - Auto-fix ESLint issues
 - `npm run format` - Run Prettier (write)
 - `npm run format:check` - Prettier check only (no writes)
+- `npm run deploy` - `astro sync`, lint, build, `wrangler deploy` (Cloudflare Worker)
+- `npm run deploy:quick` - same without lint (`SKIP_LINT=1`)
 
 ### Git hooks (pre-commit)
 
@@ -169,21 +171,26 @@ Route protection uses a public allowlist in `src/lib/route-access.ts` (default d
 
 ## Deployment
 
-This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/).
+This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/) as worker **kids-time-mvp**.
 
-1. Build the project:
-
-```bash
-npm run build
-```
-
-2. Deploy with Wrangler:
+**One command** (Node 24, `.env` for build, `npx wrangler login` once):
 
 ```bash
-npx wrangler deploy
+npm run deploy
 ```
 
-Set `SUPABASE_URL` and `SUPABASE_KEY` as secrets in your Cloudflare dashboard or via `npx wrangler secret put`.
+Skips lint for a faster redeploy: `npm run deploy:quick`.
+
+Manual steps (same pipeline): `npx astro sync` → `npm run lint` → `npm run build` → `npx wrangler deploy`.
+
+Set `SUPABASE_URL` and `SUPABASE_KEY` as Worker secrets (not only in `.env` for local build):
+
+```bash
+npx wrangler secret put SUPABASE_URL
+npx wrangler secret put SUPABASE_KEY
+```
+
+Full checklist: [`context/deployment/deploy-plan.md`](context/deployment/deploy-plan.md).
 
 ## CI
 
