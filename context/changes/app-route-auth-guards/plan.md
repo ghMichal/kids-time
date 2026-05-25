@@ -164,11 +164,11 @@ Brak migracji danych. Zachowanie dla istniejących użytkowników bez zmian — 
 
 #### Automated
 
-- [x] 1.1 `npx astro sync` (jeśli potrzebne)
-- [x] 1.2 `npm run lint`
-- [x] 1.3 `npm run build`
+- [x] 1.1 `npx astro sync` (jeśli potrzebne) — 3dd83d8
+- [x] 1.2 `npm run lint` — 3dd83d8
+- [x] 1.3 `npm run build` — 3dd83d8
 
 #### Manual
 
-- [x] 1.4 Scenariusze 1–7 z tabeli Manual Testing Steps
+- [x] 1.4 Scenariusze 1–7 z tabeli Manual Testing Steps — 3dd83d8
 - [ ] 1.5 (Opcjonalnie) scenariusz 8 — default deny na nowej ścieżce
