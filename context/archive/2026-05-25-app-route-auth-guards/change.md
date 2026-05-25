@@ -1,10 +1,10 @@
 ---
 change_id: app-route-auth-guards
 title: Require logged-in parent on product routes, not only /dashboard
-status: impl_reviewed
+status: archived
 created: 2026-05-25
 updated: 2026-05-25
-archived_at: null
+archived_at: 2026-05-25T19:09:41Z
 roadmap_id: F-03
 prd_refs: Access Control, US-01
 ---
