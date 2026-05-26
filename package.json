@@ -65,7 +65,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx,astro}": [
-      "eslint --max-warnings 0"
+      "eslint --max-warnings 0 --no-warn-ignored"
     ],
     "*.{json,css,md}": [
       "prettier --check"

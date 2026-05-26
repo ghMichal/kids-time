@@ -73,6 +73,9 @@ const astroConfig = tseslint.config({
 });
 
 export default tseslint.config(
+  {
+    ignores: ["src/types/database.generated.ts"],
+  },
   includeIgnoreFile(gitignorePath),
   typeCheckedConfig,
   reactConfig,

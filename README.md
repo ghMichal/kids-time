@@ -132,7 +132,18 @@ npx supabase stop
 
 The local Studio UI is available at `http://localhost:54323`.
 
-No database tables or migrations are required — this project uses Supabase Auth's built-in `auth.users` table only.
+### Database migrations and types
+
+Schema lives in `supabase/migrations/` (timestamped SQL files). After changing migrations:
+
+```bash
+npx supabase db reset    # local: reapply migrations + seed (requires `supabase start`)
+npx supabase gen types typescript --local > src/types/database.generated.ts
+```
+
+Import shared types from `@/types` (e.g. `EventRow`). Regenerate and commit `database.generated.ts` after schema changes — CI does not run migrations.
+
+The `events` table is protected by **RLS**: owners see and modify their rows; other authenticated users can read only published events (`is_published = true`).
 
 ### Using a cloud Supabase project instead
 
