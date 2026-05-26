@@ -305,25 +305,25 @@ Indeksy `(owner_id)` i partial na `is_published` wystarczą na MVP. Brak full-te
 
 #### Automated
 
-- [x] 1.1 `supabase/seed.sql` utworzony przed pierwszym resetem
-- [x] 1.2 `npx supabase db reset` — sukces
-- [x] 1.3 `npx supabase migration list` — `_events_schema_and_rls` applied
+- [x] 1.1 `supabase/seed.sql` utworzony przed pierwszym resetem — dc9b74c
+- [x] 1.2 `npx supabase db reset` — sukces — dc9b74c
+- [x] 1.3 `npx supabase migration list` — `_events_schema_and_rls` applied — dc9b74c
 
 #### Manual
 
-- [x] 1.4 Studio: tabela `events` i kolumny zgodne z kontraktem
-- [x] 1.5 Studio: RLS włączone, cztery polityki na `events`
+- [x] 1.4 Studio: tabela `events` i kolumny zgodne z kontraktem — dc9b74c
+- [x] 1.5 Studio: RLS włączone, cztery polityki na `events` — dc9b74c
 
 ### Phase 2: RLS verification
 
 #### Manual
 
-- [ ] 2.1 Scenariusz RLS 1 — właściciel widzi własne prywatne
-- [ ] 2.2 Scenariusz RLS 2 — inny użytkownik nie widzi cudzych prywatnych
-- [ ] 2.3 Scenariusz RLS 3–4 — publikacja i odczyt opublikowanych przez innego
-- [ ] 2.4 Scenariusz RLS 5–6 — inny nie UPDATE/DELETE cudzego
-- [ ] 2.5 Scenariusz RLS 7 — INSERT z cudzym `owner_id` odrzucony
-- [ ] 2.6 Scenariusz RLS 8 — INSERT własny pod RLS (`authenticated`) — sukces
+- [x] 2.1 Scenariusz RLS 1 — właściciel widzi własne prywatne
+- [x] 2.2 Scenariusz RLS 2 — inny użytkownik nie widzi cudzych prywatnych
+- [x] 2.3 Scenariusz RLS 3–4 — publikacja i odczyt opublikowanych przez innego
+- [x] 2.4 Scenariusz RLS 5–6 — inny nie UPDATE/DELETE cudzego
+- [x] 2.5 Scenariusz RLS 7 — INSERT z cudzym `owner_id` odrzucony
+- [x] 2.6 Scenariusz RLS 8 — INSERT własny pod RLS (`authenticated`) — sukces
 
 ### Phase 3: Generated types and documentation
 
