@@ -318,24 +318,24 @@ Indeksy `(owner_id)` i partial na `is_published` wystarczą na MVP. Brak full-te
 
 #### Manual
 
-- [x] 2.1 Scenariusz RLS 1 — właściciel widzi własne prywatne
-- [x] 2.2 Scenariusz RLS 2 — inny użytkownik nie widzi cudzych prywatnych
-- [x] 2.3 Scenariusz RLS 3–4 — publikacja i odczyt opublikowanych przez innego
-- [x] 2.4 Scenariusz RLS 5–6 — inny nie UPDATE/DELETE cudzego
-- [x] 2.5 Scenariusz RLS 7 — INSERT z cudzym `owner_id` odrzucony
-- [x] 2.6 Scenariusz RLS 8 — INSERT własny pod RLS (`authenticated`) — sukces
+- [x] 2.1 Scenariusz RLS 1 — właściciel widzi własne prywatne — 888d309
+- [x] 2.2 Scenariusz RLS 2 — inny użytkownik nie widzi cudzych prywatnych — 888d309
+- [x] 2.3 Scenariusz RLS 3–4 — publikacja i odczyt opublikowanych przez innego — 888d309
+- [x] 2.4 Scenariusz RLS 5–6 — inny nie UPDATE/DELETE cudzego — 888d309
+- [x] 2.5 Scenariusz RLS 7 — INSERT z cudzym `owner_id` odrzucony — 888d309
+- [x] 2.6 Scenariusz RLS 8 — INSERT własny pod RLS (`authenticated`) — sukces — 888d309
 
 ### Phase 3: Generated types and documentation
 
 #### Automated
 
-- [ ] 3.1 `npx supabase gen types typescript --local` → `database.generated.ts`
-- [ ] 3.2 `eslint.config.js` — ignore `database.generated.ts`
-- [ ] 3.3 `npm run lint`
-- [ ] 3.4 `npm run build`
+- [x] 3.1 `npx supabase gen types typescript --local` → `database.generated.ts`
+- [x] 3.2 `eslint.config.js` — ignore `database.generated.ts`
+- [x] 3.3 `npm run lint`
+- [x] 3.4 `npm run build`
 
 #### Manual
 
-- [ ] 3.5 `database.generated.ts` zawiera `events`
-- [ ] 3.6 `src/types.ts` re-eksportuje typy `events`
-- [ ] 3.7 README opisuje migracje i `gen types`
+- [x] 3.5 `database.generated.ts` zawiera `events`
+- [x] 3.6 `src/types.ts` re-eksportuje typy `events`
+- [x] 3.7 README opisuje migracje i `gen types`
