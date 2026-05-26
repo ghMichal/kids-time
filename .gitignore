@@ -29,3 +29,6 @@ pnpm-debug.log*
 
 # Cursor course artifacts (restore with: 10x get m1l5 --tool cursor)
 .cursor/
+
+# Codex local skills and workspace settings
+.codex/
