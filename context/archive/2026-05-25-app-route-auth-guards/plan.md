@@ -171,4 +171,4 @@ Brak migracji danych. Zachowanie dla istniejących użytkowników bez zmian — 
 #### Manual
 
 - [x] 1.4 Scenariusze 1–7 z tabeli Manual Testing Steps — 3dd83d8
-- [ ] 1.5 (Opcjonalnie) scenariusz 8 — default deny na nowej ścieżce
+- [x] 1.5 (Opcjonalnie) scenariusz 8 — default deny na nowej ścieżce — zweryfikowane przez `requiresAuth()` (default deny poza allowlistą); 2026-05-26
