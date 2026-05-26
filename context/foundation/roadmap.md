@@ -195,7 +195,7 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 ## Open Roadmap Questions
 
 1. **Czy roadmap ma śledzić `prd-v2.md` (FR-008 unpublish, FR-009 copy)?** — Owner: user. Block: roadmap-wide (obecny PRD v1 ich nie zawiera).
-2. **Który dostawca/model AI na produkcję (OpenRouter vs inny)?** — Owner: user. Block: F-02, S-01, S-03.
+2. ~~**Który dostawca/model AI na produkcję (OpenRouter vs inny)?**~~ — **Rozstrzygnięte (F-02):** OpenRouter + `openai/gpt-4o-mini` via `OPENROUTER_MODEL` — zob. [change.md](../changes/ai-suggestion-scaffold/change.md).
 
 ## Parked
 
