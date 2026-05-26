@@ -329,13 +329,13 @@ Indeksy `(owner_id)` i partial na `is_published` wystarczą na MVP. Brak full-te
 
 #### Automated
 
-- [x] 3.1 `npx supabase gen types typescript --local` → `database.generated.ts`
-- [x] 3.2 `eslint.config.js` — ignore `database.generated.ts`
-- [x] 3.3 `npm run lint`
-- [x] 3.4 `npm run build`
+- [x] 3.1 `npx supabase gen types typescript --local` → `database.generated.ts` — 823617c
+- [x] 3.2 `eslint.config.js` — ignore `database.generated.ts` — 823617c
+- [x] 3.3 `npm run lint` — 823617c
+- [x] 3.4 `npm run build` — 823617c
 
 #### Manual
 
-- [x] 3.5 `database.generated.ts` zawiera `events`
-- [x] 3.6 `src/types.ts` re-eksportuje typy `events`
-- [x] 3.7 README opisuje migracje i `gen types`
+- [x] 3.5 `database.generated.ts` zawiera `events` — 823617c
+- [x] 3.6 `src/types.ts` re-eksportuje typy `events` — 823617c
+- [x] 3.7 README opisuje migracje i `gen types` — 823617c
