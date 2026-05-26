@@ -3,7 +3,7 @@ project: "kids-time MVP"
 version: 1
 status: draft
 created: 2026-05-25
-updated: 2026-05-25
+updated: 2026-05-26
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -29,7 +29,7 @@ Rodzice tracą czas na szukanie pomysłów na aktywności po szkole lub w weeken
 
 | ID   | Change ID               | Outcome (user can …)                                                           | Prerequisites          | PRD refs               | Status   |
 | ---- | ----------------------- | ------------------------------------------------------------------------------ | ---------------------- | ---------------------- | -------- |
-| F-01 | event-schema-rls        | (foundation) model wydarzeń, migracje i RLS dla właściciela                    | —                      | Access Control, NFR-02 | proposed |
+| F-01 | event-schema-rls        | (foundation) model wydarzeń, migracje i RLS dla właściciela                    | —                      | Access Control, NFR-02 | done     |
 | F-02 | ai-suggestion-scaffold  | (foundation) integracja dostawcy AI do generowania propozycji                  | —                      | FR-001, NFR-03         | proposed |
 | F-03 | app-route-auth-guards   | (foundation) ochrona tras aplikacji poza samym `/dashboard`                    | —                      | Access Control, US-01  | done     |
 | F-04 | event-image-storage     | (foundation) przechowywanie jednego obrazu na wydarzenie                       | F-01                   | FR-002, FR-003         | proposed |
@@ -75,7 +75,7 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Bez schematu żaden slice z biblioteką ani triage nie ma gdzie zapisać stanu — sensownie przed S-01, jeśli propozycje mają być trwałe.
-- **Status:** proposed
+- **Status:** done
 
 ### F-02: Integracja AI do propozycji
 
@@ -209,4 +209,5 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 
 ## Done
 
+- **F-01: (foundation) tabela wydarzeń (i powiązane pola kryteriów), migracje Supabase i polityki RLS — właściciel widzi i modyfikuje tylko swoje rekordy.** — Archived 2026-05-26 → `context/archive/2026-05-26-event-schema-rls/`. Lesson: —.
 - **F-03: (foundation) zalogowany rodzic jest wymagany na trasach produktowych (nie tylko `/dashboard`); niezalogowany trafia na logowanie.** — Archived 2026-05-25 → `context/archive/2026-05-25-app-route-auth-guards/`. Lesson: —.

@@ -1,10 +1,10 @@
 ---
 change_id: event-schema-rls
 title: Event schema and RLS
-status: implemented
+status: archived
 created: 2026-05-26
 updated: 2026-05-26
-archived_at: null
+archived_at: 2026-05-26T17:05:52Z
 roadmap_id: F-01
 ---
 
