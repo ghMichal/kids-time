@@ -77,7 +77,7 @@ Warstwy: **env + config-status** → **`src/lib/ai/*`** (schemas, prompt, client
 
 ---
 
-## Faza 0: Wybór i weryfikacja modelu (pre-code) — **done**
+## Phase 0: Wybór i weryfikacja modelu (pre-code) — **done**
 
 ### Przegląd
 
@@ -105,7 +105,7 @@ Decyzja operacyjna przed kodowaniem klienta — **zamknięta**: `OPENROUTER_MODE
 
 ---
 
-## Faza 1: Zależności, sekrety i status konfiguracji
+## Phase 1: Zależności, sekrety i status konfiguracji
 
 ### Przegląd
 
@@ -163,7 +163,7 @@ Przygotowanie środowiska zgodnego z Supabase: `astro:env`, `.dev.vars`, config 
 
 ---
 
-## Faza 2: Moduł domenowy AI (`src/lib/ai/`)
+## Phase 2: Moduł domenowy AI (`src/lib/ai/`)
 
 ### Przegląd
 
@@ -242,7 +242,7 @@ Schematy Zod, budowa promptu, klient OpenRouter z timeoutem i mapowaniem błęd�
 
 ---
 
-## Faza 3: Endpoint API
+## Phase 3: Endpoint API
 
 ### Przegląd
 
@@ -259,8 +259,10 @@ Schematy Zod, budowa promptu, klient OpenRouter z timeoutem i mapowaniem błęd�
 **Kontrakt**:
 
 - `export const POST: APIRoute`
-- `Content-Type: application/json` wymagany; inaczej `400`
-- `request.json()` → `suggestionRequestSchema.safeParse` → `400` + `{ error: "validation", issues }` (bez stack trace)
+- `Content-Type` musi zawierać `application/json`; inaczej `400`
+- `request.json()` opakować w `try/catch`:
+  - malformed JSON → `400` `{ error: "invalid_json" }`
+  - poprawny JSON → `suggestionRequestSchema.safeParse` → `400` `{ error: "validation", issues }` (bez stack trace)
 - Jeśli brak `OPENROUTER_API_KEY` lub `OPENROUTER_MODEL` → `503` `{ error: "configuration", message }`
 - Wywołanie `generateSuggestions(criteria)` z lib
 - Sukces: `200` + `Content-Type: application/json` + body `SuggestionResponse`
@@ -292,7 +294,7 @@ Schematy Zod, budowa promptu, klient OpenRouter z timeoutem i mapowaniem błęd�
 
 ---
 
-## Faza 4: Zamknięcie zmiany i roadmapy
+## Phase 4: Zamknięcie zmiany i roadmapy
 
 ### Przegląd
 
@@ -322,6 +324,7 @@ Aktualizacja artefaktów i statusu F-02.
 
 #### Weryfikacja ręczna
 
+- Ustawiony i zweryfikowany limit kredytów/budżetu dla klucza OpenRouter w UI (release gate przed smoke na preview/production)
 - Smoke na preview/deploy Worker z `wrangler secret put` dla OpenRouter
 - Roadmap F-02 oznaczony done po archive
 
@@ -362,15 +365,15 @@ Aktualizacja artefaktów i statusu F-02.
 - [infrastructure.md](context/foundation/infrastructure.md) — ryzyka CPU/timeout
 - Wzorce: [`src/lib/supabase.ts`](src/lib/supabase.ts), [`src/middleware.ts`](src/middleware.ts)
 
-## Postęp
+## Progress
 
-### Faza 0: Wybór modelu
+### Phase 0: Wybór i weryfikacja modelu (pre-code) — **done**
 
 #### Ręczne
 
 - [x] 0.1 Model OpenRouter zweryfikowany (structured outputs) i zapisany w change.md
 
-### Faza 1: Env i Zod
+### Phase 1: Zależności, sekrety i status konfiguracji
 
 #### Automatyczne
 
@@ -380,13 +383,13 @@ Aktualizacja artefaktów i statusu F-02.
 
 - [ ] 1.2 `.dev.vars` i config-status pokazują poprawny stan OpenRouter
 
-### Faza 2: Lib AI
+### Phase 2: Moduł domenowy AI (`src/lib/ai/`)
 
 #### Automatyczne
 
 - [ ] 2.1 `npm run lint` + `npm run build`
 
-### Faza 3: API route
+### Phase 3: Endpoint API
 
 #### Automatyczne
 
@@ -397,7 +400,7 @@ Aktualizacja artefaktów i statusu F-02.
 - [ ] 3.2 Zalogowany POST zwraca 200 i poprawny JSON propozycji
 - [ ] 3.3 Walidacja 400 i brak konfiguracji 503 zweryfikowane
 
-### Faza 4: Zamknięcie
+### Phase 4: Zamknięcie zmiany i roadmapy
 
 #### Automatyczne
 
