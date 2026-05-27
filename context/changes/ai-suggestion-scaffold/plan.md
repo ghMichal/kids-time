@@ -377,11 +377,11 @@ Aktualizacja artefaktów i statusu F-02.
 
 #### Automatyczne
 
-- [ ] 1.1 `npm install` + `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 1.1 `npm install` + `npx astro sync` + `npm run lint` + `npm run build`
 
 #### Ręczne
 
-- [ ] 1.2 `.dev.vars` i config-status pokazują poprawny stan OpenRouter
+- [x] 1.2 `.dev.vars` i config-status pokazują poprawny stan OpenRouter
 
 ### Phase 2: Moduł domenowy AI (`src/lib/ai/`)
 

@@ -180,6 +180,34 @@ Users can then sign in immediately after sign-up without clicking a confirmation
 
 Route protection uses a public allowlist in `src/lib/route-access.ts` (default deny). New product pages are protected automatically; add exceptions to the allowlist for public paths only.
 
+## OpenRouter Configuration
+
+AI activity suggestions (F-02) use [OpenRouter](https://openrouter.ai/) via server-only env vars declared in `astro.config.mjs`. Without them, the config banner reports OpenRouter as missing and the suggestions API returns `503`.
+
+### First-time setup
+
+1. Create an API key at [openrouter.ai/settings/keys](https://openrouter.ai/settings/keys). For a course project, set an optional **credit limit** on the key.
+2. Add to `.env` and `.dev.vars` (same pattern as Supabase):
+
+| Variable             | Description                                                             |
+| -------------------- | ----------------------------------------------------------------------- |
+| `OPENROUTER_API_KEY` | API key from OpenRouter dashboard                                       |
+| `OPENROUTER_MODEL`   | Model id (F-02 default: `openai/gpt-4o-mini` — structured JSON outputs) |
+
+```
+OPENROUTER_API_KEY=<your-key>
+OPENROUTER_MODEL=openai/gpt-4o-mini
+```
+
+3. For Cloudflare preview/production, set Worker secrets (not only local `.env`):
+
+```bash
+npx wrangler secret put OPENROUTER_API_KEY
+npx wrangler secret put OPENROUTER_MODEL
+```
+
+Changing the model later is env-only: update `OPENROUTER_MODEL` and smoke-test the suggestions endpoint.
+
 ## Deployment
 
 This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/) as worker **kids-time-mvp**.
@@ -194,11 +222,13 @@ Skips lint for a faster redeploy: `npm run deploy:quick`.
 
 Manual steps (same pipeline): `npx astro sync` → `npm run lint` → `npm run build` → `npx wrangler deploy`.
 
-Set `SUPABASE_URL` and `SUPABASE_KEY` as Worker secrets (not only in `.env` for local build):
+Set `SUPABASE_URL`, `SUPABASE_KEY`, and OpenRouter vars as Worker secrets (not only in `.env` for local build):
 
 ```bash
 npx wrangler secret put SUPABASE_URL
 npx wrangler secret put SUPABASE_KEY
+npx wrangler secret put OPENROUTER_API_KEY
+npx wrangler secret put OPENROUTER_MODEL
 ```
 
 Full checklist: [`context/deployment/deploy-plan.md`](context/deployment/deploy-plan.md).
