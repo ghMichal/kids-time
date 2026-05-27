@@ -387,7 +387,7 @@ Aktualizacja artefaktów i statusu F-02.
 
 #### Automatyczne
 
-- [ ] 2.1 `npm run lint` + `npm run build`
+- [x] 2.1 `npm run lint` + `npm run build`
 
 ### Phase 3: Endpoint API
 
