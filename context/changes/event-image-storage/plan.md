@@ -299,11 +299,11 @@ CI gate, archive, F-04 `done` w roadmapie.
 
 #### Automatyczne
 
-- [ ] 1.1 `npx supabase db reset` stosuje migrację bez błędów
+- [x] 1.1 `npx supabase db reset` stosuje migrację bez błędów
 
 #### Ręczne
 
-- [ ] 1.2 RLS storage: owner upload/read/delete OK; non-owner odmowa
+- [x] 1.2 RLS storage: owner upload/read/delete OK; non-owner odmowa
 
 ### Phase 2: Moduł lib (`src/lib/storage/`)
 
