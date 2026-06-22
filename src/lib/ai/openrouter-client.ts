@@ -68,16 +68,17 @@ export async function generateSuggestions(criteria: SuggestionRequest): Promise<
     throw new OpenRouterError("upstream", "Failed to reach OpenRouter.");
   }
 
-  let payload: ChatCompletionResponse;
-  try {
-    payload = (await response.json()) as ChatCompletionResponse;
-  } catch {
-    throw new OpenRouterError("invalid_response", "OpenRouter returned invalid JSON.");
-  }
+  const responseText = await response.text();
 
   if (!response.ok) {
-    const detail = payload.error?.message ?? `HTTP ${response.status}`;
-    throw new OpenRouterError("upstream", `OpenRouter error: ${detail}`);
+    throw new OpenRouterError("upstream", "OpenRouter request failed.");
+  }
+
+  let payload: ChatCompletionResponse;
+  try {
+    payload = JSON.parse(responseText) as ChatCompletionResponse;
+  } catch {
+    throw new OpenRouterError("invalid_response", "OpenRouter returned invalid JSON.");
   }
 
   const content = payload.choices?.[0]?.message?.content;

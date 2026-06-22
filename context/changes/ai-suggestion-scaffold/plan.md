@@ -393,7 +393,7 @@ Aktualizacja artefaktów i statusu F-02.
 
 #### Automatyczne
 
-- [ ] 3.1 `npm run lint` + `npm run build`
+- [x] 3.1 `npm run lint` + `npm run build`
 
 #### Ręczne
 
