@@ -145,6 +145,30 @@ Import shared types from `@/types` (e.g. `EventRow`). Regenerate and commit `dat
 
 The `events` table is protected by **RLS**: owners see and modify their rows; other authenticated users can read only published events (`is_published = true`).
 
+### Event image storage
+
+Migration `supabase/migrations/20260622120000_event_images_storage.sql` creates a private bucket **`event-images`** with owner-only RLS on `storage.objects`.
+
+| Setting                         | Value                                   |
+| ------------------------------- | --------------------------------------- |
+| Bucket                          | `event-images` (private)                |
+| Path key in `events.image_path` | `{owner_id}/{event_id}/{filename}`      |
+| Max size                        | 5 MB                                    |
+| MIME types                      | `image/jpeg`, `image/png`, `image/webp` |
+
+Helpers live in `src/lib/storage/*` (`uploadEventImage`, `removeEventImage`, `replaceEventImage`). Storage RLS checks only the owner segment (`foldername[1] = auth.uid()`); the app must ensure `event_id` matches a real `events.id` before upload (S-01/S-03).
+
+After `db reset`, smoke the lib + JWT flow (requires a test user in Auth):
+
+```bash
+# .dev.vars or env: SUPABASE_URL, SUPABASE_KEY, SMOKE_TEST_EMAIL, SMOKE_TEST_PASSWORD
+npx tsx scripts/smoke-event-image.ts
+```
+
+Two-user RLS denial (owner vs non-owner) — `npx tsx scripts/verify-event-images-rls.ts` with `USER_A_*` / `USER_B_*` env vars (see script header).
+
+After merging storage migrations, apply to cloud: `npx supabase db push`.
+
 ### Using a cloud Supabase project instead
 
 If you prefer to use a hosted Supabase project, add these variables to your `.env` and `.dev.vars` files:

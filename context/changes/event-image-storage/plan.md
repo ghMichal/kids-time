@@ -309,22 +309,22 @@ CI gate, archive, F-04 `done` w roadmapie.
 
 #### Automatyczne
 
-- [x] 2.1 `npm run lint` + `npm run build`
+- [x] 2.1 `npm run lint` + `npm run build` — a27f4c3
 
 #### Ręczne
 
-- [ ] 2.2 (opcjonalnie) `buildEventImagePath` zwraca oczekiwany kształt dla przykładowych UUID
+- [x] 2.2 (opcjonalnie) `buildEventImagePath` zwraca oczekiwany kształt dla przykładowych UUID
 
 ### Phase 3: Dev onboarding i smoke
 
 #### Automatyczne
 
-- [ ] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
 
 #### Ręczne
 
-- [ ] 3.2 Smoke upload/read/delete (script lub Studio) zweryfikowany
-- [ ] 3.3 Drugi użytkownik nie odczytuje cudzego obrazu
+- [x] 3.2 Smoke upload/read/delete (script lub Studio) zweryfikowany
+- [x] 3.3 Drugi użytkownik nie odczytuje cudzego obrazu
 
 ### Phase 4: Zamknięcie zmiany i roadmapy
 
