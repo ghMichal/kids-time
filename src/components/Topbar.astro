@@ -11,6 +11,12 @@ const { user } = Astro.locals;
         <span class="text-slate-500">{user.email}</span>
         <div class="flex items-center gap-3">
           <a
+            href="/suggestions"
+            class="font-medium text-amber-800 transition-colors hover:text-amber-950 hover:underline"
+          >
+            Propozycje
+          </a>
+          <a
             href="/dashboard"
             class="font-medium text-amber-800 transition-colors hover:text-amber-950 hover:underline"
           >

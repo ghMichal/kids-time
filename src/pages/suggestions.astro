@@ -1,0 +1,16 @@
+---
+import AppShell from "@/components/AppShell.astro";
+import PanelCard from "@/components/PanelCard.astro";
+import SuggestionsPage from "@/components/suggestions/SuggestionsPage";
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="Propozycje — kids-time">
+  <AppShell showTopbar>
+    <div class="flex min-h-[calc(100vh-8rem)] justify-center py-8">
+      <PanelCard maxWidth="md">
+        <SuggestionsPage client:load />
+      </PanelCard>
+    </div>
+  </AppShell>
+</Layout>
