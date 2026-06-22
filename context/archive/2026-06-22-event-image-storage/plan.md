@@ -335,4 +335,4 @@ CI gate, archive, F-04 `done` w roadmapie.
 #### Ręczne
 
 - [x] 4.2 `supabase db push` na cloud (release gate) — cd1b419
-- [x] 4.3 `/10x-archive event-image-storage` + F-04 done w roadmap
+- [x] 4.3 `/10x-archive event-image-storage` + F-04 done w roadmap — 944ebbb
