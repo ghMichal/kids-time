@@ -3,7 +3,7 @@ project: "kids-time MVP"
 version: 1
 status: draft
 created: 2026-05-25
-updated: 2026-05-26
+updated: 2026-06-22
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -30,7 +30,7 @@ Rodzice tracą czas na szukanie pomysłów na aktywności po szkole lub w weeken
 | ID   | Change ID               | Outcome (user can …)                                                           | Prerequisites          | PRD refs               | Status   |
 | ---- | ----------------------- | ------------------------------------------------------------------------------ | ---------------------- | ---------------------- | -------- |
 | F-01 | event-schema-rls        | (foundation) model wydarzeń, migracje i RLS dla właściciela                    | —                      | Access Control, NFR-02 | done     |
-| F-02 | ai-suggestion-scaffold  | (foundation) integracja dostawcy AI do generowania propozycji                  | —                      | FR-001, NFR-03         | proposed |
+| F-02 | ai-suggestion-scaffold  | (foundation) integracja dostawcy AI do generowania propozycji                  | —                      | FR-001, NFR-03         | done     |
 | F-03 | app-route-auth-guards   | (foundation) ochrona tras aplikacji poza samym `/dashboard`                    | —                      | Access Control, US-01  | done     |
 | F-04 | event-image-storage     | (foundation) przechowywanie jednego obrazu na wydarzenie                       | F-01                   | FR-002, FR-003         | proposed |
 | S-01 | ai-activity-suggestions | …poprosić o propozycje AI i zobaczyć kilka zwięzłych aktywności (obraz + link) | F-01, F-02, F-03, F-04 | US-01, FR-001, FR-002  | proposed |
@@ -88,7 +88,7 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Największa nieznana techniczna MVP — warto ustawić wcześnie przy celu **speed**, żeby S-01 nie czekał na resztę UI.
-- **Status:** proposed
+- **Status:** done
 
 ### F-03: Ochrona tras aplikacji
 
@@ -211,3 +211,4 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 
 - **F-01: (foundation) tabela wydarzeń (i powiązane pola kryteriów), migracje Supabase i polityki RLS — właściciel widzi i modyfikuje tylko swoje rekordy.** — Archived 2026-05-26 → `context/archive/2026-05-26-event-schema-rls/`. Lesson: —.
 - **F-03: (foundation) zalogowany rodzic jest wymagany na trasach produktowych (nie tylko `/dashboard`); niezalogowany trafia na logowanie.** — Archived 2026-05-25 → `context/archive/2026-05-25-app-route-auth-guards/`. Lesson: —.
+- **F-02: (foundation) ścieżka serwerowa wywołująca model AI z kryteriami (miejsce, czas, wiek, indoor/outdoor) i zwracająca zwięzły zestaw propozycji.** — Zarchiwizowano 2026-06-22 → `context/archive/2026-05-26-ai-suggestion-scaffold/`. Lekcja: —.

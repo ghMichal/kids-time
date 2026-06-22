@@ -1,10 +1,10 @@
 ---
 change_id: ai-suggestion-scaffold
 title: AI suggestion scaffold
-status: implemented
+status: archived
 created: 2026-05-26
 updated: 2026-06-22
-archived_at: null
+archived_at: 2026-06-22T19:45:00Z
 roadmap_id: F-02
 ---
 
