@@ -397,8 +397,8 @@ Aktualizacja artefaktów i statusu F-02.
 
 #### Ręczne
 
-- [ ] 3.2 Zalogowany POST zwraca 200 i poprawny JSON propozycji
-- [ ] 3.3 Walidacja 400 i brak konfiguracji 503 zweryfikowane
+- [x] 3.2 Zalogowany POST zwraca 200 i poprawny JSON propozycji
+- [x] 3.3 Walidacja 400 i brak konfiguracji 503 zweryfikowane
 
 ### Phase 4: Zamknięcie zmiany i roadmapy
 
