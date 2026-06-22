@@ -404,9 +404,9 @@ Aktualizacja artefaktów i statusu F-02.
 
 #### Automatyczne
 
-- [ ] 4.1 CI gate (lint + build) na branchu
+- [x] 4.1 CI gate (lint + build) na branchu
 
 #### Ręczne
 
-- [ ] 4.2 Smoke na preview/deploy z Worker secrets
+- [x] 4.2 Smoke na preview/deploy z Worker secrets
 - [ ] 4.3 `/10x-archive ai-suggestion-scaffold` + F-02 done w roadmap

@@ -1,7 +1,7 @@
 ---
 change_id: ai-suggestion-scaffold
 title: AI suggestion scaffold
-status: implementing
+status: implemented
 created: 2026-05-26
 updated: 2026-06-22
 archived_at: null
@@ -33,6 +33,6 @@ roadmap_id: F-02
 
 **Plan:** [plan.md](./plan.md) (brief: [plan-brief.md](./plan-brief.md)). Research: [research.md](./research.md) — **done** 2026-05-26.
 
-**Następny krok:** `/10x-implement ai-suggestion-scaffold phase 1` (kod — nie wdrażany automatycznie z planu).
+**Następny krok:** `/10x-archive ai-suggestion-scaffold` po ręcznym smoke preview (Phase 4.2–4.3).
 
 **Po zakończeniu:** zaktualizować status F-02 w roadmapie (`/10x-archive`); odblokować S-01 po F-04.
