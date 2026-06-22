@@ -51,7 +51,11 @@ export const openRouterJsonSchema = {
           properties: {
             title: { type: "string" },
             summary: { type: "string" },
-            sourceUrl: { type: "string" },
+            sourceUrl: {
+              type: "string",
+              description:
+                "HTTPS URL to the official venue website, or a pl.wikipedia.org article about the place if no official site is known; empty string only when no real page exists.",
+            },
           },
           required: ["title", "summary", "sourceUrl"],
           additionalProperties: false,

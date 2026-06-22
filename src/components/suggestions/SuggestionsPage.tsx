@@ -4,7 +4,7 @@ import { FormField } from "@/components/auth/FormField";
 import { ServerError } from "@/components/auth/ServerError";
 import { SuggestionCard } from "@/components/suggestions/SuggestionCard";
 import { Button } from "@/components/ui/button";
-import type { SuggestionItem } from "@/lib/ai/suggestion-response.schema";
+import type { EnrichedSuggestionItem } from "@/types";
 import type { SuggestionRequest } from "@/lib/ai/suggestion-request.schema";
 import { cn } from "@/lib/utils";
 
@@ -65,7 +65,7 @@ export default function SuggestionsPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState<SuggestionItem[]>([]);
+  const [suggestions, setSuggestions] = useState<EnrichedSuggestionItem[]>([]);
 
   function clearError(field: keyof FormErrors) {
     if (errors[field]) {
@@ -125,7 +125,7 @@ export default function SuggestionsPage() {
         return;
       }
 
-      const data = (await response.json()) as { suggestions: SuggestionItem[] };
+      const data = (await response.json()) as { suggestions: EnrichedSuggestionItem[] };
       setSuggestions(data.suggestions);
     } catch {
       setServerError("Nie udało się połączyć z serwerem. Spróbuj ponownie.");
@@ -247,6 +247,7 @@ export default function SuggestionsPage() {
                 title={suggestion.title}
                 summary={suggestion.summary}
                 sourceUrl={suggestion.sourceUrl}
+                imageUrl={suggestion.imageUrl}
               />
             ))}
           </div>

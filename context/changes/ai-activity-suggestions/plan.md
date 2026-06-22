@@ -317,25 +317,25 @@ Handler guard (defense in depth), README, opcjonalny smoke script, przygotowanie
 
 #### Automatyczne
 
-- [x] 1.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 1.1 `npx astro sync` + `npm run lint` + `npm run build` — 71c6ae4
 
 #### Ręczne
 
-- [x] 1.2 Formularz + karty tekst/link + loading na `/suggestions` (zalogowany user)
-- [x] 1.3 Walidacja inline (puste pole) — bez requestu do API
-- [x] 1.4 Niezalogowany GET `/suggestions` → redirect `/auth/signin`
-- [x] 1.5 Niezalogowany POST API → 401 JSON (nie HTML)
+- [x] 1.2 Formularz + karty tekst/link + loading na `/suggestions` (zalogowany user) — 71c6ae4
+- [x] 1.3 Walidacja inline (puste pole) — bez requestu do API — 71c6ae4
+- [x] 1.4 Niezalogowany GET `/suggestions` → redirect `/auth/signin` — 71c6ae4
+- [x] 1.5 Niezalogowany POST API → 401 JSON (nie HTML) — 71c6ae4
 
 ### Faza 2: Enricher obrazów OG i wyświetlanie FR-002
 
 #### Automatyczne
 
-- [ ] 2.1 `npm run lint` + `npm run build`
+- [x] 2.1 `npm run lint` + `npm run build`
 
 #### Ręczne
 
-- [ ] 2.2 Karta z prawdziwym obrazem OG gdy `sourceUrl` ma meta
-- [ ] 2.3 Brak fałszywego placeholdera przy nieudanym OG
+- [x] 2.2 Karta z prawdziwym obrazem OG gdy `sourceUrl` ma meta
+- [x] 2.3 Brak fałszywego placeholdera przy nieudanym OG
 
 ### Faza 3: Dokumentacja i zamknięcie
 
