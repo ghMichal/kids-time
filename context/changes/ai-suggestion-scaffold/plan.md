@@ -393,12 +393,12 @@ Aktualizacja artefaktów i statusu F-02.
 
 #### Automatyczne
 
-- [x] 3.1 `npm run lint` + `npm run build`
+- [x] 3.1 `npm run lint` + `npm run build` — 3c7fd9a
 
 #### Ręczne
 
-- [x] 3.2 Zalogowany POST zwraca 200 i poprawny JSON propozycji
-- [x] 3.3 Walidacja 400 i brak konfiguracji 503 zweryfikowane
+- [x] 3.2 Zalogowany POST zwraca 200 i poprawny JSON propozycji — 3c7fd9a
+- [x] 3.3 Walidacja 400 i brak konfiguracji 503 zweryfikowane — 3c7fd9a
 
 ### Phase 4: Zamknięcie zmiany i roadmapy
 
