@@ -32,7 +32,7 @@ Rodzice tracą czas na szukanie pomysłów na aktywności po szkole lub w weeken
 | F-01 | event-schema-rls        | (foundation) model wydarzeń, migracje i RLS dla właściciela                    | —                      | Access Control, NFR-02 | done     |
 | F-02 | ai-suggestion-scaffold  | (foundation) integracja dostawcy AI do generowania propozycji                  | —                      | FR-001, NFR-03         | done     |
 | F-03 | app-route-auth-guards   | (foundation) ochrona tras aplikacji poza samym `/dashboard`                    | —                      | Access Control, US-01  | done     |
-| F-04 | event-image-storage     | (foundation) przechowywanie jednego obrazu na wydarzenie                       | F-01                   | FR-002, FR-003         | proposed |
+| F-04 | event-image-storage     | (foundation) przechowywanie jednego obrazu na wydarzenie                       | F-01                   | FR-002, FR-003         | done     |
 | S-01 | ai-activity-suggestions | …poprosić o propozycje AI i zobaczyć kilka zwięzłych aktywności (obraz + link) | F-01, F-02, F-03, F-04 | US-01, FR-001, FR-002  | proposed |
 | S-02 | triage-suggestions      | …zaakceptować, odrzucić lub oznaczyć propozycję jako „może później”            | S-01                   | US-01, FR-005          | proposed |
 | S-03 | manual-event-ai-summary | …dodać ręcznie wydarzenie z jednym obrazem i krótkim podsumowaniem AI          | F-01, F-02, F-03, F-04 | FR-003                 | proposed |
@@ -114,7 +114,7 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Sekwencja po F-01 — bucket powinien respektować ten sam model właściciela co wydarzenia.
-- **Status:** proposed
+- **Status:** done
 
 ## Slices
 
@@ -212,3 +212,4 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 - **F-01: (foundation) tabela wydarzeń (i powiązane pola kryteriów), migracje Supabase i polityki RLS — właściciel widzi i modyfikuje tylko swoje rekordy.** — Archived 2026-05-26 → `context/archive/2026-05-26-event-schema-rls/`. Lesson: —.
 - **F-03: (foundation) zalogowany rodzic jest wymagany na trasach produktowych (nie tylko `/dashboard`); niezalogowany trafia na logowanie.** — Archived 2026-05-25 → `context/archive/2026-05-25-app-route-auth-guards/`. Lesson: —.
 - **F-02: (foundation) ścieżka serwerowa wywołująca model AI z kryteriami (miejsce, czas, wiek, indoor/outdoor) i zwracająca zwięzły zestaw propozycji.** — Zarchiwizowano 2026-06-22 → `context/archive/2026-05-26-ai-suggestion-scaffold/`. Lekcja: —.
+- **F-04: (foundation) upload i odczyt jednego obrazu na wydarzenie (bucket + polityki zgodne z RLS).** — Zarchiwizowano 2026-06-22 → `context/archive/2026-06-22-event-image-storage/`. Lekcja: —.

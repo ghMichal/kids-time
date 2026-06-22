@@ -299,40 +299,40 @@ CI gate, archive, F-04 `done` w roadmapie.
 
 #### Automatyczne
 
-- [ ] 1.1 `npx supabase db reset` stosuje migrację bez błędów
+- [x] 1.1 `npx supabase db reset` stosuje migrację bez błędów — 31b7b4c
 
 #### Ręczne
 
-- [ ] 1.2 RLS storage: owner upload/read/delete OK; non-owner odmowa
+- [x] 1.2 RLS storage: owner upload/read/delete OK; non-owner odmowa — 31b7b4c
 
 ### Phase 2: Moduł lib (`src/lib/storage/`)
 
 #### Automatyczne
 
-- [ ] 2.1 `npm run lint` + `npm run build`
+- [x] 2.1 `npm run lint` + `npm run build` — a27f4c3
 
 #### Ręczne
 
-- [ ] 2.2 (opcjonalnie) `buildEventImagePath` zwraca oczekiwany kształt dla przykładowych UUID
+- [x] 2.2 (opcjonalnie) `buildEventImagePath` zwraca oczekiwany kształt dla przykładowych UUID — 66e9d11
 
 ### Phase 3: Dev onboarding i smoke
 
 #### Automatyczne
 
-- [ ] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build` — 66e9d11
 
 #### Ręczne
 
-- [ ] 3.2 Smoke upload/read/delete (script lub Studio) zweryfikowany
-- [ ] 3.3 Drugi użytkownik nie odczytuje cudzego obrazu
+- [x] 3.2 Smoke upload/read/delete (script lub Studio) zweryfikowany — 66e9d11
+- [x] 3.3 Drugi użytkownik nie odczytuje cudzego obrazu — 66e9d11
 
 ### Phase 4: Zamknięcie zmiany i roadmapy
 
 #### Automatyczne
 
-- [ ] 4.1 CI gate (lint + build) na branchu
+- [x] 4.1 CI gate (lint + build) na branchu — cd1b419
 
 #### Ręczne
 
-- [ ] 4.2 `supabase db push` na cloud (release gate)
-- [ ] 4.3 `/10x-archive event-image-storage` + F-04 done w roadmap
+- [x] 4.2 `supabase db push` na cloud (release gate) — cd1b419
+- [x] 4.3 `/10x-archive event-image-storage` + F-04 done w roadmap — 944ebbb
