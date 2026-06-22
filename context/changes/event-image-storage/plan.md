@@ -313,26 +313,26 @@ CI gate, archive, F-04 `done` w roadmapie.
 
 #### Ręczne
 
-- [x] 2.2 (opcjonalnie) `buildEventImagePath` zwraca oczekiwany kształt dla przykładowych UUID
+- [x] 2.2 (opcjonalnie) `buildEventImagePath` zwraca oczekiwany kształt dla przykładowych UUID — 66e9d11
 
 ### Phase 3: Dev onboarding i smoke
 
 #### Automatyczne
 
-- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build` — 66e9d11
 
 #### Ręczne
 
-- [x] 3.2 Smoke upload/read/delete (script lub Studio) zweryfikowany
-- [x] 3.3 Drugi użytkownik nie odczytuje cudzego obrazu
+- [x] 3.2 Smoke upload/read/delete (script lub Studio) zweryfikowany — 66e9d11
+- [x] 3.3 Drugi użytkownik nie odczytuje cudzego obrazu — 66e9d11
 
 ### Phase 4: Zamknięcie zmiany i roadmapy
 
 #### Automatyczne
 
-- [ ] 4.1 CI gate (lint + build) na branchu
+- [x] 4.1 CI gate (lint + build) na branchu
 
 #### Ręczne
 
-- [ ] 4.2 `supabase db push` na cloud (release gate)
+- [x] 4.2 `supabase db push` na cloud (release gate)
 - [ ] 4.3 `/10x-archive event-image-storage` + F-04 done w roadmap
