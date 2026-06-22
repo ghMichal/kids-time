@@ -185,7 +185,7 @@ Poza pierwszym deployem:
 
 1. Job **deploy** w GitHub Actions po `ci` (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`) lub Cloudflare Workers Builds
 2. Preview branches z osobnymi sekretami Supabase
-3. `OPENROUTER_API_KEY` w Worker + `astro:env` gdy pojawią się trasy AI
+3. `OPENROUTER_API_KEY` + `OPENROUTER_MODEL` w Worker (`wrangler secret put`) — wymagane od F-02 (`POST /api/ai/suggestions`)
 
 ---
 
@@ -195,7 +195,8 @@ Poza pierwszym deployem:
 | -------------------- | -------------------- | ---------- | -------------- |
 | `SUPABASE_URL`       | dev / cloud          | prod cloud | build CI       |
 | `SUPABASE_KEY`       | anon                 | anon       | build CI       |
-| `OPENROUTER_API_KEY` | później              | później    | później        |
+| `OPENROUTER_API_KEY` | dev key              | prod key   | —              |
+| `OPENROUTER_MODEL`   | `openai/gpt-4o-mini` | prod value | —              |
 
 **Rotacja:** Supabase → GitHub secrets → `wrangler secret put` → opcjonalnie redeploy → smoke test auth.
 
