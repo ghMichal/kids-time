@@ -1,10 +1,10 @@
 ---
 change_id: event-image-storage
 title: Event image storage
-status: implemented
+status: archived
 created: 2026-06-22
 updated: 2026-06-22
-archived_at: null
+archived_at: 2026-06-22T21:06:19Z
 roadmap_id: F-04
 ---
 

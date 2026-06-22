@@ -330,9 +330,9 @@ CI gate, archive, F-04 `done` w roadmapie.
 
 #### Automatyczne
 
-- [x] 4.1 CI gate (lint + build) na branchu
+- [x] 4.1 CI gate (lint + build) na branchu — cd1b419
 
 #### Ręczne
 
-- [x] 4.2 `supabase db push` na cloud (release gate)
-- [ ] 4.3 `/10x-archive event-image-storage` + F-04 done w roadmap
+- [x] 4.2 `supabase db push` na cloud (release gate) — cd1b419
+- [x] 4.3 `/10x-archive event-image-storage` + F-04 done w roadmap
