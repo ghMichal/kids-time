@@ -330,20 +330,20 @@ Handler guard (defense in depth), README, opcjonalny smoke script, przygotowanie
 
 #### Automatyczne
 
-- [x] 2.1 `npm run lint` + `npm run build`
+- [x] 2.1 `npm run lint` + `npm run build` — 8d57cbd
 
 #### Ręczne
 
-- [x] 2.2 Karta z prawdziwym obrazem OG gdy `sourceUrl` ma meta
-- [x] 2.3 Brak fałszywego placeholdera przy nieudanym OG
+- [x] 2.2 Karta z prawdziwym obrazem OG gdy `sourceUrl` ma meta — 8d57cbd
+- [x] 2.3 Brak fałszywego placeholdera przy nieudanym OG — 8d57cbd
 
 ### Faza 3: Dokumentacja i zamknięcie
 
 #### Automatyczne
 
-- [ ] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
 
 #### Ręczne
 
-- [ ] 3.2 E2E north star: kryteria → propozycje z obrazem + link (transient)
-- [ ] 3.3 Topbar: link Propozycje → `/suggestions` działa
+- [x] 3.2 E2E north star: kryteria → propozycje z obrazem + link (transient)
+- [x] 3.3 Topbar: link Propozycje → `/suggestions` działa

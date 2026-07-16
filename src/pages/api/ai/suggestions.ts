@@ -10,7 +10,11 @@ function jsonResponse(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
 }
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
+  if (!locals.user) {
+    return jsonResponse({ error: "unauthorized" }, 401);
+  }
+
   const contentType = request.headers.get("Content-Type") ?? "";
   if (!contentType.includes("application/json")) {
     return jsonResponse({ error: "invalid_content_type" }, 400);
