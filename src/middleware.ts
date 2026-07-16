@@ -14,8 +14,19 @@ export const onRequest = defineMiddleware(async (context, next) => {
     context.locals.user = null;
   }
 
-  if (requiresAuth(context.url.pathname) && !context.locals.user) {
-    return context.redirect("/auth/signin");
+  if (!context.locals.user) {
+    const { pathname } = context.url;
+
+    if (pathname.startsWith("/api/") && !pathname.startsWith("/api/auth")) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    if (requiresAuth(pathname)) {
+      return context.redirect("/auth/signin");
+    }
   }
 
   return next();

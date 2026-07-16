@@ -3,7 +3,7 @@ project: "kids-time MVP"
 version: 1
 status: draft
 created: 2026-05-25
-updated: 2026-06-22
+updated: 2026-07-16
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -33,7 +33,7 @@ Rodzice tracą czas na szukanie pomysłów na aktywności po szkole lub w weeken
 | F-02 | ai-suggestion-scaffold  | (foundation) integracja dostawcy AI do generowania propozycji                  | —                      | FR-001, NFR-03         | done     |
 | F-03 | app-route-auth-guards   | (foundation) ochrona tras aplikacji poza samym `/dashboard`                    | —                      | Access Control, US-01  | done     |
 | F-04 | event-image-storage     | (foundation) przechowywanie jednego obrazu na wydarzenie                       | F-01                   | FR-002, FR-003         | done     |
-| S-01 | ai-activity-suggestions | …poprosić o propozycje AI i zobaczyć kilka zwięzłych aktywności (obraz + link) | F-01, F-02, F-03, F-04 | US-01, FR-001, FR-002  | proposed |
+| S-01 | ai-activity-suggestions | …poprosić o propozycje AI i zobaczyć kilka zwięzłych aktywności (obraz + link) | F-01, F-02, F-03, F-04 | US-01, FR-001, FR-002  | done     |
 | S-02 | triage-suggestions      | …zaakceptować, odrzucić lub oznaczyć propozycję jako „może później”            | S-01                   | US-01, FR-005          | proposed |
 | S-03 | manual-event-ai-summary | …dodać ręcznie wydarzenie z jednym obrazem i krótkim podsumowaniem AI          | F-01, F-02, F-03, F-04 | FR-003                 | proposed |
 | S-04 | my-events-library       | …przeglądać, edytować i usuwać własne wydarzenia                               | F-01, F-03             | FR-004                 | proposed |
@@ -128,7 +128,7 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** To jest **gwiazda przewodnia** — dowód hipotezy „zwięzłe AI zamiast długiej listy”; wymaga wszystkich czterech fundamentów, ale nie czeka na CRUD ani publikację.
-- **Status:** proposed
+- **Status:** done
 
 ### S-02: Decyzje o propozycjach
 
@@ -213,3 +213,4 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 - **F-03: (foundation) zalogowany rodzic jest wymagany na trasach produktowych (nie tylko `/dashboard`); niezalogowany trafia na logowanie.** — Archived 2026-05-25 → `context/archive/2026-05-25-app-route-auth-guards/`. Lesson: —.
 - **F-02: (foundation) ścieżka serwerowa wywołująca model AI z kryteriami (miejsce, czas, wiek, indoor/outdoor) i zwracająca zwięzły zestaw propozycji.** — Zarchiwizowano 2026-06-22 → `context/archive/2026-05-26-ai-suggestion-scaffold/`. Lekcja: —.
 - **F-04: (foundation) upload i odczyt jednego obrazu na wydarzenie (bucket + polityki zgodne z RLS).** — Zarchiwizowano 2026-06-22 → `context/archive/2026-06-22-event-image-storage/`. Lekcja: —.
+- **S-01: user can enter place, time, child age, and indoor/outdoor preference and receive a few concise AI-suggested activities, each with at most one image and a source link.** — Zarchiwizowano 2026-07-16 → `context/archive/2026-06-22-ai-activity-suggestions/`. Lekcja: —.

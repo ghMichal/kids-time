@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { OPENROUTER_API_KEY, OPENROUTER_MODEL } from "astro:env/server";
 import { generateSuggestions, OpenRouterError } from "@/lib/ai/openrouter-client";
 import { suggestionRequestSchema } from "@/lib/ai/suggestion-request.schema";
+import { enrichSuggestionImages } from "@/lib/suggestions/enrich-suggestion-images";
 
 const JSON_HEADERS = { "Content-Type": "application/json" };
 
@@ -9,7 +10,11 @@ function jsonResponse(body: unknown, status: number): Response {
   return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
 }
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
+  if (!locals.user) {
+    return jsonResponse({ error: "unauthorized" }, 401);
+  }
+
   const contentType = request.headers.get("Content-Type") ?? "";
   if (!contentType.includes("application/json")) {
     return jsonResponse({ error: "invalid_content_type" }, 400);
@@ -33,7 +38,8 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     const result = await generateSuggestions(parsed.data);
-    return jsonResponse(result, 200);
+    const enriched = await enrichSuggestionImages(result.suggestions);
+    return jsonResponse({ suggestions: enriched }, 200);
   } catch (error) {
     if (error instanceof OpenRouterError) {
       switch (error.code) {
