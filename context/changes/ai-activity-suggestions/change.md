@@ -1,7 +1,7 @@
 ---
 change_id: ai-activity-suggestions
 title: AI activity suggestions
-status: implementing
+status: implemented
 created: 2026-06-22
 updated: 2026-07-16
 last_research: 2026-06-22

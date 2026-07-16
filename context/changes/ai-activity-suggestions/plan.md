@@ -341,9 +341,9 @@ Handler guard (defense in depth), README, opcjonalny smoke script, przygotowanie
 
 #### Automatyczne
 
-- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build` — 897e4bf
 
 #### Ręczne
 
-- [x] 3.2 E2E north star: kryteria → propozycje z obrazem + link (transient)
-- [x] 3.3 Topbar: link Propozycje → `/suggestions` działa
+- [x] 3.2 E2E north star: kryteria → propozycje z obrazem + link (transient) — 897e4bf
+- [x] 3.3 Topbar: link Propozycje → `/suggestions` działa — 897e4bf
