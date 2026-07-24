@@ -296,22 +296,22 @@ Brak migracji SQL. Istniejące puste/nieużywane `events` bez zmian. Wycofanie: 
 
 #### Automatyczne
 
-- [x] 2.1 `npm run lint` + `npm run build`
+- [x] 2.1 `npm run lint` + `npm run build` — 1db6552
 
 #### Ręczne
 
-- [x] 2.2 Trzy przyciski widoczne na każdej karcie po generate
-- [x] 2.3 Accept/reject/maybe → karta znika + feedback + poprawny status w DB
-- [x] 2.4 Pending disable + brak duplikatu przy double-click
-- [x] 2.5 Błąd API → karta zostaje + komunikat
+- [x] 2.2 Trzy przyciski widoczne na każdej karcie po generate — 1db6552
+- [x] 2.3 Accept/reject/maybe → karta znika + feedback + poprawny status w DB — 1db6552
+- [x] 2.4 Pending disable + brak duplikatu przy double-click — 1db6552
+- [x] 2.5 Błąd API → karta zostaje + komunikat — 1db6552
 
 ### Faza 3: Smoke, dokumentacja, zamknięcie
 
 #### Automatyczne
 
-- [ ] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
 
 #### Ręczne
 
-- [ ] 3.2 E2E: trzy decyzje → trzy wiersze (`accepted`/`rejected`/`maybe`), nieopublikowane
-- [ ] 3.3 README wspomina triage
+- [x] 3.2 E2E: trzy decyzje → trzy wiersze (`accepted`/`rejected`/`maybe`), nieopublikowane
+- [x] 3.3 README wspomina triage
