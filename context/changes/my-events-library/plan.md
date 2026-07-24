@@ -278,27 +278,27 @@ Brak migracji SQL. Wycofanie: usunąć routes + UI + Topbar link; wiersze `event
 
 #### Automatyczne
 
-- [x] 1.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 1.1 `npx astro sync` + `npm run lint` + `npm run build` — 11b468e
 
 #### Ręczne
 
-- [x] 1.2 GET lista → tylko własne accepted/maybe
-- [x] 1.3 PATCH dozwolone pola; nieznane klucze / złe typy → 400; obcy id → 404
-- [x] 1.4 DELETE usuwa; ponowny/obcy → 404
-- [x] 1.5 Bez sesji → 401 JSON
+- [x] 1.2 GET lista → tylko własne accepted/maybe — 11b468e
+- [x] 1.3 PATCH dozwolone pola; nieznane klucze / złe typy → 400; obcy id → 404 — 11b468e
+- [x] 1.4 DELETE usuwa; ponowny/obcy → 404 — 11b468e
+- [x] 1.5 Bez sesji → 401 JSON — 11b468e
 
 ### Faza 2: Strona biblioteki i lista
 
 #### Automatyczne
 
-- [ ] 2.1 `npm run lint` + `npm run build`
+- [x] 2.1 `npm run lint` + `npm run build`
 
 #### Ręczne
 
-- [ ] 2.2 Topbar → `/events` → lista zgodna z DB (accepted/maybe)
-- [ ] 2.3 Brak wydarzeń → empty state PL
-- [ ] 2.4 Offline / 401 → komunikat błędu; UI nie crashuje
-- [ ] 2.5 Niezalogowany → redirect signin
+- [x] 2.2 Topbar → `/events` → lista zgodna z DB (accepted/maybe)
+- [x] 2.3 Brak wydarzeń → empty state PL
+- [x] 2.4 Offline / 401 → komunikat błędu; UI nie crashuje
+- [x] 2.5 Niezalogowany → redirect signin
 
 ### Faza 3: Inline edit, delete confirm, dokumentacja
 
