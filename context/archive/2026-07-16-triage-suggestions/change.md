@@ -1,10 +1,10 @@
 ---
 change_id: triage-suggestions
 title: Triage suggestions
-status: implemented
+status: archived
 created: 2026-07-16
 updated: 2026-07-24
-archived_at: null
+archived_at: 2026-07-24T16:56:14Z
 roadmap_id: S-02
 ---
 
