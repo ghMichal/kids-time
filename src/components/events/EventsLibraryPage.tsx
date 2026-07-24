@@ -93,7 +93,16 @@ export default function EventsLibraryPage() {
       {!loading && events.length > 0 ? (
         <section className="space-y-3" aria-label="Lista wydarzeń">
           {events.map((event) => (
-            <EventCard key={event.id} event={event} />
+            <EventCard
+              key={event.id}
+              event={event}
+              onUpdated={(updated) => {
+                setEvents((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
+              }}
+              onDeleted={(eventId) => {
+                setEvents((prev) => prev.filter((item) => item.id !== eventId));
+              }}
+            />
           ))}
         </section>
       ) : null}

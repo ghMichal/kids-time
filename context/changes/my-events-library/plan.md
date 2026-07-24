@@ -291,23 +291,23 @@ Brak migracji SQL. Wycofanie: usunąć routes + UI + Topbar link; wiersze `event
 
 #### Automatyczne
 
-- [x] 2.1 `npm run lint` + `npm run build`
+- [x] 2.1 `npm run lint` + `npm run build` — cd618d4
 
 #### Ręczne
 
-- [x] 2.2 Topbar → `/events` → lista zgodna z DB (accepted/maybe)
-- [x] 2.3 Brak wydarzeń → empty state PL
-- [x] 2.4 Offline / 401 → komunikat błędu; UI nie crashuje
-- [x] 2.5 Niezalogowany → redirect signin
+- [x] 2.2 Topbar → `/events` → lista zgodna z DB (accepted/maybe) — cd618d4
+- [x] 2.3 Brak wydarzeń → empty state PL — cd618d4
+- [x] 2.4 Offline / 401 → komunikat błędu; UI nie crashuje — cd618d4
+- [x] 2.5 Niezalogowany → redirect signin — cd618d4
 
 ### Faza 3: Inline edit, delete confirm, dokumentacja
 
 #### Automatyczne
 
-- [ ] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
 
 #### Ręczne
 
-- [ ] 3.2 E2E: triage accept/maybe → edit zapisuje → delete z confirm usuwa
-- [ ] 3.3 Rejected z triage nie pojawia się na liście
-- [ ] 3.4 README wspomina bibliotekę `/events`
+- [x] 3.2 E2E: triage accept/maybe → edit zapisuje → delete z confirm usuwa
+- [x] 3.3 Rejected z triage nie pojawia się na liście
+- [x] 3.4 README wspomina bibliotekę `/events`
