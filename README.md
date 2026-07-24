@@ -201,13 +201,13 @@ Users can then sign in immediately after sign-up without clicking a confirmation
 | `/auth/signup`        | Email/password sign-up form                                             |
 | `/auth/confirm-email` | Post-signup "check your inbox" page                                     |
 | `/dashboard`          | Example protected page (redirects to `/auth/signin` if unauthenticated) |
-| `/suggestions`        | AI activity suggestions (S-01) — criteria form → transient proposals    |
+| `/suggestions`        | AI activity suggestions — criteria → proposals → accept/reject/maybe    |
 
 Route protection uses a public allowlist in `src/lib/route-access.ts` (default deny). New product pages are protected automatically; add exceptions to the allowlist for public paths only.
 
-## AI activity suggestions (S-01)
+## AI activity suggestions
 
-Signed-in parents open **Propozycje** (`/suggestions`), submit place / time / child age / indoor-outdoor, and get 1–5 transient AI proposals (title, summary, optional source link + OG image). Nothing is written to `events` yet — triage/persist is S-02.
+Signed-in parents open **Propozycje** (`/suggestions`), submit place / time / child age / indoor-outdoor, and get 1–5 AI proposals (title, summary, optional source link + OG image). On each card they can **Akceptuj** / **Odrzuć** / **Może później** — the decision is stored in `events` (`origin: ai_suggested`, `triage_status`) with `is_published` still `false` (publish is a later slice). Image upload to storage is not part of this flow yet.
 
 Requires OpenRouter env (see below). Optional local checks:
 
@@ -216,7 +216,7 @@ npx tsx scripts/smoke-openrouter.ts
 npx tsx scripts/smoke-suggestions-enriched.ts
 ```
 
-Manual flow: `npm run dev` → sign in → `/suggestions` → submit → cards with real OG image when the source page exposes meta, otherwise text + link only.
+Manual flow: `npm run dev` → sign in → `/suggestions` → submit → triage decisions on cards → rows appear in `events` (Studio / SQL).
 
 ## OpenRouter Configuration
 
