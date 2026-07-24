@@ -304,10 +304,10 @@ Brak migracji SQL. Wycofanie: usunąć routes + UI + Topbar link; wiersze `event
 
 #### Automatyczne
 
-- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build` — dcfd224
 
 #### Ręczne
 
-- [x] 3.2 E2E: triage accept/maybe → edit zapisuje → delete z confirm usuwa
-- [x] 3.3 Rejected z triage nie pojawia się na liście
-- [x] 3.4 README wspomina bibliotekę `/events`
+- [x] 3.2 E2E: triage accept/maybe → edit zapisuje → delete z confirm usuwa — dcfd224
+- [x] 3.3 Rejected z triage nie pojawia się na liście — dcfd224
+- [x] 3.4 README wspomina bibliotekę `/events` — dcfd224
