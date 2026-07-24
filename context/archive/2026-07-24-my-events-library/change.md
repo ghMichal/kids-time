@@ -1,10 +1,10 @@
 ---
 change_id: my-events-library
 title: My events library
-status: impl_reviewed
+status: archived
 created: 2026-07-24
 updated: 2026-07-24
-archived_at: null
+archived_at: 2026-07-24T19:30:49Z
 roadmap_id: S-04
 ---
 
