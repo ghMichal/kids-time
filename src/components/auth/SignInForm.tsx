@@ -13,6 +13,7 @@ export default function SignInForm({ serverError }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
   function validate() {
@@ -36,7 +37,9 @@ export default function SignInForm({ serverError }: Props) {
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     if (!validate()) {
       e.preventDefault();
+      return;
     }
+    setPending(true);
   }
 
   return (
@@ -79,7 +82,7 @@ export default function SignInForm({ serverError }: Props) {
 
       <ServerError message={serverError} />
 
-      <SubmitButton pendingText="Logowanie…" icon={<LogIn className="size-4" />}>
+      <SubmitButton pending={pending} pendingText="Logowanie…" icon={<LogIn className="size-4" />}>
         Zaloguj się
       </SubmitButton>
     </form>

@@ -17,6 +17,7 @@ export default function SignUpForm({ serverError }: Props) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string }>({});
 
   function validate() {
@@ -51,7 +52,9 @@ export default function SignUpForm({ serverError }: Props) {
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     if (!validate()) {
       e.preventDefault();
+      return;
     }
+    setPending(true);
   }
 
   const remaining = MIN_PASSWORD_LENGTH - password.length;
@@ -126,7 +129,7 @@ export default function SignUpForm({ serverError }: Props) {
 
       <ServerError message={serverError} />
 
-      <SubmitButton pendingText="Tworzenie konta…" icon={<UserPlus className="size-4" />}>
+      <SubmitButton pending={pending} pendingText="Tworzenie konta…" icon={<UserPlus className="size-4" />}>
         Załóż konto
       </SubmitButton>
     </form>
