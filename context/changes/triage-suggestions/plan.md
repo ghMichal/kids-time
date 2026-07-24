@@ -283,27 +283,27 @@ Brak migracji SQL. Istniejące puste/nieużywane `events` bez zmian. Wycofanie: 
 
 #### Automatyczne
 
-- [x] 1.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 1.1 `npx astro sync` + `npm run lint` + `npm run build` — 7872fa4
 
 #### Ręczne
 
-- [x] 1.2 POST triage → 201 + wiersz z właściwym `triage_status`
-- [x] 1.3 Reject tworzy wiersz `rejected`
-- [x] 1.4 `either` → `location_kind` NULL; time w `description`; `starts_at` NULL
-- [x] 1.5 Bez sesji → 401 JSON; złe body → 400
+- [x] 1.2 POST triage → 201 + wiersz z właściwym `triage_status` — 7872fa4
+- [x] 1.3 Reject tworzy wiersz `rejected` — 7872fa4
+- [x] 1.4 `either` → `location_kind` NULL; time w `description`; `starts_at` NULL — 7872fa4
+- [x] 1.5 Bez sesji → 401 JSON; złe body → 400 — 7872fa4
 
 ### Faza 2: UI decyzji na kartach
 
 #### Automatyczne
 
-- [ ] 2.1 `npm run lint` + `npm run build`
+- [x] 2.1 `npm run lint` + `npm run build`
 
 #### Ręczne
 
-- [ ] 2.2 Trzy przyciski widoczne na każdej karcie po generate
-- [ ] 2.3 Accept/reject/maybe → karta znika + feedback + poprawny status w DB
-- [ ] 2.4 Pending disable + brak duplikatu przy double-click
-- [ ] 2.5 Błąd API → karta zostaje + komunikat
+- [x] 2.2 Trzy przyciski widoczne na każdej karcie po generate
+- [x] 2.3 Accept/reject/maybe → karta znika + feedback + poprawny status w DB
+- [x] 2.4 Pending disable + brak duplikatu przy double-click
+- [x] 2.5 Błąd API → karta zostaje + komunikat
 
 ### Faza 3: Smoke, dokumentacja, zamknięcie
 

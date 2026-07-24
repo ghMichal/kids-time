@@ -2,13 +2,17 @@ import { useState } from "react";
 import { Clock, MapPin, Search, Trees, User } from "lucide-react";
 import { FormField } from "@/components/auth/FormField";
 import { ServerError } from "@/components/auth/ServerError";
-import { SuggestionCard } from "@/components/suggestions/SuggestionCard";
+import { SuggestionCard, type TriageActionStatus } from "@/components/suggestions/SuggestionCard";
 import { Button } from "@/components/ui/button";
 import type { EnrichedSuggestionItem } from "@/types";
 import type { SuggestionRequest } from "@/lib/ai/suggestion-request.schema";
 import { cn } from "@/lib/utils";
 
 type IndoorOutdoor = SuggestionRequest["indoorOutdoor"];
+
+interface SuggestionWithClientId extends EnrichedSuggestionItem {
+  clientId: string;
+}
 
 interface FormErrors {
   place?: string;
@@ -26,6 +30,12 @@ const INDOOR_OUTDOOR_OPTIONS: { value: IndoorOutdoor; label: string }[] = [
 const selectBase =
   "w-full rounded-lg border border-amber-200/80 bg-white px-3 py-2 pl-10 text-slate-900 focus:outline-none focus:ring-2 transition-colors";
 
+const TRIAGE_SUCCESS_MESSAGE: Record<TriageActionStatus, string> = {
+  accepted: "Zapisano",
+  rejected: "Odrzucono",
+  maybe: "Zapisano na później",
+};
+
 function mapApiError(status: number): string {
   switch (status) {
     case 401:
@@ -40,6 +50,19 @@ function mapApiError(status: number): string {
       return "Przekroczono limit czasu oczekiwania. Spróbuj ponownie.";
     default:
       return "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.";
+  }
+}
+
+function mapTriageApiError(status: number): string {
+  switch (status) {
+    case 401:
+      return "Musisz być zalogowany, aby zapisać decyzję.";
+    case 400:
+      return "Nie udało się zapisać decyzji. Sprawdź dane i spróbuj ponownie.";
+    case 503:
+      return "Usługa nie jest skonfigurowana. Spróbuj ponownie później.";
+    default:
+      return "Nie udało się zapisać decyzji. Spróbuj ponownie.";
   }
 }
 
@@ -65,7 +88,11 @@ export default function SuggestionsPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [serverError, setServerError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState<EnrichedSuggestionItem[]>([]);
+  const [suggestions, setSuggestions] = useState<SuggestionWithClientId[]>([]);
+  const [lastCriteria, setLastCriteria] = useState<SuggestionRequest | null>(null);
+  const [pendingClientIds, setPendingClientIds] = useState(() => new Set<string>());
+  const [triageFeedback, setTriageFeedback] = useState<string | null>(null);
+  const [triageError, setTriageError] = useState<string | null>(null);
 
   function clearError(field: keyof FormErrors) {
     if (errors[field]) {
@@ -111,6 +138,8 @@ export default function SuggestionsPage() {
 
     setLoading(true);
     setServerError(null);
+    setTriageFeedback(null);
+    setTriageError(null);
 
     try {
       const response = await fetch("/api/ai/suggestions", {
@@ -126,11 +155,67 @@ export default function SuggestionsPage() {
       }
 
       const data = (await response.json()) as { suggestions: EnrichedSuggestionItem[] };
-      setSuggestions(data.suggestions);
+      setLastCriteria(payload);
+      setSuggestions(
+        data.suggestions.map((suggestion) => ({
+          ...suggestion,
+          clientId: crypto.randomUUID(),
+        })),
+      );
+      setPendingClientIds(new Set());
     } catch {
       setServerError("Nie udało się połączyć z serwerem. Spróbuj ponownie.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleTriage(clientId: string, status: TriageActionStatus) {
+    if (!lastCriteria || pendingClientIds.has(clientId)) {
+      return;
+    }
+
+    const suggestion = suggestions.find((item) => item.clientId === clientId);
+    if (!suggestion) {
+      return;
+    }
+
+    setPendingClientIds((prev) => new Set(prev).add(clientId));
+    setTriageFeedback(null);
+    setTriageError(null);
+
+    try {
+      const response = await fetch("/api/events/triage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          triageStatus: status,
+          suggestion: {
+            title: suggestion.title,
+            summary: suggestion.summary,
+            ...(suggestion.sourceUrl ? { sourceUrl: suggestion.sourceUrl } : {}),
+            ...(suggestion.imageUrl ? { imageUrl: suggestion.imageUrl } : {}),
+          },
+          criteria: lastCriteria,
+        }),
+      });
+
+      if (!response.ok) {
+        setTriageError(mapTriageApiError(response.status));
+        return;
+      }
+
+      setSuggestions((prev) => prev.filter((item) => item.clientId !== clientId));
+      setTriageFeedback(TRIAGE_SUCCESS_MESSAGE[status]);
+    } catch {
+      setTriageError("Nie udało się połączyć z serwerem. Spróbuj ponownie.");
+    } finally {
+      setPendingClientIds((prev) => {
+        const next = new Set(prev);
+        next.delete(clientId);
+        return next;
+      });
     }
   }
 
@@ -237,17 +322,32 @@ export default function SuggestionsPage() {
         </Button>
       </form>
 
+      {triageFeedback ? (
+        <p
+          className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800"
+          role="status"
+        >
+          {triageFeedback}
+        </p>
+      ) : null}
+      <ServerError message={triageError} />
+
       {suggestions.length > 0 ? (
         <section className="space-y-4" aria-label="Propozycje aktywności">
           <h2 className="text-lg font-semibold text-slate-900">Wyniki</h2>
           <div className="space-y-3">
-            {suggestions.map((suggestion, index) => (
+            {suggestions.map((suggestion) => (
               <SuggestionCard
-                key={`${suggestion.title}-${index}`}
+                key={suggestion.clientId}
+                clientId={suggestion.clientId}
                 title={suggestion.title}
                 summary={suggestion.summary}
                 sourceUrl={suggestion.sourceUrl}
                 imageUrl={suggestion.imageUrl}
+                triagePending={pendingClientIds.has(suggestion.clientId)}
+                onTriage={(status) => {
+                  void handleTriage(suggestion.clientId, status);
+                }}
               />
             ))}
           </div>
