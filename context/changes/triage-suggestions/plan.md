@@ -309,9 +309,9 @@ Brak migracji SQL. Istniejące puste/nieużywane `events` bez zmian. Wycofanie: 
 
 #### Automatyczne
 
-- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build`
+- [x] 3.1 `npx astro sync` + `npm run lint` + `npm run build` — 23809fe
 
 #### Ręczne
 
-- [x] 3.2 E2E: trzy decyzje → trzy wiersze (`accepted`/`rejected`/`maybe`), nieopublikowane
-- [x] 3.3 README wspomina triage
+- [x] 3.2 E2E: trzy decyzje → trzy wiersze (`accepted`/`rejected`/`maybe`), nieopublikowane — 23809fe
+- [x] 3.3 README wspomina triage — 23809fe

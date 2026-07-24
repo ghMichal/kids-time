@@ -1,7 +1,7 @@
 ---
 change_id: triage-suggestions
 title: Triage suggestions
-status: implementing
+status: implemented
 created: 2026-07-16
 updated: 2026-07-24
 archived_at: null
