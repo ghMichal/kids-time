@@ -290,19 +290,19 @@ Brak migracji SQL. Istniejące wiersze mają `is_published = false`. Delete z bi
 
 #### Automatyczne
 
-- [ ] 1.1 Istnieją publish-own-event.ts i api/events/[id]/publish.ts
-- [ ] 1.2 LibraryEventDto + list/update select zawierają is_published i published_at
-- [ ] 1.3 event-update.schema nadal strict bez is_published
-- [ ] 1.4 npx astro sync + npm run lint przechodzą
-- [ ] 1.5 npm run build przechodzi
+- [x] 1.1 Istnieją publish-own-event.ts i api/events/[id]/publish.ts
+- [x] 1.2 LibraryEventDto + list/update select zawierają is_published i published_at
+- [x] 1.3 event-update.schema nadal strict bez is_published
+- [x] 1.4 npx astro sync + npm run lint przechodzą
+- [x] 1.5 npm run build przechodzi
 
 #### Ręczne
 
-- [ ] 1.6 POST publish → 200 i DB is_published + published_at
-- [ ] 1.7 Ponowny POST → 409 already_published
-- [ ] 1.8 Cudze/rejected/losowe id → 404
-- [ ] 1.9 GET /api/events zwraca pola publish
-- [ ] 1.10 PATCH z is_published → 400
+- [x] 1.6 POST publish → 200 i DB is_published + published_at
+- [x] 1.7 Ponowny POST → 409 already_published
+- [x] 1.8 Cudze/rejected/losowe id → 404
+- [x] 1.9 GET /api/events zwraca pola publish
+- [x] 1.10 PATCH z is_published → 400
 
 ### Faza 2: UI biblioteki — Opublikuj
 

@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types";
 
 const LIST_COLUMNS =
-  "id, title, summary, description, place, child_age_years, location_kind, source_url, triage_status, updated_at" as const;
+  "id, title, summary, description, place, child_age_years, location_kind, source_url, triage_status, updated_at, is_published, published_at" as const;
 
 export interface LibraryEventDto {
   id: string;
@@ -15,6 +15,8 @@ export interface LibraryEventDto {
   source_url: string | null;
   triage_status: "accepted" | "maybe";
   updated_at: string;
+  is_published: boolean;
+  published_at: string | null;
 }
 
 function toLibraryEventDto(row: {
@@ -28,6 +30,8 @@ function toLibraryEventDto(row: {
   source_url: string | null;
   triage_status: string | null;
   updated_at: string;
+  is_published: boolean;
+  published_at: string | null;
 }): LibraryEventDto | null {
   if (row.triage_status !== "accepted" && row.triage_status !== "maybe") {
     return null;
@@ -44,6 +48,8 @@ function toLibraryEventDto(row: {
     source_url: row.source_url,
     triage_status: row.triage_status,
     updated_at: row.updated_at,
+    is_published: row.is_published,
+    published_at: row.published_at,
   };
 }
 
