@@ -3,7 +3,7 @@ project: "kids-time MVP"
 version: 1
 status: draft
 created: 2026-05-25
-updated: 2026-07-24
+updated: 2026-08-04
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -37,7 +37,7 @@ Rodzice tracą czas na szukanie pomysłów na aktywności po szkole lub w weeken
 | S-02 | triage-suggestions      | …zaakceptować, odrzucić lub oznaczyć propozycję jako „może później”            | S-01                   | US-01, FR-005          | done     |
 | S-03 | manual-event-ai-summary | …dodać ręcznie wydarzenie z jednym obrazem i krótkim podsumowaniem AI          | F-01, F-02, F-03, F-04 | FR-003                 | proposed |
 | S-04 | my-events-library       | …przeglądać, edytować i usuwać własne wydarzenia                               | F-01, F-03             | FR-004                 | done     |
-| S-05 | publish-shared-event    | …świadomie opublikować wydarzenie tylko do odczytu dla innych rodziców         | S-04                   | US-01, FR-006          | proposed |
+| S-05 | publish-shared-event    | …świadomie opublikować wydarzenie tylko do odczytu dla innych rodziców         | S-04                   | US-01, FR-006          | done     |
 
 ## Streams
 
@@ -176,7 +176,7 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Ostatni krok must-have z US-01; akceptacja bez publikacji pozostaje prywatna (logika biznesowa PRD).
-- **Status:** proposed
+- **Status:** done
 
 ## Backlog Handoff
 
@@ -216,3 +216,4 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 - **S-01: user can enter place, time, child age, and indoor/outdoor preference and receive a few concise AI-suggested activities, each with at most one image and a source link.** — Zarchiwizowano 2026-07-16 → `context/archive/2026-06-22-ai-activity-suggestions/`. Lekcja: —.
 - **S-02: user can accept, reject, or mark each suggested activity as maybe/save for later.** — Zarchiwizowano 2026-07-24 → `context/archive/2026-07-16-triage-suggestions/`. Lekcja: —.
 - **S-04: user can browse, edit, and delete their own events.** — Zarchiwizowano 2026-07-24 → `context/archive/2026-07-24-my-events-library/`. Lekcja: —.
+- **S-05: user can intentionally publish an event read-only to other parents.** — Zarchiwizowano 2026-08-04 → `context/archive/2026-08-04-publish-shared-event/`. Lekcja: —.
