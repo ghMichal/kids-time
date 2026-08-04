@@ -308,29 +308,29 @@ Brak migracji SQL. Istniejące wiersze mają `is_published = false`. Delete z bi
 
 #### Automatyczne
 
-- [x] 2.1 npm run lint przechodzi (UI)
-- [x] 2.2 npm run build przechodzi
+- [x] 2.1 npm run lint przechodzi (UI) — 0a9b905
+- [x] 2.2 npm run build przechodzi — 0a9b905
 
 #### Ręczne
 
-- [x] 2.3 Confirm → publish → badge + brak Opublikuj
-- [x] 2.4 Anuluj confirm → brak API call
-- [x] 2.5 Reload published → tylko badge
-- [x] 2.6 Edit/Usuń nadal działają
-- [x] 2.7 Błąd 409/sieć → komunikat inline
+- [x] 2.3 Confirm → publish → badge + brak Opublikuj — 0a9b905
+- [x] 2.4 Anuluj confirm → brak API call — 0a9b905
+- [x] 2.5 Reload published → tylko badge — 0a9b905
+- [x] 2.6 Edit/Usuń nadal działają — 0a9b905
+- [x] 2.7 Błąd 409/sieć → komunikat inline — 0a9b905
 
 ### Faza 3: Browse shared + nawigacja
 
 #### Automatyczne
 
-- [ ] 3.1 Istnieją list-published-events, shared API, shared.astro, SharedEventsPage, SharedEventCard
-- [ ] 3.2 npx astro sync + npm run lint + npm run build przechodzą
+- [x] 3.1 Istnieją list-published-events, shared API, shared.astro, SharedEventsPage, SharedEventCard
+- [x] 3.2 npx astro sync + npm run lint + npm run build przechodzą
 
 #### Ręczne
 
-- [ ] 3.3 Konto B widzi published konta A read-only
-- [ ] 3.4 Konto A nie widzi własnych na /events/shared
-- [ ] 3.5 Brak akcji mutacji na cudzej karcie
-- [ ] 3.6 Niezalogowany → redirect sign-in
-- [ ] 3.7 Topbar link do /events/shared
-- [ ] 3.8 GET /api/events nadal tylko własne
+- [x] 3.3 Konto B widzi published konta A read-only
+- [x] 3.4 Konto A nie widzi własnych na /events/shared
+- [x] 3.5 Brak akcji mutacji na cudzej karcie
+- [x] 3.6 Niezalogowany → redirect sign-in
+- [x] 3.7 Topbar link do /events/shared
+- [x] 3.8 GET /api/events nadal tylko własne
