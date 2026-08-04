@@ -1,10 +1,10 @@
 ---
 change_id: publish-shared-event
 title: Publish shared event
-status: impl_reviewed
+status: archived
 created: 2026-08-04
 updated: 2026-08-04
-archived_at: null
+archived_at: 2026-08-04T19:14:52Z
 roadmap_id: S-05
 ---
 
