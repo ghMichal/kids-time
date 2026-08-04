@@ -290,34 +290,34 @@ Brak migracji SQL. Istniejące wiersze mają `is_published = false`. Delete z bi
 
 #### Automatyczne
 
-- [x] 1.1 Istnieją publish-own-event.ts i api/events/[id]/publish.ts
-- [x] 1.2 LibraryEventDto + list/update select zawierają is_published i published_at
-- [x] 1.3 event-update.schema nadal strict bez is_published
-- [x] 1.4 npx astro sync + npm run lint przechodzą
-- [x] 1.5 npm run build przechodzi
+- [x] 1.1 Istnieją publish-own-event.ts i api/events/[id]/publish.ts — ffb2ff2
+- [x] 1.2 LibraryEventDto + list/update select zawierają is_published i published_at — ffb2ff2
+- [x] 1.3 event-update.schema nadal strict bez is_published — ffb2ff2
+- [x] 1.4 npx astro sync + npm run lint przechodzą — ffb2ff2
+- [x] 1.5 npm run build przechodzi — ffb2ff2
 
 #### Ręczne
 
-- [x] 1.6 POST publish → 200 i DB is_published + published_at
-- [x] 1.7 Ponowny POST → 409 already_published
-- [x] 1.8 Cudze/rejected/losowe id → 404
-- [x] 1.9 GET /api/events zwraca pola publish
-- [x] 1.10 PATCH z is_published → 400
+- [x] 1.6 POST publish → 200 i DB is_published + published_at — ffb2ff2
+- [x] 1.7 Ponowny POST → 409 already_published — ffb2ff2
+- [x] 1.8 Cudze/rejected/losowe id → 404 — ffb2ff2
+- [x] 1.9 GET /api/events zwraca pola publish — ffb2ff2
+- [x] 1.10 PATCH z is_published → 400 — ffb2ff2
 
 ### Faza 2: UI biblioteki — Opublikuj
 
 #### Automatyczne
 
-- [ ] 2.1 npm run lint przechodzi (UI)
-- [ ] 2.2 npm run build przechodzi
+- [x] 2.1 npm run lint przechodzi (UI)
+- [x] 2.2 npm run build przechodzi
 
 #### Ręczne
 
-- [ ] 2.3 Confirm → publish → badge + brak Opublikuj
-- [ ] 2.4 Anuluj confirm → brak API call
-- [ ] 2.5 Reload published → tylko badge
-- [ ] 2.6 Edit/Usuń nadal działają
-- [ ] 2.7 Błąd 409/sieć → komunikat inline
+- [x] 2.3 Confirm → publish → badge + brak Opublikuj
+- [x] 2.4 Anuluj confirm → brak API call
+- [x] 2.5 Reload published → tylko badge
+- [x] 2.6 Edit/Usuń nadal działają
+- [x] 2.7 Błąd 409/sieć → komunikat inline
 
 ### Faza 3: Browse shared + nawigacja
 

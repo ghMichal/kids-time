@@ -84,22 +84,40 @@ function mapDeleteApiError(status: number): string {
   }
 }
 
+function mapPublishApiError(status: number): string {
+  switch (status) {
+    case 401:
+      return "Musisz być zalogowany, aby opublikować wydarzenie.";
+    case 404:
+      return "Nie znaleziono wydarzenia.";
+    case 409:
+      return "To wydarzenie jest już opublikowane.";
+    case 503:
+      return "Usługa nie jest skonfigurowana. Spróbuj ponownie później.";
+    default:
+      return "Nie udało się opublikować wydarzenia. Spróbuj ponownie.";
+  }
+}
+
 export function EventCard({ event, onUpdated, onDeleted }: EventCardProps) {
   const [editing, setEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmPublish, setConfirmPublish] = useState(false);
   const [form, setForm] = useState<EditFormState>(() => toFormState(event));
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [actionError, setActionError] = useState<string | null>(null);
   const [savePending, setSavePending] = useState(false);
   const [deletePending, setDeletePending] = useState(false);
+  const [publishPending, setPublishPending] = useState(false);
 
-  const busy = savePending || deletePending;
+  const busy = savePending || deletePending || publishPending;
 
   function openEdit() {
     setForm(toFormState(event));
     setFieldErrors({});
     setActionError(null);
     setConfirmDelete(false);
+    setConfirmPublish(false);
     setEditing(true);
   }
 
@@ -232,6 +250,33 @@ export function EventCard({ event, onUpdated, onDeleted }: EventCardProps) {
     }
   }
 
+  async function handlePublish() {
+    setPublishPending(true);
+    setActionError(null);
+
+    try {
+      const response = await fetch(`/api/events/${event.id}/publish`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        setActionError(mapPublishApiError(response.status));
+        setConfirmPublish(false);
+        return;
+      }
+
+      const data = (await response.json()) as { event: LibraryEventDto };
+      onUpdated(data.event);
+      setConfirmPublish(false);
+    } catch {
+      setActionError("Nie udało się połączyć z serwerem. Spróbuj ponownie.");
+      setConfirmPublish(false);
+    } finally {
+      setPublishPending(false);
+    }
+  }
+
   return (
     <article className="overflow-hidden rounded-xl border border-amber-100 bg-white shadow-sm">
       <div className="p-4">
@@ -239,14 +284,23 @@ export function EventCard({ event, onUpdated, onDeleted }: EventCardProps) {
           <>
             <div className="flex items-start justify-between gap-3">
               <h3 className="text-lg font-semibold text-slate-900">{event.title}</h3>
-              <span
-                className={cn(
-                  "shrink-0 rounded-md px-2 py-0.5 text-xs font-medium",
-                  event.triage_status === "accepted" ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-900",
-                )}
-              >
-                {STATUS_LABEL[event.triage_status]}
-              </span>
+              <div className="flex shrink-0 flex-wrap items-center justify-end gap-1.5">
+                {event.is_published ? (
+                  <span className="rounded-md bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-800">
+                    Opublikowane
+                  </span>
+                ) : null}
+                <span
+                  className={cn(
+                    "rounded-md px-2 py-0.5 text-xs font-medium",
+                    event.triage_status === "accepted"
+                      ? "bg-emerald-50 text-emerald-800"
+                      : "bg-amber-50 text-amber-900",
+                  )}
+                >
+                  {STATUS_LABEL[event.triage_status]}
+                </span>
+              </div>
             </div>
 
             {event.summary ? <p className="mt-2 text-sm leading-relaxed text-slate-600">{event.summary}</p> : null}
@@ -265,7 +319,7 @@ export function EventCard({ event, onUpdated, onDeleted }: EventCardProps) {
             ) : null}
 
             <div className="mt-4 flex flex-wrap gap-2 border-t border-amber-100 pt-4">
-              {!confirmDelete ? (
+              {!confirmDelete && !confirmPublish ? (
                 <>
                   <Button
                     type="button"
@@ -279,6 +333,22 @@ export function EventCard({ event, onUpdated, onDeleted }: EventCardProps) {
                   >
                     Edytuj
                   </Button>
+                  {!event.is_published ? (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={busy}
+                      onClick={() => {
+                        setActionError(null);
+                        setConfirmDelete(false);
+                        setConfirmPublish(true);
+                      }}
+                      className="rounded-lg border-sky-200 text-sky-800 hover:bg-sky-50 hover:text-sky-900"
+                    >
+                      Opublikuj
+                    </Button>
+                  ) : null}
                   <Button
                     type="button"
                     size="sm"
@@ -286,6 +356,7 @@ export function EventCard({ event, onUpdated, onDeleted }: EventCardProps) {
                     disabled={busy}
                     onClick={() => {
                       setActionError(null);
+                      setConfirmPublish(false);
                       setConfirmDelete(true);
                     }}
                     className="rounded-lg border-red-200 text-red-700 hover:bg-red-50 hover:text-red-800"
@@ -293,7 +364,38 @@ export function EventCard({ event, onUpdated, onDeleted }: EventCardProps) {
                     Usuń
                   </Button>
                 </>
-              ) : (
+              ) : null}
+
+              {confirmPublish ? (
+                <div className="flex w-full flex-wrap items-center gap-2">
+                  <p className="text-sm text-slate-600">Opublikować? Inni rodzice zobaczą to wydarzenie.</p>
+                  <Button
+                    type="button"
+                    size="sm"
+                    disabled={busy}
+                    onClick={() => {
+                      void handlePublish();
+                    }}
+                    className={cn("rounded-lg bg-sky-600 text-white hover:bg-sky-700", "focus-visible:ring-sky-400/50")}
+                  >
+                    {publishPending ? "Publikowanie…" : "Tak"}
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={busy}
+                    onClick={() => {
+                      setConfirmPublish(false);
+                    }}
+                    className="rounded-lg border-slate-200 text-slate-700 hover:bg-slate-50"
+                  >
+                    Nie
+                  </Button>
+                </div>
+              ) : null}
+
+              {confirmDelete ? (
                 <div className="flex w-full flex-wrap items-center gap-2">
                   <p className="text-sm text-slate-600">Na pewno usunąć?</p>
                   <Button
@@ -320,7 +422,7 @@ export function EventCard({ event, onUpdated, onDeleted }: EventCardProps) {
                     Nie
                   </Button>
                 </div>
-              )}
+              ) : null}
             </div>
           </>
         ) : (
