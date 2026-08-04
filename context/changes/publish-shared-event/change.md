@@ -1,7 +1,7 @@
 ---
 change_id: publish-shared-event
 title: Publish shared event
-status: implementing
+status: implemented
 created: 2026-08-04
 updated: 2026-08-04
 archived_at: null

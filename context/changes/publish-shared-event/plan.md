@@ -323,14 +323,14 @@ Brak migracji SQL. Istniejące wiersze mają `is_published = false`. Delete z bi
 
 #### Automatyczne
 
-- [x] 3.1 Istnieją list-published-events, shared API, shared.astro, SharedEventsPage, SharedEventCard
-- [x] 3.2 npx astro sync + npm run lint + npm run build przechodzą
+- [x] 3.1 Istnieją list-published-events, shared API, shared.astro, SharedEventsPage, SharedEventCard — 84ff798
+- [x] 3.2 npx astro sync + npm run lint + npm run build przechodzą — 84ff798
 
 #### Ręczne
 
-- [x] 3.3 Konto B widzi published konta A read-only
-- [x] 3.4 Konto A nie widzi własnych na /events/shared
-- [x] 3.5 Brak akcji mutacji na cudzej karcie
-- [x] 3.6 Niezalogowany → redirect sign-in
-- [x] 3.7 Topbar link do /events/shared
-- [x] 3.8 GET /api/events nadal tylko własne
+- [x] 3.3 Konto B widzi published konta A read-only — 84ff798
+- [x] 3.4 Konto A nie widzi własnych na /events/shared — 84ff798
+- [x] 3.5 Brak akcji mutacji na cudzej karcie — 84ff798
+- [x] 3.6 Niezalogowany → redirect sign-in — 84ff798
+- [x] 3.7 Topbar link do /events/shared — 84ff798
+- [x] 3.8 GET /api/events nadal tylko własne — 84ff798
