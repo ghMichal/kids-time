@@ -195,14 +195,14 @@ Users can then sign in immediately after sign-up without clicking a confirmation
 
 ### Auth routes
 
-| Route                 | Description                                                                                |
-| --------------------- | ------------------------------------------------------------------------------------------ |
-| `/auth/signin`        | Email/password sign-in form                                                                |
-| `/auth/signup`        | Email/password sign-up form                                                                |
-| `/auth/confirm-email` | Post-signup "check your inbox" page                                                        |
-| `/dashboard`          | Example protected page (redirects to `/auth/signin` if unauthenticated)                    |
-| `/suggestions`        | AI activity suggestions — criteria → proposals → accept/reject/maybe                       |
-| `/events`             | Own events library — browse / edit / delete accepted + maybe (no publish, no image upload) |
+| Route                 | Description                                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `/auth/signin`        | Email/password sign-in form                                                                                        |
+| `/auth/signup`        | Email/password sign-up form                                                                                        |
+| `/auth/confirm-email` | Post-signup "check your inbox" page                                                                                |
+| `/dashboard`          | Example protected page (redirects to `/auth/signin` if unauthenticated)                                            |
+| `/suggestions`        | AI activity suggestions — criteria → proposals → accept/reject/maybe                                               |
+| `/events`             | Own events library — add manually (optional AI summary + image), browse / edit / delete / publish accepted + maybe |
 
 Route protection uses a public allowlist in `src/lib/route-access.ts` (default deny). New product pages are protected automatically; add exceptions to the allowlist for public paths only.
 
@@ -210,7 +210,7 @@ Route protection uses a public allowlist in `src/lib/route-access.ts` (default d
 
 Signed-in parents open **Propozycje** (`/suggestions`), submit place / time / child age / indoor-outdoor, and get 1–5 AI proposals (title, summary, optional source link + OG image). On each card they can **Akceptuj** / **Odrzuć** / **Może później** — the decision is stored in `events` (`origin: ai_suggested`, `triage_status`) with `is_published` still `false` (publish is a later slice). Image upload to storage is not part of this flow yet.
 
-Accepted and maybe decisions show up under **Moje wydarzenia** (`/events`), where parents can edit selected fields inline or delete with confirmation. Publishing and image upload are out of scope for this slice.
+Accepted and maybe decisions show up under **Moje wydarzenia** (`/events`), where parents can also add an event manually (optional AI summary via Generate, optional one image), edit selected fields inline, publish, or delete with confirmation.
 
 Requires OpenRouter env (see below). Optional local checks:
 
@@ -219,7 +219,7 @@ npx tsx scripts/smoke-openrouter.ts
 npx tsx scripts/smoke-suggestions-enriched.ts
 ```
 
-Manual flow: `npm run dev` → sign in → `/suggestions` → submit → triage decisions on cards → rows appear in `events` (Studio / SQL).
+Manual flow: `npm run dev` → sign in → `/suggestions` → submit → triage decisions on cards → rows appear in `events` (Studio / SQL). Manual create: `/events` → fill form → optional Generate → optional image → Save.
 
 ## OpenRouter Configuration
 

@@ -10,9 +10,11 @@ import {
   assertExtensionMatchesMime,
   assertOwnerPath,
   buildEventImagePath,
-  eventImageFolderPrefix,
   sanitizeEventImageFilename,
 } from "@/lib/storage/event-image-path";
+
+/** Signed URL lifetime for owner library previews (1 hour). */
+export const EVENT_IMAGE_SIGNED_URL_TTL_SECONDS = 60 * 60;
 
 export type EventImageErrorCode =
   | "invalid_file"
@@ -115,17 +117,6 @@ async function removeObjects(client: SupabaseClient, paths: string[]): Promise<v
   }
 }
 
-async function removeAllInEventFolder(client: SupabaseClient, ownerId: string, eventId: string): Promise<void> {
-  const prefix = eventImageFolderPrefix(ownerId, eventId);
-  const { data, error } = await client.storage.from(EVENT_IMAGES_BUCKET).list(prefix);
-  if (error) {
-    throw new EventImageError("remove_failed", "Failed to list event images.");
-  }
-
-  const paths = data.map((item) => `${prefix}/${item.name}`);
-  await removeObjects(client, paths);
-}
-
 export async function uploadEventImage(
   client: SupabaseClient,
   input: EventImageUploadInput,
@@ -163,6 +154,32 @@ export async function removeEventImage(client: SupabaseClient, imagePath: string
   await removeObjects(client, [imagePath]);
 }
 
+/**
+ * Owner-only signed URL for a private event image.
+ * Returns null on owner mismatch or Storage failure — callers must not fail the whole list.
+ */
+export async function createEventImageSignedUrl(
+  client: SupabaseClient,
+  imagePath: string,
+  ownerId: string,
+): Promise<string | null> {
+  try {
+    assertOwnerPath(imagePath, ownerId);
+  } catch {
+    return null;
+  }
+
+  const { data, error } = await client.storage
+    .from(EVENT_IMAGES_BUCKET)
+    .createSignedUrl(imagePath, EVENT_IMAGE_SIGNED_URL_TTL_SECONDS);
+
+  if (error || !data.signedUrl) {
+    return null;
+  }
+
+  return data.signedUrl;
+}
+
 export async function replaceEventImage(
   client: SupabaseClient,
   input: EventImageReplaceInput,
@@ -173,11 +190,11 @@ export async function replaceEventImage(
     } catch {
       throw new EventImageError("owner_mismatch", "Image path does not belong to this owner.");
     }
-    await removeObjects(client, [input.imagePath]);
   }
 
+  let uploaded: { path: string; mimeType: EventImageMimeType };
   try {
-    await removeAllInEventFolder(client, input.ownerId, input.eventId);
+    uploaded = await uploadEventImage(client, input);
   } catch (error) {
     if (error instanceof EventImageError) {
       throw new EventImageError("replace_failed", error.message);
@@ -185,12 +202,13 @@ export async function replaceEventImage(
     throw new EventImageError("replace_failed", "Failed to replace event image.");
   }
 
-  try {
-    return await uploadEventImage(client, input);
-  } catch (error) {
-    if (error instanceof EventImageError) {
-      throw new EventImageError("replace_failed", error.message);
+  if (input.imagePath && input.imagePath !== uploaded.path) {
+    try {
+      await removeObjects(client, [input.imagePath]);
+    } catch {
+      // best-effort: new object exists; caller will update image_path
     }
-    throw new EventImageError("replace_failed", "Failed to replace event image.");
   }
+
+  return uploaded;
 }

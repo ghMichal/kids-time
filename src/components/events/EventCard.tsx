@@ -109,8 +109,10 @@ export function EventCard({ event, onUpdated, onDeleted }: EventCardProps) {
   const [savePending, setSavePending] = useState(false);
   const [deletePending, setDeletePending] = useState(false);
   const [publishPending, setPublishPending] = useState(false);
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
 
   const busy = savePending || deletePending || publishPending;
+  const showImage = Boolean(event.imageUrl) && event.imageUrl !== failedImageUrl;
 
   function openEdit() {
     setForm(toFormState(event));
@@ -279,6 +281,17 @@ export function EventCard({ event, onUpdated, onDeleted }: EventCardProps) {
 
   return (
     <article className="overflow-hidden rounded-xl border border-amber-100 bg-white shadow-sm">
+      {showImage ? (
+        <img
+          src={event.imageUrl ?? undefined}
+          alt={event.title}
+          loading="lazy"
+          className="aspect-video w-full object-cover"
+          onError={() => {
+            setFailedImageUrl(event.imageUrl);
+          }}
+        />
+      ) : null}
       <div className="p-4">
         {!editing ? (
           <>
