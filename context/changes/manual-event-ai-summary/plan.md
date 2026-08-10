@@ -329,30 +329,30 @@ Formularz create na `/events`, Generate → edycja summary → Save (+ opcjonaln
 
 #### Automatyczne
 
-- [x] 1.1 `npx astro sync` przechodzi
-- [x] 1.2 `npm run lint` przechodzi
-- [x] 1.3 `npm run build` przechodzi (z wymaganymi env)
+- [x] 1.1 `npx astro sync` przechodzi — 7c21360
+- [x] 1.2 `npm run lint` przechodzi — 7c21360
+- [x] 1.3 `npm run build` przechodzi (z wymaganymi env) — 7c21360
 
 #### Ręczne
 
-- [x] 1.4 `POST /api/ai/event-summary` z sesją zwraca summary ≤200; bez sesji 401; bez OpenRouter 503
-- [x] 1.5 `POST /api/events` tworzy wiersz `origin=manual`, `triage_status=accepted`, `image_path=null`
-- [x] 1.6 `POST /api/events/:id/image` multipart File jpeg ≤5MB ustawia `image_path`; zły MIME / >5MB → 400; cudze/nieistniejące id → 404; smoke lokalny adaptera
-- [x] 1.7 `GET /api/events` nadal listuje accepted/maybe właściciela
+- [x] 1.4 `POST /api/ai/event-summary` z sesją zwraca summary ≤200; bez sesji 401; bez OpenRouter 503 — 7c21360
+- [x] 1.5 `POST /api/events` tworzy wiersz `origin=manual`, `triage_status=accepted`, `image_path=null` — 7c21360
+- [x] 1.6 `POST /api/events/:id/image` multipart File jpeg ≤5MB ustawia `image_path`; zły MIME / >5MB → 400; cudze/nieistniejące id → 404; smoke lokalny adaptera — 7c21360
+- [x] 1.7 `GET /api/events` nadal listuje accepted/maybe właściciela — 7c21360
 
 ### Faza 2: List DTO + signed image URL
 
 #### Automatyczne
 
-- [ ] 2.1 `npm run lint` przechodzi
-- [ ] 2.2 `npm run build` przechodzi
+- [x] 2.1 `npm run lint` przechodzi
+- [x] 2.2 `npm run build` przechodzi
 
 #### Ręczne
 
-- [ ] 2.3 Event z `image_path` na liście API ma niepusty `imageUrl` dla właściciela
-- [ ] 2.4 Event bez obrazu ma `imageUrl: null`
-- [ ] 2.5 Fail signed URL nie zwala całego `GET /api/events`
-- [ ] 2.6 PATCH i publish dla eventu z obrazem zwracają niepusty `imageUrl`
+- [x] 2.3 Event z `image_path` na liście API ma niepusty `imageUrl` dla właściciela
+- [x] 2.4 Event bez obrazu ma `imageUrl: null`
+- [x] 2.5 Fail signed URL nie zwala całego `GET /api/events`
+- [x] 2.6 PATCH i publish dla eventu z obrazem zwracają niepusty `imageUrl`
 
 ### Faza 3: UI create flow + image preview
 

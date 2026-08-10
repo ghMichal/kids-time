@@ -14,6 +14,9 @@ import {
   sanitizeEventImageFilename,
 } from "@/lib/storage/event-image-path";
 
+/** Signed URL lifetime for owner library previews (1 hour). */
+export const EVENT_IMAGE_SIGNED_URL_TTL_SECONDS = 60 * 60;
+
 export type EventImageErrorCode =
   | "invalid_file"
   | "invalid_path"
@@ -161,6 +164,32 @@ export async function removeEventImage(client: SupabaseClient, imagePath: string
   }
 
   await removeObjects(client, [imagePath]);
+}
+
+/**
+ * Owner-only signed URL for a private event image.
+ * Returns null on owner mismatch or Storage failure — callers must not fail the whole list.
+ */
+export async function createEventImageSignedUrl(
+  client: SupabaseClient,
+  imagePath: string,
+  ownerId: string,
+): Promise<string | null> {
+  try {
+    assertOwnerPath(imagePath, ownerId);
+  } catch {
+    return null;
+  }
+
+  const { data, error } = await client.storage
+    .from(EVENT_IMAGES_BUCKET)
+    .createSignedUrl(imagePath, EVENT_IMAGE_SIGNED_URL_TTL_SECONDS);
+
+  if (error || !data.signedUrl) {
+    return null;
+  }
+
+  return data.signedUrl;
 }
 
 export async function replaceEventImage(

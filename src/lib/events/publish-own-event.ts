@@ -1,43 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { LibraryEventDto } from "@/lib/events/list-own-events";
+import { LIBRARY_EVENT_SELECT_COLUMNS, toLibraryEventDto, type LibraryEventDto } from "@/lib/events/library-event-dto";
 import type { Database } from "@/types";
-
-const SELECT_COLUMNS =
-  "id, title, summary, description, place, child_age_years, location_kind, source_url, triage_status, updated_at, is_published, published_at" as const;
-
-function toLibraryEventDto(row: {
-  id: string;
-  title: string;
-  summary: string | null;
-  description: string | null;
-  place: string | null;
-  child_age_years: number | null;
-  location_kind: "indoor" | "outdoor" | null;
-  source_url: string | null;
-  triage_status: string | null;
-  updated_at: string;
-  is_published: boolean;
-  published_at: string | null;
-}): LibraryEventDto | null {
-  if (row.triage_status !== "accepted" && row.triage_status !== "maybe") {
-    return null;
-  }
-
-  return {
-    id: row.id,
-    title: row.title,
-    summary: row.summary,
-    description: row.description,
-    place: row.place,
-    child_age_years: row.child_age_years,
-    location_kind: row.location_kind,
-    source_url: row.source_url,
-    triage_status: row.triage_status,
-    updated_at: row.updated_at,
-    is_published: row.is_published,
-    published_at: row.published_at,
-  };
-}
 
 export async function publishOwnEvent(
   client: SupabaseClient<Database>,
@@ -56,7 +19,7 @@ export async function publishOwnEvent(
     .eq("owner_id", ownerId)
     .in("triage_status", ["accepted", "maybe"])
     .eq("is_published", false)
-    .select(SELECT_COLUMNS)
+    .select(LIBRARY_EVENT_SELECT_COLUMNS)
     .maybeSingle();
 
   if (error) {
@@ -64,7 +27,7 @@ export async function publishOwnEvent(
   }
 
   if (data) {
-    const event = toLibraryEventDto(data);
+    const event = await toLibraryEventDto(client, ownerId, data);
     if (!event) {
       return { error: "publish_failed" };
     }
