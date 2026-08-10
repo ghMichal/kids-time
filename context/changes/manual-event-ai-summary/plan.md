@@ -358,14 +358,14 @@ Formularz create na `/events`, Generate → edycja summary → Save (+ opcjonaln
 
 #### Automatyczne
 
-- [x] 3.1 `npm run lint` przechodzi
-- [x] 3.2 `npm run build` przechodzi
+- [x] 3.1 `npm run lint` przechodzi — c824900
+- [x] 3.2 `npm run build` przechodzi — c824900
 
 #### Ręczne
 
-- [x] 3.3 Happy path: Generuj → popraw summary → obraz → Zapisz → karta z summary i obrazem
-- [x] 3.4 Save bez Generate i bez obrazu działa
-- [x] 3.5 Błąd Generate pokazuje komunikat; Save nadal dostępny
-- [x] 3.6 Zły plik pokazuje błąd uploadu zgodnie z Fazą 1
-- [x] 3.7 Inline edit/delete/publish bez regresji
-- [x] 3.8 Niezalogowany nie wchodzi na `/events`
+- [x] 3.3 Happy path: Generuj → popraw summary → obraz → Zapisz → karta z summary i obrazem — c824900
+- [x] 3.4 Save bez Generate i bez obrazu działa — c824900
+- [x] 3.5 Błąd Generate pokazuje komunikat; Save nadal dostępny — c824900
+- [x] 3.6 Zły plik pokazuje błąd uploadu zgodnie z Fazą 1 — c824900
+- [x] 3.7 Inline edit/delete/publish bez regresji — c824900
+- [x] 3.8 Niezalogowany nie wchodzi na `/events` — c824900
