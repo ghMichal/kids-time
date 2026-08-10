@@ -344,28 +344,28 @@ Formularz create na `/events`, Generate → edycja summary → Save (+ opcjonaln
 
 #### Automatyczne
 
-- [x] 2.1 `npm run lint` przechodzi
-- [x] 2.2 `npm run build` przechodzi
+- [x] 2.1 `npm run lint` przechodzi — 8900244
+- [x] 2.2 `npm run build` przechodzi — 8900244
 
 #### Ręczne
 
-- [x] 2.3 Event z `image_path` na liście API ma niepusty `imageUrl` dla właściciela
-- [x] 2.4 Event bez obrazu ma `imageUrl: null`
-- [x] 2.5 Fail signed URL nie zwala całego `GET /api/events`
-- [x] 2.6 PATCH i publish dla eventu z obrazem zwracają niepusty `imageUrl`
+- [x] 2.3 Event z `image_path` na liście API ma niepusty `imageUrl` dla właściciela — 8900244
+- [x] 2.4 Event bez obrazu ma `imageUrl: null` — 8900244
+- [x] 2.5 Fail signed URL nie zwala całego `GET /api/events` — 8900244
+- [x] 2.6 PATCH i publish dla eventu z obrazem zwracają niepusty `imageUrl` — 8900244
 
 ### Faza 3: UI create flow + image preview
 
 #### Automatyczne
 
-- [ ] 3.1 `npm run lint` przechodzi
-- [ ] 3.2 `npm run build` przechodzi
+- [x] 3.1 `npm run lint` przechodzi
+- [x] 3.2 `npm run build` przechodzi
 
 #### Ręczne
 
-- [ ] 3.3 Happy path: Generuj → popraw summary → obraz → Zapisz → karta z summary i obrazem
-- [ ] 3.4 Save bez Generate i bez obrazu działa
-- [ ] 3.5 Błąd Generate pokazuje komunikat; Save nadal dostępny
-- [ ] 3.6 Zły plik pokazuje błąd uploadu zgodnie z Fazą 1
-- [ ] 3.7 Inline edit/delete/publish bez regresji
-- [ ] 3.8 Niezalogowany nie wchodzi na `/events`
+- [x] 3.3 Happy path: Generuj → popraw summary → obraz → Zapisz → karta z summary i obrazem
+- [x] 3.4 Save bez Generate i bez obrazu działa
+- [x] 3.5 Błąd Generate pokazuje komunikat; Save nadal dostępny
+- [x] 3.6 Zły plik pokazuje błąd uploadu zgodnie z Fazą 1
+- [x] 3.7 Inline edit/delete/publish bez regresji
+- [x] 3.8 Niezalogowany nie wchodzi na `/events`
