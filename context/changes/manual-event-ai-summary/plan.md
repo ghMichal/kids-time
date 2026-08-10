@@ -329,16 +329,16 @@ Formularz create na `/events`, Generate → edycja summary → Save (+ opcjonaln
 
 #### Automatyczne
 
-- [ ] 1.1 `npx astro sync` przechodzi
-- [ ] 1.2 `npm run lint` przechodzi
-- [ ] 1.3 `npm run build` przechodzi (z wymaganymi env)
+- [x] 1.1 `npx astro sync` przechodzi
+- [x] 1.2 `npm run lint` przechodzi
+- [x] 1.3 `npm run build` przechodzi (z wymaganymi env)
 
 #### Ręczne
 
-- [ ] 1.4 `POST /api/ai/event-summary` z sesją zwraca summary ≤200; bez sesji 401; bez OpenRouter 503
-- [ ] 1.5 `POST /api/events` tworzy wiersz `origin=manual`, `triage_status=accepted`, `image_path=null`
-- [ ] 1.6 `POST /api/events/:id/image` multipart File jpeg ≤5MB ustawia `image_path`; zły MIME / >5MB → 400; cudze/nieistniejące id → 404; smoke lokalny adaptera
-- [ ] 1.7 `GET /api/events` nadal listuje accepted/maybe właściciela
+- [x] 1.4 `POST /api/ai/event-summary` z sesją zwraca summary ≤200; bez sesji 401; bez OpenRouter 503
+- [x] 1.5 `POST /api/events` tworzy wiersz `origin=manual`, `triage_status=accepted`, `image_path=null`
+- [x] 1.6 `POST /api/events/:id/image` multipart File jpeg ≤5MB ustawia `image_path`; zły MIME / >5MB → 400; cudze/nieistniejące id → 404; smoke lokalny adaptera
+- [x] 1.7 `GET /api/events` nadal listuje accepted/maybe właściciela
 
 ### Faza 2: List DTO + signed image URL
 

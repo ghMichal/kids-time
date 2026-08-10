@@ -1,5 +1,13 @@
 import { OPENROUTER_API_KEY, OPENROUTER_MODEL } from "astro:env/server";
-import { buildSuggestionPrompt } from "@/lib/ai/build-suggestion-prompt";
+import { buildEventSummaryPrompt } from "@/lib/ai/build-event-summary-prompt";
+import { buildSuggestionPrompt, type OpenRouterMessage } from "@/lib/ai/build-suggestion-prompt";
+import type { EventSummaryRequest } from "@/lib/ai/event-summary-request.schema";
+import {
+  eventSummaryOpenRouterResponseFormat,
+  eventSummaryResponseFromModelSchema,
+  eventSummaryResponseSchema,
+  type EventSummaryResponse,
+} from "@/lib/ai/event-summary-response.schema";
 import type { SuggestionRequest } from "@/lib/ai/suggestion-request.schema";
 import {
   openRouterResponseFormat,
@@ -28,6 +36,11 @@ interface ChatCompletionResponse {
   error?: { message?: string };
 }
 
+interface OpenRouterChatRequest {
+  messages: OpenRouterMessage[];
+  responseFormat: unknown;
+}
+
 function assertOpenRouterConfigured(): void {
   if (!OPENROUTER_API_KEY || !OPENROUTER_MODEL) {
     throw new OpenRouterError(
@@ -37,10 +50,8 @@ function assertOpenRouterConfigured(): void {
   }
 }
 
-export async function generateSuggestions(criteria: SuggestionRequest): Promise<SuggestionResponse> {
+async function requestChatCompletionContent(input: OpenRouterChatRequest): Promise<unknown> {
   assertOpenRouterConfigured();
-
-  const { messages } = buildSuggestionPrompt(criteria);
 
   let response: Response;
   try {
@@ -54,9 +65,9 @@ export async function generateSuggestions(criteria: SuggestionRequest): Promise<
       },
       body: JSON.stringify({
         model: OPENROUTER_MODEL,
-        messages,
+        messages: input.messages,
         temperature: 0.3,
-        response_format: openRouterResponseFormat,
+        response_format: input.responseFormat,
         provider: { require_parameters: true },
       }),
       signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
@@ -86,12 +97,19 @@ export async function generateSuggestions(criteria: SuggestionRequest): Promise<
     throw new OpenRouterError("invalid_response", "OpenRouter returned empty content.");
   }
 
-  let parsed: unknown;
   try {
-    parsed = JSON.parse(content) as unknown;
+    return JSON.parse(content) as unknown;
   } catch {
     throw new OpenRouterError("invalid_response", "OpenRouter content is not valid JSON.");
   }
+}
+
+export async function generateSuggestions(criteria: SuggestionRequest): Promise<SuggestionResponse> {
+  const { messages } = buildSuggestionPrompt(criteria);
+  const parsed = await requestChatCompletionContent({
+    messages,
+    responseFormat: openRouterResponseFormat,
+  });
 
   const fromModel = suggestionResponseFromModelSchema.safeParse(parsed);
   if (!fromModel.success) {
@@ -101,6 +119,26 @@ export async function generateSuggestions(criteria: SuggestionRequest): Promise<
   const normalized = suggestionResponseSchema.safeParse(fromModel.data);
   if (!normalized.success) {
     throw new OpenRouterError("invalid_response", "Suggestions failed validation.");
+  }
+
+  return normalized.data;
+}
+
+export async function generateEventSummary(input: EventSummaryRequest): Promise<EventSummaryResponse> {
+  const { messages } = buildEventSummaryPrompt(input);
+  const parsed = await requestChatCompletionContent({
+    messages,
+    responseFormat: eventSummaryOpenRouterResponseFormat,
+  });
+
+  const fromModel = eventSummaryResponseFromModelSchema.safeParse(parsed);
+  if (!fromModel.success) {
+    throw new OpenRouterError("invalid_response", "OpenRouter response does not match expected shape.");
+  }
+
+  const normalized = eventSummaryResponseSchema.safeParse(fromModel.data);
+  if (!normalized.success) {
+    throw new OpenRouterError("invalid_response", "Event summary failed validation.");
   }
 
   return normalized.data;
