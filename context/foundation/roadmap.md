@@ -3,7 +3,7 @@ project: "kids-time MVP"
 version: 1
 status: draft
 created: 2026-05-25
-updated: 2026-08-04
+updated: 2026-08-10
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -27,17 +27,17 @@ Rodzice tracą czas na szukanie pomysłów na aktywności po szkole lub w weeken
 
 ## At a glance
 
-| ID   | Change ID               | Outcome (user can …)                                                           | Prerequisites          | PRD refs               | Status   |
-| ---- | ----------------------- | ------------------------------------------------------------------------------ | ---------------------- | ---------------------- | -------- |
-| F-01 | event-schema-rls        | (foundation) model wydarzeń, migracje i RLS dla właściciela                    | —                      | Access Control, NFR-02 | done     |
-| F-02 | ai-suggestion-scaffold  | (foundation) integracja dostawcy AI do generowania propozycji                  | —                      | FR-001, NFR-03         | done     |
-| F-03 | app-route-auth-guards   | (foundation) ochrona tras aplikacji poza samym `/dashboard`                    | —                      | Access Control, US-01  | done     |
-| F-04 | event-image-storage     | (foundation) przechowywanie jednego obrazu na wydarzenie                       | F-01                   | FR-002, FR-003         | done     |
-| S-01 | ai-activity-suggestions | …poprosić o propozycje AI i zobaczyć kilka zwięzłych aktywności (obraz + link) | F-01, F-02, F-03, F-04 | US-01, FR-001, FR-002  | done     |
-| S-02 | triage-suggestions      | …zaakceptować, odrzucić lub oznaczyć propozycję jako „może później”            | S-01                   | US-01, FR-005          | done     |
-| S-03 | manual-event-ai-summary | …dodać ręcznie wydarzenie z jednym obrazem i krótkim podsumowaniem AI          | F-01, F-02, F-03, F-04 | FR-003                 | proposed |
-| S-04 | my-events-library       | …przeglądać, edytować i usuwać własne wydarzenia                               | F-01, F-03             | FR-004                 | done     |
-| S-05 | publish-shared-event    | …świadomie opublikować wydarzenie tylko do odczytu dla innych rodziców         | S-04                   | US-01, FR-006          | done     |
+| ID   | Change ID               | Outcome (user can …)                                                           | Prerequisites          | PRD refs               | Status |
+| ---- | ----------------------- | ------------------------------------------------------------------------------ | ---------------------- | ---------------------- | ------ |
+| F-01 | event-schema-rls        | (foundation) model wydarzeń, migracje i RLS dla właściciela                    | —                      | Access Control, NFR-02 | done   |
+| F-02 | ai-suggestion-scaffold  | (foundation) integracja dostawcy AI do generowania propozycji                  | —                      | FR-001, NFR-03         | done   |
+| F-03 | app-route-auth-guards   | (foundation) ochrona tras aplikacji poza samym `/dashboard`                    | —                      | Access Control, US-01  | done   |
+| F-04 | event-image-storage     | (foundation) przechowywanie jednego obrazu na wydarzenie                       | F-01                   | FR-002, FR-003         | done   |
+| S-01 | ai-activity-suggestions | …poprosić o propozycje AI i zobaczyć kilka zwięzłych aktywności (obraz + link) | F-01, F-02, F-03, F-04 | US-01, FR-001, FR-002  | done   |
+| S-02 | triage-suggestions      | …zaakceptować, odrzucić lub oznaczyć propozycję jako „może później”            | S-01                   | US-01, FR-005          | done   |
+| S-03 | manual-event-ai-summary | …dodać ręcznie wydarzenie z jednym obrazem i krótkim podsumowaniem AI          | F-01, F-02, F-03, F-04 | FR-003                 | done   |
+| S-04 | my-events-library       | …przeglądać, edytować i usuwać własne wydarzenia                               | F-01, F-03             | FR-004                 | done   |
+| S-05 | publish-shared-event    | …świadomie opublikować wydarzenie tylko do odczytu dla innych rodziców         | S-04                   | US-01, FR-006          | done   |
 
 ## Streams
 
@@ -152,7 +152,7 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Wspiera drugorzędną metrykę „75% wydarzeń z pomocą AI”; można równolegle z biblioteką po fundamentach.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: Biblioteka własnych wydarzeń
 
@@ -217,3 +217,4 @@ Warstwy ze **tech-stack.md** (bez ponownego sondowania): Astro starter, Supabase
 - **S-02: user can accept, reject, or mark each suggested activity as maybe/save for later.** — Zarchiwizowano 2026-07-24 → `context/archive/2026-07-16-triage-suggestions/`. Lekcja: —.
 - **S-04: user can browse, edit, and delete their own events.** — Zarchiwizowano 2026-07-24 → `context/archive/2026-07-24-my-events-library/`. Lekcja: —.
 - **S-05: user can intentionally publish an event read-only to other parents.** — Zarchiwizowano 2026-08-04 → `context/archive/2026-08-04-publish-shared-event/`. Lekcja: —.
+- **S-03: user can manually add event information with one image and get a short AI summary.** — Zarchiwizowano 2026-08-10 → `context/archive/2026-08-10-manual-event-ai-summary/`. Lekcja: —.
