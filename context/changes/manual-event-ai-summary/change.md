@@ -1,7 +1,7 @@
 ---
 change_id: manual-event-ai-summary
 title: Manual event ai summary
-status: implemented
+status: impl_reviewed
 created: 2026-08-10
 updated: 2026-08-10
 archived_at: null

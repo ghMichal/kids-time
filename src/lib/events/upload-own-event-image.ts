@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { EventImageError, replaceEventImage, uploadEventImage } from "@/lib/storage/event-image";
+import { EventImageError, removeEventImage, replaceEventImage, uploadEventImage } from "@/lib/storage/event-image";
 import type { Database } from "@/types";
 
 export interface UploadOwnEventImageInput {
@@ -68,10 +68,20 @@ export async function uploadOwnEventImage(
     .maybeSingle();
 
   if (updateError) {
+    try {
+      await removeEventImage(client, uploadedPath, input.ownerId);
+    } catch {
+      // best-effort cleanup; still report update_failed
+    }
     return { error: "update_failed" };
   }
 
   if (!updated) {
+    try {
+      await removeEventImage(client, uploadedPath, input.ownerId);
+    } catch {
+      // best-effort cleanup; still report not_found
+    }
     return { error: "not_found" };
   }
 

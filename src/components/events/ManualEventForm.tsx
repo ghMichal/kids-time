@@ -88,13 +88,13 @@ function mapUploadApiError(status: number): string {
     case 401:
       return "Musisz być zalogowany, aby dodać obraz.";
     case 400:
-      return "Nieprawidłowy plik obrazu (dozwolone: JPEG, PNG, WebP, max 5 MB). Wydarzenie zostało zapisane bez obrazu.";
+      return "Nieprawidłowy plik obrazu (JPEG, PNG, WebP, max 5 MB). Wydarzenie jest zapisane — wybierz inny plik i spróbuj ponownie.";
     case 404:
       return "Nie znaleziono wydarzenia do dodania obrazu.";
     case 503:
-      return "Usługa nie jest skonfigurowana. Wydarzenie zostało zapisane bez obrazu.";
+      return "Usługa nie jest skonfigurowana. Wydarzenie jest zapisane — możesz dodać obraz później lub spróbować ponownie.";
     default:
-      return "Nie udało się przesłać obrazu. Wydarzenie zostało zapisane bez obrazu.";
+      return "Nie udało się przesłać obrazu. Wydarzenie jest zapisane — możesz spróbować ponownie.";
   }
 }
 
@@ -122,13 +122,21 @@ export function ManualEventForm({ onCreated, onReload }: ManualEventFormProps) {
   const [uploadWarning, setUploadWarning] = useState<string | null>(null);
   const [generatePending, setGeneratePending] = useState(false);
   const [savePending, setSavePending] = useState(false);
+  const [pendingUploadEventId, setPendingUploadEventId] = useState<string | null>(null);
+  const [retryPending, setRetryPending] = useState(false);
 
-  const busy = generatePending || savePending;
+  const busy = generatePending || savePending || retryPending;
 
   function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
     if (key in fieldErrors) {
       setFieldErrors((prev) => ({ ...prev, [key]: undefined }));
+    }
+  }
+
+  function clearFileInput() {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   }
 
@@ -139,9 +147,30 @@ export function ManualEventForm({ onCreated, onReload }: ManualEventFormProps) {
     setGenerateError(null);
     setSaveError(null);
     setUploadWarning(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+    setPendingUploadEventId(null);
+    clearFileInput();
+  }
+
+  function enterUploadRetry(eventId: string, status: number) {
+    setForm(EMPTY_FORM);
+    setFieldErrors({});
+    setGenerateError(null);
+    setSaveError(null);
+    setPendingUploadEventId(eventId);
+    setUploadWarning(mapUploadApiError(status));
+    if (status === 400) {
+      setImageFile(null);
+      clearFileInput();
+      setFieldErrors({ image: "Dozwolone formaty: JPEG, PNG, WebP (max 5 MB)." });
     }
+  }
+
+  function dismissUploadRetry() {
+    setPendingUploadEventId(null);
+    setUploadWarning(null);
+    setImageFile(null);
+    setFieldErrors({});
+    clearFileInput();
   }
 
   function buildPayload(): {
@@ -314,15 +343,7 @@ export function ManualEventForm({ onCreated, onReload }: ManualEventFormProps) {
         });
 
         if (!uploadResponse.ok) {
-          setForm(EMPTY_FORM);
-          setImageFile(null);
-          setFieldErrors({});
-          setGenerateError(null);
-          setSaveError(null);
-          setUploadWarning(mapUploadApiError(uploadResponse.status));
-          if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-          }
+          enterUploadRetry(createData.event.id, uploadResponse.status);
           return;
         }
 
@@ -337,6 +358,90 @@ export function ManualEventForm({ onCreated, onReload }: ManualEventFormProps) {
     }
   }
 
+  async function handleRetryUpload() {
+    if (!pendingUploadEventId) {
+      return;
+    }
+
+    const imageError = validateImageFile(imageFile);
+    if (!imageFile || imageError) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        image: imageError ?? "Wybierz plik obrazu, aby spróbować ponownie.",
+      }));
+      return;
+    }
+
+    setRetryPending(true);
+    setUploadWarning(null);
+    setSaveError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", imageFile);
+
+      const uploadResponse = await fetch(`/api/events/${pendingUploadEventId}/image`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        setUploadWarning(mapUploadApiError(uploadResponse.status));
+        if (uploadResponse.status === 400) {
+          setImageFile(null);
+          clearFileInput();
+          setFieldErrors({ image: "Dozwolone formaty: JPEG, PNG, WebP (max 5 MB)." });
+        }
+        return;
+      }
+
+      await onReload();
+      resetForm();
+    } catch {
+      setUploadWarning("Nie udało się połączyć z serwerem. Spróbuj ponownie przesłać obraz.");
+    } finally {
+      setRetryPending(false);
+    }
+  }
+
+  function renderImageField(options?: { label?: string }) {
+    return (
+      <div>
+        <label htmlFor={`${formId}-image`} className="mb-1 block text-sm font-medium text-slate-700">
+          {options?.label ?? "Obraz (opcjonalnie)"}
+        </label>
+        <div className="relative">
+          <span className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400">
+            <ImagePlus className="size-4" />
+          </span>
+          <input
+            ref={fileInputRef}
+            id={`${formId}-image`}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            disabled={busy}
+            onChange={(e) => {
+              const nextFile = e.target.files?.[0] ?? null;
+              setImageFile(nextFile);
+              setFieldErrors((prev) => ({ ...prev, image: validateImageFile(nextFile) ?? undefined }));
+              setUploadWarning(null);
+            }}
+            className={cn(
+              "w-full rounded-lg border border-amber-200/80 bg-white py-2 pr-3 pl-10 text-sm text-slate-900",
+              "file:mr-3 file:rounded-md file:border-0 file:bg-amber-50 file:px-2 file:py-1 file:text-sm file:font-medium file:text-amber-900",
+              "focus:ring-2 focus:outline-none",
+              fieldErrors.image ? "border-red-300 focus:ring-red-400/40" : "focus:ring-amber-400/50",
+            )}
+          />
+        </div>
+        {fieldErrors.image ? <p className="mt-1 text-xs text-red-700">{fieldErrors.image}</p> : null}
+        {imageFile ? <p className="mt-1 text-xs text-slate-600">Wybrany plik: {imageFile.name}</p> : null}
+        <p className="mt-1 text-xs text-slate-500">JPEG, PNG lub WebP, max 5 MB.</p>
+      </div>
+    );
+  }
+
   return (
     <section
       className="rounded-xl border border-amber-100 bg-white p-4 shadow-sm"
@@ -349,191 +454,205 @@ export function ManualEventForm({ onCreated, onReload }: ManualEventFormProps) {
         Wypełnij pola, opcjonalnie wygeneruj krótkie podsumowanie AI i dodaj jeden obraz.
       </p>
 
-      <form
-        className="mt-4 space-y-3"
-        onSubmit={(e) => {
-          void handleSave(e);
-        }}
-        noValidate
-      >
-        <fieldset disabled={busy} className="min-w-0 space-y-3 border-0 p-0">
-          <FormField
-            id={`${formId}-title`}
-            label="Tytuł"
-            value={form.title}
-            onChange={(value) => {
-              updateField("title", value);
-            }}
-            error={fieldErrors.title}
-            icon={<Type className="size-4" />}
-          />
+      {pendingUploadEventId ? (
+        <div className="mt-4 space-y-3">
+          {uploadWarning ? (
+            <p
+              className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900"
+              role="status"
+            >
+              {uploadWarning}
+            </p>
+          ) : null}
 
-          <div>
-            <label htmlFor={`${formId}-description`} className="mb-1 block text-sm font-medium text-slate-700">
-              Opis
-            </label>
-            <textarea
-              id={`${formId}-description`}
-              rows={3}
-              value={form.description}
-              onChange={(e) => {
-                updateField("description", e.target.value);
+          {renderImageField({ label: "Obraz do ponownego przesłania" })}
+
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                void handleRetryUpload();
               }}
               className={cn(
-                textareaBase,
-                fieldErrors.description ? "border-red-300 focus:ring-red-400/40" : "focus:ring-amber-400/50",
+                "rounded-lg bg-amber-600 text-white shadow-sm hover:bg-amber-700",
+                "focus-visible:ring-amber-400/50",
               )}
-            />
-            {fieldErrors.description ? <p className="mt-1 text-xs text-red-700">{fieldErrors.description}</p> : null}
-          </div>
-
-          <FormField
-            id={`${formId}-place`}
-            label="Miejsce"
-            value={form.place}
-            onChange={(value) => {
-              updateField("place", value);
-            }}
-            error={fieldErrors.place}
-            icon={<MapPin className="size-4" />}
-          />
-
-          <FormField
-            id={`${formId}-child-age`}
-            label="Wiek dziecka"
-            type="number"
-            value={form.childAge}
-            onChange={(value) => {
-              updateField("childAge", value);
-            }}
-            error={fieldErrors.childAge}
-            placeholder="0–18"
-            icon={<Baby className="size-4" />}
-          />
-
-          <div>
-            <label htmlFor={`${formId}-location-kind`} className="mb-1 block text-sm font-medium text-slate-700">
-              Rodzaj lokalizacji
-            </label>
-            <div className="relative">
-              <span className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400">
-                <Trees className="size-4" />
-              </span>
-              <select
-                id={`${formId}-location-kind`}
-                value={form.locationKind}
-                onChange={(e) => {
-                  updateField("locationKind", e.target.value as FormState["locationKind"]);
-                }}
-                className={cn(selectBase, "focus:ring-amber-400/50")}
-              >
-                {LOCATION_KIND_OPTIONS.map((option) => (
-                  <option key={option.value || "none"} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <FormField
-              id={`${formId}-summary`}
-              label="Podsumowanie"
-              value={form.summary}
-              onChange={(value) => {
-                updateField("summary", value);
-              }}
-              error={fieldErrors.summary}
-              icon={<FileText className="size-4" />}
-              hint={
-                <p className="mt-1 text-xs text-slate-500">
-                  Opcjonalne, max 200 znaków. Generowane z pól powyżej — możesz też wpisać ręcznie.
-                </p>
-              }
-            />
+            >
+              {retryPending ? (
+                <span className="flex items-center gap-2">
+                  <span className="size-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Przesyłam obraz…
+                </span>
+              ) : (
+                "Spróbuj ponownie przesłać obraz"
+              )}
+            </Button>
             <Button
               type="button"
               size="sm"
               variant="outline"
               disabled={busy}
-              onClick={() => {
-                void handleGenerate();
-              }}
-              className="rounded-lg border-amber-200 text-amber-900 hover:bg-amber-50"
+              onClick={dismissUploadRetry}
+              className="rounded-lg border-slate-200 text-slate-700 hover:bg-slate-50"
             >
-              {generatePending ? (
-                <span className="flex items-center gap-2">
-                  <span className="size-3.5 animate-spin rounded-full border-2 border-amber-200 border-t-amber-700" />
-                  Generuję podsumowanie…
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  <Sparkles className="size-3.5" />
-                  Generuj podsumowanie
-                </span>
-              )}
+              Pomiń
             </Button>
-            <ServerError message={generateError} />
           </div>
+        </div>
+      ) : (
+        <form
+          className="mt-4 space-y-3"
+          onSubmit={(e) => {
+            void handleSave(e);
+          }}
+          noValidate
+        >
+          <fieldset disabled={busy} className="min-w-0 space-y-3 border-0 p-0">
+            <FormField
+              id={`${formId}-title`}
+              label="Tytuł"
+              value={form.title}
+              onChange={(value) => {
+                updateField("title", value);
+              }}
+              error={fieldErrors.title}
+              icon={<Type className="size-4" />}
+            />
 
-          <div>
-            <label htmlFor={`${formId}-image`} className="mb-1 block text-sm font-medium text-slate-700">
-              Obraz (opcjonalnie)
-            </label>
-            <div className="relative">
-              <span className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400">
-                <ImagePlus className="size-4" />
-              </span>
-              <input
-                ref={fileInputRef}
-                id={`${formId}-image`}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
+            <div>
+              <label htmlFor={`${formId}-description`} className="mb-1 block text-sm font-medium text-slate-700">
+                Opis
+              </label>
+              <textarea
+                id={`${formId}-description`}
+                rows={3}
+                value={form.description}
                 onChange={(e) => {
-                  const nextFile = e.target.files?.[0] ?? null;
-                  setImageFile(nextFile);
-                  setFieldErrors((prev) => ({ ...prev, image: validateImageFile(nextFile) ?? undefined }));
-                  setUploadWarning(null);
+                  updateField("description", e.target.value);
                 }}
                 className={cn(
-                  "w-full rounded-lg border border-amber-200/80 bg-white py-2 pr-3 pl-10 text-sm text-slate-900",
-                  "file:mr-3 file:rounded-md file:border-0 file:bg-amber-50 file:px-2 file:py-1 file:text-sm file:font-medium file:text-amber-900",
-                  "focus:ring-2 focus:outline-none",
-                  fieldErrors.image ? "border-red-300 focus:ring-red-400/40" : "focus:ring-amber-400/50",
+                  textareaBase,
+                  fieldErrors.description ? "border-red-300 focus:ring-red-400/40" : "focus:ring-amber-400/50",
                 )}
               />
+              {fieldErrors.description ? <p className="mt-1 text-xs text-red-700">{fieldErrors.description}</p> : null}
             </div>
-            {fieldErrors.image ? <p className="mt-1 text-xs text-red-700">{fieldErrors.image}</p> : null}
-            <p className="mt-1 text-xs text-slate-500">JPEG, PNG lub WebP, max 5 MB.</p>
-          </div>
-        </fieldset>
 
-        <ServerError message={saveError} />
-        {uploadWarning ? (
-          <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900" role="status">
-            {uploadWarning}
-          </p>
-        ) : null}
+            <FormField
+              id={`${formId}-place`}
+              label="Miejsce"
+              value={form.place}
+              onChange={(value) => {
+                updateField("place", value);
+              }}
+              error={fieldErrors.place}
+              icon={<MapPin className="size-4" />}
+            />
 
-        <Button
-          type="submit"
-          disabled={busy}
-          className={cn(
-            "h-auto w-full rounded-xl bg-amber-600 px-4 py-2.5 text-base font-semibold text-white shadow-md",
-            "hover:bg-amber-700",
-          )}
-        >
-          {savePending ? (
-            <span className="flex items-center gap-2">
-              <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-              {imageFile ? "Zapisuję wydarzenie i obraz…" : "Zapisuję wydarzenie…"}
-            </span>
-          ) : (
-            "Zapisz wydarzenie"
-          )}
-        </Button>
-      </form>
+            <FormField
+              id={`${formId}-child-age`}
+              label="Wiek dziecka"
+              type="number"
+              value={form.childAge}
+              onChange={(value) => {
+                updateField("childAge", value);
+              }}
+              error={fieldErrors.childAge}
+              placeholder="0–18"
+              icon={<Baby className="size-4" />}
+            />
+
+            <div>
+              <label htmlFor={`${formId}-location-kind`} className="mb-1 block text-sm font-medium text-slate-700">
+                Rodzaj lokalizacji
+              </label>
+              <div className="relative">
+                <span className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400">
+                  <Trees className="size-4" />
+                </span>
+                <select
+                  id={`${formId}-location-kind`}
+                  value={form.locationKind}
+                  onChange={(e) => {
+                    updateField("locationKind", e.target.value as FormState["locationKind"]);
+                  }}
+                  className={cn(selectBase, "focus:ring-amber-400/50")}
+                >
+                  {LOCATION_KIND_OPTIONS.map((option) => (
+                    <option key={option.value || "none"} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <FormField
+                id={`${formId}-summary`}
+                label="Podsumowanie"
+                value={form.summary}
+                onChange={(value) => {
+                  updateField("summary", value);
+                }}
+                error={fieldErrors.summary}
+                icon={<FileText className="size-4" />}
+                hint={
+                  <p className="mt-1 text-xs text-slate-500">
+                    Opcjonalne, max 200 znaków. Generowane z pól powyżej — możesz też wpisać ręcznie.
+                  </p>
+                }
+              />
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={busy}
+                onClick={() => {
+                  void handleGenerate();
+                }}
+                className="rounded-lg border-amber-200 text-amber-900 hover:bg-amber-50"
+              >
+                {generatePending ? (
+                  <span className="flex items-center gap-2">
+                    <span className="size-3.5 animate-spin rounded-full border-2 border-amber-200 border-t-amber-700" />
+                    Generuję podsumowanie…
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <Sparkles className="size-3.5" />
+                    Generuj podsumowanie
+                  </span>
+                )}
+              </Button>
+              <ServerError message={generateError} />
+            </div>
+
+            {renderImageField()}
+          </fieldset>
+
+          <ServerError message={saveError} />
+
+          <Button
+            type="submit"
+            disabled={busy}
+            className={cn(
+              "h-auto w-full rounded-xl bg-amber-600 px-4 py-2.5 text-base font-semibold text-white shadow-md",
+              "hover:bg-amber-700",
+            )}
+          >
+            {savePending ? (
+              <span className="flex items-center gap-2">
+                <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                {imageFile ? "Zapisuję wydarzenie i obraz…" : "Zapisuję wydarzenie…"}
+              </span>
+            ) : (
+              "Zapisz wydarzenie"
+            )}
+          </Button>
+        </form>
+      )}
     </section>
   );
 }
