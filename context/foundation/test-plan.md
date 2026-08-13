@@ -6,7 +6,9 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-08-12
+> Last updated: 2026-08-13
+> §2 Risks #1/#3 response guidance backported from Phase 1 research
+> (`testing-runner-critical-owner-access`).
 
 ## 1. Strategy
 
@@ -37,23 +39,23 @@ terms, not test names. The Source column cites the _evidence that surfaced
 this risk_ — never a specific file as "where the failure lives" (that is
 research's job, see §1 principle #3).
 
-| #   | Risk (failure scenario)                                                                                                                | Impact | Likelihood | Source (evidence — not anchor)                                                                                                            |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------- | ------ | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Zalogowany rodzic nie widzi własnych wydarzeń ani propozycji AI                                                                        | High   | High       | interview Q1; PRD Access Control / US-01; hot-spot dir `src/lib/events` (19 commits/30d), `src/components/events` (11)                    |
-| 2   | Prywatne (nieopublikowane) wydarzenie pojawia się na liście publicznej innego rodzica                                                  | High   | Medium     | PRD NFR-02 / Guardrails; archive `event-schema-rls`, `publish-shared-event`; roadmap S-05                                                 |
-| 3   | Obcy użytkownik odczytuje lub zmienia cudze wydarzenie albo obraz mimo posiadania sesji                                                | High   | Medium     | abuse lens (auth + user input); archive F-04 (storage RLS = owner path segment only); hot-spot dir `src/pages/api/events` (7 commits/30d) |
-| 4   | Ścieżka AI (suggestions / summary) zwraca zły kształt lub mapuje błąd tak, że UI wygląda na sukces albo blokuje Save wbrew kontraktowi | Medium | Medium     | PRD FR-001, FR-003, NFR-03; archive F-02 / S-01 / S-03; hot-spot dir `src/lib/ai` (3 commits/30d)                                         |
-| 5   | Po create/upload właściciel nie dostaje podglądu obrazu albo fail signed URL wywraca całą listę wydarzeń                               | Medium | Medium     | PRD FR-002 / FR-003; archive F-04 / S-03; hot-spot dir `src/lib/storage` (2 commits/30d)                                                  |
+| #   | Risk (failure scenario)                                                                                                                | Impact | Likelihood | Source (evidence — not anchor)                                                                                                                                                   |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------- | ------ | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Zalogowany rodzic nie widzi własnej biblioteki wydarzeń (accepted/maybe); niezalogowany dostaje dostęp albo mylący wynik zamiast 401   | High   | High       | interview Q1; PRD Access Control / US-01; hot-spot dir `src/lib/events` (19 commits/30d); `src/components/events` (11) = UI churn only, not list-filter evidence                 |
+| 2   | Prywatne (nieopublikowane) wydarzenie pojawia się na liście publicznej innego rodzica                                                  | High   | Medium     | PRD NFR-02 / Guardrails; archive `event-schema-rls`, `publish-shared-event`; roadmap S-05                                                                                        |
+| 3   | Obcy użytkownik odczytuje lub zmienia cudze wydarzenie albo obraz mimo posiadania sesji                                                | High   | Medium     | abuse lens (auth + user input); archive F-04 (storage RLS = owner path segment only); hot-spot dirs `src/pages/api/events` (7 commits/30d), `src/lib/events` (ownership helpers) |
+| 4   | Ścieżka AI (suggestions / summary) zwraca zły kształt lub mapuje błąd tak, że UI wygląda na sukces albo blokuje Save wbrew kontraktowi | Medium | Medium     | PRD FR-001, FR-003, NFR-03; archive F-02 / S-01 / S-03; hot-spot dir `src/lib/ai` (3 commits/30d)                                                                                |
+| 5   | Po create/upload właściciel nie dostaje podglądu obrazu albo fail signed URL wywraca całą listę wydarzeń                               | Medium | Medium     | PRD FR-002 / FR-003; archive F-04 / S-03; hot-spot dir `src/lib/storage` (2 commits/30d)                                                                                         |
 
 ### Risk Response Guidance
 
-| Risk | What would prove protection                                                                       | Must challenge                               | Context `/10x-research` must ground                      | Likely cheapest layer                          | Anti-pattern to avoid                          |
-| ---- | ------------------------------------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------- |
-| #1   | Zalogowany owner dostaje poprawną listę własnych accepted/maybe i propozycji; niezalogowany → 401 | „middleware przepuszcza ⇒ biblioteka działa” | entry list/suggestions API + session; filtr triage/owner | integration (API + auth fixture)               | happy-path-only bez 401 / empty-list failure   |
-| #2   | Event `is_published=false` nie pojawia się w public list innego usera                             | „RLS istnieje ⇒ prywatność OK”               | public list vs own list; semantyka publish flag          | integration (dwa user fixtures)                | tylko unit mapper bez DB/RLS                   |
-| #3   | Żądanie z sesją A na id/path B → 404/403; brak wycieku body                                       | „wystarczy być zalogowanym”                  | owner check vs storage path; IDOR na PATCH/DELETE/image  | integration                                    | mock całego klienta Supabase tak, że RLS znika |
-| #4   | Zły JSON / timeout / brak klucza → jawny kod błędu; create manual nie zależy od AI                | „200 z body = dobre summary”                 | OpenRouter error taxonomy; Zod response schema           | unit (schema/mapper) + cienki contract klienta | asercja skopiowana z promptu produkcyjnego     |
-| #5   | Brak `image_path` → `imageUrl: null`; fail sign → lista 200 z null, nie 500                       | „signed URL zawsze się uda”                  | list DTO + signed URL soft-fail                          | unit/integration na mapperze URL               | pełne e2e upload UI                            |
+| Risk | What would prove protection                                                                                                                                                 | Must challenge                               | Context `/10x-research` must ground                                   | Likely cheapest layer                                 | Anti-pattern to avoid                                                     |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------- |
+| #1   | Zalogowany owner dostaje poprawną listę własnych accepted/maybe (bez cudzych published); niezalogowany → 401; suggestions API tylko auth-gate (401), nie lista owner-scoped | „middleware przepuszcza ⇒ biblioteka działa” | entry list API + session; filtr triage/owner; suggestions = auth only | integration (API + auth fixture); unit `route-access` | happy-path-only bez 401 / empty-list / wycieku published bez filtra owner |
+| #2   | Event `is_published=false` nie pojawia się w public list innego usera                                                                                                       | „RLS istnieje ⇒ prywatność OK”               | public list vs own list; semantyka publish flag                       | integration (dwa user fixtures)                       | tylko unit mapper bez DB/RLS                                              |
+| #3   | Żądanie z sesją A na id/path B → 404 `{ error: "not_found" }` (nie 403); brak wycieku body                                                                                  | „wystarczy być zalogowanym”                  | owner check vs storage path; IDOR na PATCH/DELETE/publish/image       | integration (+ unit path-owner helpers)               | mock całego klienta Supabase tak, że RLS/owner filter znika               |
+| #4   | Zły JSON / timeout / brak klucza → jawny kod błędu; create manual nie zależy od AI                                                                                          | „200 z body = dobre summary”                 | OpenRouter error taxonomy; Zod response schema                        | unit (schema/mapper) + cienki contract klienta        | asercja skopiowana z promptu produkcyjnego                                |
+| #5   | Brak `image_path` → `imageUrl: null`; fail sign → lista 200 z null, nie 500                                                                                                 | „signed URL zawsze się uda”                  | list DTO + signed URL soft-fail                                       | unit/integration na mapperze URL                      | pełne e2e upload UI                                                       |
 
 ## 3. Phased Rollout
 
@@ -115,11 +117,11 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.1 Adding a unit test
 
-- TBD — see §3 Phase 1 for owner-access / schema unit pattern.
+- TBD — see §3 Phase 1 for owner-access / path-owner / `route-access` unit pattern.
 
 ### 6.2 Adding an integration test
 
-- TBD — see §3 Phase 1 (owner access) and §3 Phase 2 (privacy/publish).
+- TBD — see §3 Phase 1 (owner library list + IDOR 404) and §3 Phase 2 (privacy/publish).
 
 ### 6.3 Adding a test for AI contracts
 
@@ -148,7 +150,7 @@ contributors should respect these unless the underlying assumption changes.
 
 ## 8. Freshness Ledger
 
-- Strategy (§1–§5) last reviewed: 2026-08-12
+- Strategy (§1–§5) last reviewed: 2026-08-13 (§2 Risks #1/#3 guidance backported from Phase 1 research)
 - Stack versions last verified: 2026-08-12
 - AI-native tool references last verified: 2026-08-12
 
