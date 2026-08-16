@@ -492,15 +492,15 @@ Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — ins
 
 #### Automatyczne
 
-- [x] 4.1 Bez env: integration skip, exit 0
-- [x] 4.2 Z env: own accepted/maybe list poprawna dla A
-- [x] 4.3 Z env: empty → `{ events: [] }`
-- [x] 4.4 Z env: cudzy published B nie na liście A
+- [x] 4.1 Bez env: integration skip, exit 0 — 03fcc1b
+- [x] 4.2 Z env: own accepted/maybe list poprawna dla A — 03fcc1b
+- [x] 4.3 Z env: empty → `{ events: [] }` — 03fcc1b
+- [x] 4.4 Z env: cudzy published B nie na liście A — 03fcc1b
 
 #### Ręczne
 
-- [x] 4.5 Seed foreign published ma `published_at` + triage accepted/maybe; brak wholesale Supabase mock
-- [x] 4.6 Instrukcja seed Auth A/B (supabase start + dwóch userów + env) istnieje i działa lokalnie
+- [x] 4.5 Seed foreign published ma `published_at` + triage accepted/maybe; brak wholesale Supabase mock — 03fcc1b
+- [x] 4.6 Instrukcja seed Auth A/B (supabase start + dwóch userów + env) istnieje i działa lokalnie — 03fcc1b
 
 ### Faza 5: Integration — IDOR mutate
 

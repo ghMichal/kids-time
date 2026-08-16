@@ -36,7 +36,8 @@ Do **not** commit passwords. Keep credentials in `.env` / `.dev.vars` (gitignore
 
 ## Notes
 
-- Fixture: `supabase-jwt-fixture.ts` — `createClient` + `signInWithPassword`; not the Astro SSR Supabase helper; no wholesale Supabase mock.
+- **Local + disposable A/B only.** Suites wipe **all** `events` for `USER_A_ID` / `USER_B_ID` between cases. Point `SUPABASE_URL` at local Supabase (`localhost` / `127.0.0.1`). Non-local URLs are refused unless you set `INTEGRATION_ALLOW_REMOTE=1` (still use disposable test users — never production parents).
+- Fixture: `supabase-jwt-fixture.ts` — `createClient` + `signInWithPassword`; not the Astro SSR Supabase helper; no wholesale Supabase mock. Hydrates missing keys from `.env` / `.dev.vars` at import (shell env still wins). `scripts/verify-event-images-rls.ts` expects shell-exported env only.
 - Without these env vars, integration tests **skip** and exit 0 (unit `npm test` stays green).
 - CI Docker + forced integration gate lands in test-plan §3 Phase 4 (later rollout), not this change's Phase 1 scope.
 - Foreign-published seeds must set `is_published=true` **and** `published_at` (CHECK `events_published_at_consistency`) with `triage_status` in `{accepted, maybe}` so a dropped `.eq("owner_id")` would actually leak.

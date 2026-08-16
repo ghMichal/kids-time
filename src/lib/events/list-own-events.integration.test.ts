@@ -45,7 +45,10 @@ describe.skipIf(!hasIntegrationEnv())("listOwnLibraryEvents (integration)", () =
 
   afterEach(async () => {
     for (const row of [...seeded].reverse()) {
-      await row.client.from("events").delete().eq("id", row.id);
+      const { error } = await row.client.from("events").delete().eq("id", row.id);
+      if (error) {
+        throw new Error(`cleanup delete failed for ${row.id}: ${error.message}`);
+      }
     }
     seeded.length = 0;
   });

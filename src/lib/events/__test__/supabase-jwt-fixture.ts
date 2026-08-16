@@ -58,6 +58,25 @@ function requireEnv(name: RequiredEnvName): string {
   return value;
 }
 
+/** Refuse non-local SUPABASE_URL unless INTEGRATION_ALLOW_REMOTE=1 (wipes delete all A/B events). */
+export function assertSafeIntegrationTarget(): void {
+  if (process.env.INTEGRATION_ALLOW_REMOTE?.trim() === "1") return;
+
+  const url = requireEnv("SUPABASE_URL");
+  let hostname: string;
+  try {
+    hostname = new URL(url).hostname;
+  } catch {
+    throw new Error(`Invalid SUPABASE_URL for integration: ${url}`);
+  }
+
+  if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+    throw new Error(
+      `Integration tests refuse non-local SUPABASE_URL (${hostname}). Use local supabase or set INTEGRATION_ALLOW_REMOTE=1 with disposable USER_A/B only.`,
+    );
+  }
+}
+
 export interface JwtUserClient {
   client: SupabaseClient<Database>;
   userId: string;
@@ -65,6 +84,7 @@ export interface JwtUserClient {
 }
 
 async function createUserClient(email: string, password: string, expectedUserId: string): Promise<JwtUserClient> {
+  assertSafeIntegrationTarget();
   const url = requireEnv("SUPABASE_URL");
   const key = requireEnv("SUPABASE_KEY");
 
@@ -88,6 +108,7 @@ export async function createJwtClientsAB(): Promise<{ a: JwtUserClient; b: JwtUs
 }
 
 export async function wipeOwnEvents(client: SupabaseClient<Database>, ownerId: string): Promise<void> {
+  assertSafeIntegrationTarget();
   const { error } = await client.from("events").delete().eq("owner_id", ownerId);
   if (error) {
     throw new Error(`wipeOwnEvents failed for ${ownerId}: ${error.message}`);
