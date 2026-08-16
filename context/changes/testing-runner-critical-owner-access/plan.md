@@ -470,23 +470,23 @@ Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — ins
 
 #### Automatyczne
 
-- [x] 2.1 Unit `route-access` przechodzi (public vs `/api/events`) — d26b469
-- [x] 2.2 Unauth API guard → 401 `{ error: "unauthorized" }` dla chronionego `/api/*` — d26b469
-- [x] 2.3 Suggestions `locals.user=null` → 401 bez OpenRouter (z `vi.mock("astro:env/server")` lub pure extract) — d26b469
+- [x] 2.1 Unit `route-access` przechodzi (public vs `/api/events`) — 9ba1e16
+- [x] 2.2 Unauth API guard → 401 `{ error: "unauthorized" }` dla chronionego `/api/*` — 9ba1e16
+- [x] 2.3 Suggestions `locals.user=null` → 401 bez OpenRouter (z `vi.mock("astro:env/server")` lub pure extract) — 9ba1e16
 
 #### Ręczne
 
-- [x] 2.4 Helper unauth (jeśli wyciągnięty) jest użyty przez middleware — d26b469
+- [x] 2.4 Helper unauth (jeśli wyciągnięty) jest użyty przez middleware — 9ba1e16
 
 ### Faza 3: Unit — path-owner
 
 #### Automatyczne
 
-- [ ] 3.1 `isOwnerPath` / `assertOwnerPath` unit przechodzi (A vs B, throw na mismatch)
+- [x] 3.1 `isOwnerPath` / `assertOwnerPath` unit przechodzi (A vs B, throw na mismatch)
 
 #### Ręczne
 
-- [ ] 3.2 Brak zależności od Supabase w path tests
+- [x] 3.2 Brak zależności od Supabase w path tests
 
 ### Faza 4: Integration — own library
 
