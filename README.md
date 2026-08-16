@@ -167,6 +167,8 @@ npx tsx scripts/smoke-event-image.ts
 
 Two-user RLS denial (owner vs non-owner) — `npx tsx scripts/verify-event-images-rls.ts` with `USER_A_*` / `USER_B_*` env vars (see script header).
 
+Vitest integration (owner library / IDOR) uses the same `USER_A_*` / `USER_B_*` pair — seed steps: `src/lib/events/__test__/README.md`.
+
 After merging storage migrations, apply to cloud: `npx supabase db push`.
 
 ### Using a cloud Supabase project instead

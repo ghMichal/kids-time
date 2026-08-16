@@ -482,25 +482,25 @@ Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — ins
 
 #### Automatyczne
 
-- [x] 3.1 `isOwnerPath` / `assertOwnerPath` unit przechodzi (A vs B, throw na mismatch)
+- [x] 3.1 `isOwnerPath` / `assertOwnerPath` unit przechodzi (A vs B, throw na mismatch) — 7836928
 
 #### Ręczne
 
-- [x] 3.2 Brak zależności od Supabase w path tests
+- [x] 3.2 Brak zależności od Supabase w path tests — 7836928
 
 ### Faza 4: Integration — own library
 
 #### Automatyczne
 
-- [ ] 4.1 Bez env: integration skip, exit 0
-- [ ] 4.2 Z env: own accepted/maybe list poprawna dla A
-- [ ] 4.3 Z env: empty → `{ events: [] }`
-- [ ] 4.4 Z env: cudzy published B nie na liście A
+- [x] 4.1 Bez env: integration skip, exit 0
+- [x] 4.2 Z env: own accepted/maybe list poprawna dla A
+- [x] 4.3 Z env: empty → `{ events: [] }`
+- [x] 4.4 Z env: cudzy published B nie na liście A
 
 #### Ręczne
 
-- [ ] 4.5 Seed foreign published ma `published_at` + triage accepted/maybe; brak wholesale Supabase mock
-- [ ] 4.6 Instrukcja seed Auth A/B (supabase start + dwóch userów + env) istnieje i działa lokalnie
+- [x] 4.5 Seed foreign published ma `published_at` + triage accepted/maybe; brak wholesale Supabase mock
+- [x] 4.6 Instrukcja seed Auth A/B (supabase start + dwóch userów + env) istnieje i działa lokalnie
 
 ### Faza 5: Integration — IDOR mutate
 
