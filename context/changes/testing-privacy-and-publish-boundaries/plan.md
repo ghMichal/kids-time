@@ -306,16 +306,16 @@ Brak migracji schematu. Auth A/B seed z Phase 1 (`src/lib/events/__test__/README
 
 #### Automatyczne
 
-- [x] 1.1 Bez env: integration skip, exit 0
-- [x] 1.2 Z env: unpublished A absent z `listPublishedEvents(B)`
-- [x] 1.3 Z env: published A present (positive control)
-- [x] 1.4 Z env: raw RLS SELECT unpublished A as B → null
-- [x] 1.5 Z env: self-exclude — własne published absent z list A
-- [x] 1.6 `npm test` (unit) zielone bez env
+- [x] 1.1 Bez env: integration skip, exit 0 — 578424b
+- [x] 1.2 Z env: unpublished A absent z `listPublishedEvents(B)` — 578424b
+- [x] 1.3 Z env: published A present (positive control) — 578424b
+- [x] 1.4 Z env: raw RLS SELECT unpublished A as B → null — 578424b
+- [x] 1.5 Z env: self-exclude — własne published absent z list A — 578424b
+- [x] 1.6 `npm test` (unit) zielone bez env — 578424b
 
 #### Ręczne
 
-- [x] 1.7 Seed published ma `published_at` + triage accepted/maybe; brak wholesale Supabase mock
+- [x] 1.7 Seed published ma `published_at` + triage accepted/maybe; brak wholesale Supabase mock — 578424b
 
 ### Faza 2: Integration — publish IDOR (Risk #3)
 
