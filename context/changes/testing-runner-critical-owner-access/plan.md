@@ -38,7 +38,7 @@ Uruchamiamy Vitest od zera i zamykamy regresje Risk #1 (własna biblioteka accep
 - Pełne e2e UI / Playwright (interview Q5 / §7)
 - Risk #2 privacy/public list (Phase 2)
 - AI schema/error taxonomy poza 401 (Phase 3)
-- Image signed-URL soft-fail (Phase 5 / Risk #5)
+- Image signed-URL soft-fail (§3 Phase 4 / Risk #5)
 - HTTP spin-up `astro preview` jako główny harness
 - Mock całego klienta Supabase w testach #1/#3 integration
 - Pełna macierz IDOR na DELETE/publish/image upload (representative: PATCH + path unit)
@@ -121,6 +121,7 @@ Dodać runner, skrypty, config z projects unit/integration i alias `@/*`. Zero a
 - `npm test` exit 0 bez `SUPABASE_*` / user A/B
 - `npx vitest --project integration` (lub `npm run test:integration`) startuje; bez env testy skip lub brak plików = nie fail bootstrapu
 - `npm run lint` przechodzi na nowych plikach config
+- Unit project **nie** uruchamia plików `*.integration.test.ts` (exclude obowiązkowy — `*.integration.test.ts` też matchuje `*.test.ts`)
 
 #### Weryfikacja ręczna:
 
@@ -168,6 +169,8 @@ Udowodnić politykę ścieżek i unauth 401 **bez** twierdzenia, że middleware 
 
 **Kontrakt**: Wywołanie eksportowanego `POST` z minimalnym `APIContext` mock (request + locals); brak asercji na suggestions body / schema AI (Phase 3).
 
+**Blokada Vitest (plan-review F1):** Moduł (i transitive `openrouter-client`) importuje `astro:env/server` na top-level — bez tego load pada zanim early-return 401 się wykona. Implementator **musi** albo (a) `vi.mock("astro:env/server")` zanim zaimportuje handler, albo (b) wyciągnąć cienki pure check (np. shared z innymi handlerami) i testować go bez importu Astro route. Nie zakładać, że sam `locals.user=null` wystarczy do zielonego unit testu.
+
 ### Meta:
 
 | Pole                 | Treść                                                                                                               |
@@ -183,7 +186,7 @@ Udowodnić politykę ścieżek i unauth 401 **bez** twierdzenia, że middleware 
 #### Weryfikacja automatyczna:
 
 - `npm test` zielone; nowe unit przechodzą
-- Suggestions test nie wymaga `OPENROUTER_*`
+- Suggestions test nie wymaga prawdziwych `OPENROUTER_*` (mock `astro:env/server` lub pure extract — F1)
 
 #### Weryfikacja ręczna:
 
@@ -245,14 +248,19 @@ Prawdziwe JWT A/B + `listOwnLibraryEvents`. Oracle: zachowanie biblioteki właś
 
 **Plik**: np. `src/lib/events/__test__/supabase-jwt-fixture.ts` (lub `src/test/integration/supabase-users.ts`)
 
-**Cel**: Współdzielone logowanie A/B jak `verify-event-images-rls.ts`; wykrywanie env.
+**Cel**: Współdzielone logowanie A/B jak `verify-event-images-rls.ts`; wykrywanie env; **odblokowanie lokalnego `test:all`**.
 
 **Kontrakt**:
 
-- Env: `SUPABASE_URL`, `SUPABASE_KEY` (anon), `USER_A_EMAIL`, `USER_A_PASSWORD`, `USER_A_ID`, `USER_B_EMAIL`, `USER_B_PASSWORD` (i analogicznie B id jeśli potrzebne do seed)
+- Env: `SUPABASE_URL`, `SUPABASE_KEY` (anon), `USER_A_EMAIL`, `USER_A_PASSWORD`, `USER_A_ID`, `USER_B_EMAIL`, `USER_B_PASSWORD` (oraz `USER_B_ID` jeśli potrzebne do seed)
 - `hasIntegrationEnv()` → boolean; testy `describe.skipIf(!hasIntegrationEnv())`
-- Klienci przez `createClient` + `signInWithPassword` — **nie** mock całego Supabase
-- Dokumentacja: lokalnie `supabase start` + seed users; CI Docker = Phase 4
+- Klienci przez `createClient` z `@supabase/supabase-js` + `signInWithPassword` — **nie** SSR `src/lib/supabase` / **nie** mock całego Supabase
+- **Seed Auth A/B (plan-review F3):** W tej fazie (albo w §6 przy Fazie 6) musi powstać krótka, powtarzalna instrukcja lokalna — bez haseł w git:
+  1. `npx supabase start`
+  2. Utwórz dwóch użytkowników Auth (Studio / `auth.users` / CLI) i zapisz email+password+uuid w `.dev.vars` / env (wzór nazw jak wyżej)
+  3. Potwierdź logowanie skryptem lub `hasIntegrationEnv()` + smoke sign-in
+  - Nie wymaga auto-provision w teście; wymaga **udokumentowanej** ścieżki, żeby „local full possible” nie było puste.
+- Dokumentacja: lokalnie powyższy seed; CI Docker = Phase 4 rollout
 
 #### 2. Own library integration tests
 
@@ -264,7 +272,7 @@ Prawdziwe JWT A/B + `listOwnLibraryEvents`. Oracle: zachowanie biblioteki właś
 
 1. **Own list:** User A z eventami `accepted`/`maybe` → wynik zawiera tylko je (po `owner_id` A), pola DTO bez cudzych id.
 2. **Empty:** A bez accepted/maybe → `{ events: [] }` (nie błąd, nie 401 — to warstwa lib).
-3. **Foreign published leak:** Event B z `is_published=true` (i triage pozwalający przejść RLS SELECT) **nie** występuje na liście A.
+3. **Foreign published leak:** Event owned by B z `is_published=true` **oraz** `published_at` NOT NULL (CHECK `events_published_at_consistency`) **oraz** `triage_status ∈ {accepted, maybe}` — żeby po dropnięciu `.eq("owner_id")` przy zachowanym `.in(triage…)` wiersz realnie wyciekł na listę A. RLS SELECT (`owner_id = auth.uid() OR is_published`) **nie** filtruje po triage — triage jest tylko pod oracle regresji app-filter. Asercja: lista A **nie** zawiera id eventu B.
 4. **Triage boundary (opcjonalnie tanie):** rejected A nie trafia na listę A.
 5. Cleanup seed po teście.
 
@@ -272,13 +280,13 @@ Prawdziwe JWT A/B + `listOwnLibraryEvents`. Oracle: zachowanie biblioteki właś
 
 ### Meta:
 
-| Pole                 | Treść                                                                                                       |
-| -------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Behavior asserted    | Owner widzi własne accepted/maybe; empty = `[]`; cudzy published nie w own list                             |
-| Regression caught    | Drop `.eq("owner_id")`; drop triage `.in(...)`; RLS-only „library”                                          |
-| Research source      | `research.md` Risk #1 call chain + foreign published; `list-own-events.ts:11-16`; archive my-events-library |
-| Edge/error/boundary  | Empty vs unauth (unauth = Faza 2); foreign published; rejected excluded                                     |
-| Anti-pattern avoided | Happy-path-only; mock klienta kasujący RLS; „middleware pass ⇒ list OK”; conflating suggestions             |
+| Pole                 | Treść                                                                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Behavior asserted    | Owner widzi własne accepted/maybe; empty = `[]`; cudzy published nie w own list                                              |
+| Regression caught    | Drop `.eq("owner_id")`; drop triage `.in(...)`; RLS-only „library”                                                           |
+| Research source      | `research.md` Risk #1 call chain + foreign published; `list-own-events.ts:11-16`; archive my-events-library                  |
+| Edge/error/boundary  | Empty vs unauth (unauth = Faza 2); foreign published + `published_at`; rejected excluded                                     |
+| Anti-pattern avoided | Happy-path-only; mock klienta kasujący RLS; „middleware pass ⇒ list OK”; conflating suggestions; mylenie triage z RLS SELECT |
 
 ### Kryteria sukcesu:
 
@@ -292,6 +300,7 @@ Prawdziwe JWT A/B + `listOwnLibraryEvents`. Oracle: zachowanie biblioteki właś
 
 - Ręczne potwierdzenie, że seed foreign published faktycznie istnieje w DB (inaczej test fałszywie zielony)
 - Brak mocka `from("events")` w tych plikach
+- Instrukcja Auth A/B wykonana raz lokalnie → `npm run test:integration` nie skipuje z powodu braku userów
 
 ---
 
@@ -368,9 +377,9 @@ Wypełnić `test-plan.md` §6 wzorcami z tej fazy; zaktualizować status Phase 1
 
 **Plik**: `context/foundation/test-plan.md` (§6.2)
 
-**Cel**: Env contract, `skipIf`, `*.integration.test.ts`, lib+JWT, anti-pattern „mock whole client”, local `test:all` vs CI Docker (Phase 4) jako authoritative.
+**Cel**: Env contract, `skipIf`, `*.integration.test.ts`, lib+JWT, anti-pattern „mock whole client”, local `test:all` vs CI Docker (Phase 4) jako authoritative, **oraz kroki seed Auth A/B** (F3).
 
-**Kontrakt**: Zastąpić TBD; wzmianka o foreign-published i IDOR `not_found` (nie 403).
+**Kontrakt**: Zastąpić TBD; wzmianka o foreign-published (`published_at` + triage) i IDOR `not_found` (nie 403); checklista lokalnego seedu userów.
 
 #### 3. §6.6 notes + §3 status (przy domknięciu implementacji)
 
@@ -430,7 +439,7 @@ Integration powinny być nieliczne i izolowane; nie pełny scan tabel. Seed mini
 
 ## Uwagi dotyczące migracji
 
-Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — udokumentować w §6 / README fragment (hasła tylko w `.dev.vars` / env, nie w git).
+Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — instrukcja w Fazie 4 / §6 (hasła tylko w `.dev.vars` / env, nie w git). Bez tej instrukcji integration pozostaje skip-only.
 
 ## Referencje
 
@@ -448,13 +457,14 @@ Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — udo
 
 #### Automatyczne
 
-- [ ] 1.1 `npm test` exit 0 bez env Supabase/user A/B
-- [ ] 1.2 `npm run test:integration` startuje bez fail bootstrapu (skip lub empty)
-- [ ] 1.3 Lint przechodzi na `vitest.config.ts` / `package.json`
+- [x] 1.1 `npm test` exit 0 bez env Supabase/user A/B
+- [x] 1.2 `npm run test:integration` startuje bez fail bootstrapu (skip lub empty)
+- [x] 1.3 Lint przechodzi na `vitest.config.ts` / `package.json`
+- [x] 1.4 Unit project nie uruchamia `*.integration.test.ts`
 
 #### Ręczne
 
-- [ ] 1.4 Alias `@/` działa w pliku testowym; skrypty test/test:integration/test:all zrozumiałe
+- [x] 1.5 Alias `@/` działa w pliku testowym; skrypty test/test:integration/test:all zrozumiałe
 
 ### Faza 2: Unit — auth surface
 
@@ -462,7 +472,7 @@ Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — udo
 
 - [ ] 2.1 Unit `route-access` przechodzi (public vs `/api/events`)
 - [ ] 2.2 Unauth API guard → 401 `{ error: "unauthorized" }` dla chronionego `/api/*`
-- [ ] 2.3 Suggestions `locals.user=null` → 401 bez OpenRouter
+- [ ] 2.3 Suggestions `locals.user=null` → 401 bez OpenRouter (z `vi.mock("astro:env/server")` lub pure extract)
 
 #### Ręczne
 
@@ -489,7 +499,8 @@ Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — udo
 
 #### Ręczne
 
-- [ ] 4.5 Seed foreign published zweryfikowany; brak wholesale Supabase mock
+- [ ] 4.5 Seed foreign published ma `published_at` + triage accepted/maybe; brak wholesale Supabase mock
+- [ ] 4.6 Instrukcja seed Auth A/B (supabase start + dwóch userów + env) istnieje i działa lokalnie
 
 ### Faza 5: Integration — IDOR mutate
 

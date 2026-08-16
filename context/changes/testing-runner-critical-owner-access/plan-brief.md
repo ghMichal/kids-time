@@ -59,7 +59,7 @@ Phase 4 CI               → Docker = authoritative integration gate
 
 ## Otwarte ryzyka i założenia
 
-- Seed A/B musi być powtarzalny lokalnie; bez tego integration tylko skip.
+- Seed A/B musi być powtarzalny lokalnie (udokumentowane kroki Auth); bez tego integration tylko skip.
 - `toLibraryEventDto` + storage: seed bez obrazów, żeby nie wciągać Risk #5.
 - Phase 4 musi wymusić integration (nie tylko unit), inaczej „CI authoritative” będzie puste.
 
