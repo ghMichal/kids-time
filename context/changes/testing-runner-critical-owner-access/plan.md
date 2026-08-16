@@ -457,14 +457,14 @@ Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — ins
 
 #### Automatyczne
 
-- [x] 1.1 `npm test` exit 0 bez env Supabase/user A/B
-- [x] 1.2 `npm run test:integration` startuje bez fail bootstrapu (skip lub empty)
-- [x] 1.3 Lint przechodzi na `vitest.config.ts` / `package.json`
-- [x] 1.4 Unit project nie uruchamia `*.integration.test.ts`
+- [x] 1.1 `npm test` exit 0 bez env Supabase/user A/B — 759e7fc
+- [x] 1.2 `npm run test:integration` startuje bez fail bootstrapu (skip lub empty) — 759e7fc
+- [x] 1.3 Lint przechodzi na `vitest.config.ts` / `package.json` — 759e7fc
+- [x] 1.4 Unit project nie uruchamia `*.integration.test.ts` — 759e7fc
 
 #### Ręczne
 
-- [x] 1.5 Alias `@/` działa w pliku testowym; skrypty test/test:integration/test:all zrozumiałe
+- [x] 1.5 Alias `@/` działa w pliku testowym; skrypty test/test:integration/test:all zrozumiałe — 759e7fc
 
 ### Faza 2: Unit — auth surface
 

@@ -1,7 +1,7 @@
 ---
 change_id: testing-runner-critical-owner-access
 title: Vitest runner and critical owner-access coverage
-status: implementing
+status: impl_reviewed
 created: 2026-08-13
 updated: 2026-08-16
 archived_at: null
