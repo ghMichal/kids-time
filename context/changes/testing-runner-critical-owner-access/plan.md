@@ -517,9 +517,9 @@ Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — ins
 
 #### Automatyczne
 
-- [x] 6.1 §6.1 i §6.2 nie są TBD Phase 1
-- [x] 6.2 Skrypty w §6 zgodne z `package.json`
+- [x] 6.1 §6.1 i §6.2 nie są TBD Phase 1 — 9a340d8
+- [x] 6.2 Skrypty w §6 zgodne z `package.json` — 9a340d8
 
 #### Ręczne
 
-- [x] 6.3 Krótki przegląd cookbook pod kątem „local full / CI Docker later”
+- [x] 6.3 Krótki przegląd cookbook pod kątem „local full / CI Docker later” — 9a340d8
