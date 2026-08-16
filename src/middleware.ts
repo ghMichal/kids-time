@@ -1,6 +1,6 @@
 import { defineMiddleware } from "astro:middleware";
-import { requiresAuth } from "@/lib/route-access";
 import { createClient } from "@/lib/supabase";
+import { decideUnauthenticatedAccess } from "@/lib/unauthenticated-api-guard";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const supabase = createClient(context.request.headers, context.cookies);
@@ -15,16 +15,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   if (!context.locals.user) {
-    const { pathname } = context.url;
+    const decision = decideUnauthenticatedAccess(context.url.pathname);
 
-    if (pathname.startsWith("/api/") && !pathname.startsWith("/api/auth")) {
+    if (decision.type === "json_401") {
       return new Response(JSON.stringify({ error: "unauthorized" }), {
         status: 401,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    if (requiresAuth(pathname)) {
+    if (decision.type === "redirect_signin") {
       return context.redirect("/auth/signin");
     }
   }
