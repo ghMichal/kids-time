@@ -64,12 +64,12 @@ Each row is a discrete rollout phase that will open its own change folder
 via `/10x-new`. Status moves left-to-right through the values below; the
 orchestrator updates Status as artifacts appear on disk.
 
-| #   | Phase name                     | Goal (one line)                                                                       | Risks covered      | Test types         | Status        | Change folder                          |
-| --- | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------ | ------------------ | ------------- | -------------------------------------- |
-| 1   | Runner + critical owner access | Uruchomić Vitest i bronić regresji dostępu właściciela (#1+#3) na najtańszej warstwie | #1, #3             | unit + integration | complete      | testing-runner-critical-owner-access   |
-| 2   | Privacy & publish boundaries   | Udowodnić brak wycieku prywatnych wydarzeń i intentional publish                      | #2, #3             | integration        | change opened | testing-privacy-and-publish-boundaries |
-| 3   | AI path contracts              | Schema i taxonomy błędów suggestions/summary bez pełnego e2e UI                       | #4                 | unit + contract    | not started   | —                                      |
-| 4   | Image soft-fail + CI gates     | Soft-fail signed URL oraz `npm test` w CI (bez pełnego e2e UI)                        | #5 + cross-cutting | unit + gates       | not started   | —                                      |
+| #   | Phase name                     | Goal (one line)                                                                       | Risks covered      | Test types         | Status      | Change folder                          |
+| --- | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------ | ------------------ | ----------- | -------------------------------------- |
+| 1   | Runner + critical owner access | Uruchomić Vitest i bronić regresji dostępu właściciela (#1+#3) na najtańszej warstwie | #1, #3             | unit + integration | complete    | testing-runner-critical-owner-access   |
+| 2   | Privacy & publish boundaries   | Udowodnić brak wycieku prywatnych wydarzeń i intentional publish                      | #2, #3             | integration        | researched  | testing-privacy-and-publish-boundaries |
+| 3   | AI path contracts              | Schema i taxonomy błędów suggestions/summary bez pełnego e2e UI                       | #4                 | unit + contract    | not started | —                                      |
+| 4   | Image soft-fail + CI gates     | Soft-fail signed URL oraz `npm test` w CI (bez pełnego e2e UI)                        | #5 + cross-cutting | unit + gates       | not started | —                                      |
 
 ## 4. Stack
 
