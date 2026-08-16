@@ -470,13 +470,13 @@ Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — ins
 
 #### Automatyczne
 
-- [ ] 2.1 Unit `route-access` przechodzi (public vs `/api/events`)
-- [ ] 2.2 Unauth API guard → 401 `{ error: "unauthorized" }` dla chronionego `/api/*`
-- [ ] 2.3 Suggestions `locals.user=null` → 401 bez OpenRouter (z `vi.mock("astro:env/server")` lub pure extract)
+- [x] 2.1 Unit `route-access` przechodzi (public vs `/api/events`) — d26b469
+- [x] 2.2 Unauth API guard → 401 `{ error: "unauthorized" }` dla chronionego `/api/*` — d26b469
+- [x] 2.3 Suggestions `locals.user=null` → 401 bez OpenRouter (z `vi.mock("astro:env/server")` lub pure extract) — d26b469
 
 #### Ręczne
 
-- [ ] 2.4 Helper unauth (jeśli wyciągnięty) jest użyty przez middleware
+- [x] 2.4 Helper unauth (jeśli wyciągnięty) jest użyty przez middleware — d26b469
 
 ### Faza 3: Unit — path-owner
 
