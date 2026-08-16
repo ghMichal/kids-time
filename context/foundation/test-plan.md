@@ -6,9 +6,10 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-08-13
+> Last updated: 2026-08-16
 > §2 Risks #1/#3 response guidance backported from Phase 1 research
 > (`testing-runner-critical-owner-access`).
+> §6.1/§6.2 cookbook + §3 Phase 1 status filled after Phase 1 implement.
 
 ## 1. Strategy
 
@@ -65,7 +66,7 @@ orchestrator updates Status as artifacts appear on disk.
 
 | #   | Phase name                     | Goal (one line)                                                                       | Risks covered      | Test types         | Status      | Change folder                        |
 | --- | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------ | ------------------ | ----------- | ------------------------------------ |
-| 1   | Runner + critical owner access | Uruchomić Vitest i bronić regresji dostępu właściciela (#1+#3) na najtańszej warstwie | #1, #3             | unit + integration | planned     | testing-runner-critical-owner-access |
+| 1   | Runner + critical owner access | Uruchomić Vitest i bronić regresji dostępu właściciela (#1+#3) na najtańszej warstwie | #1, #3             | unit + integration | complete    | testing-runner-critical-owner-access |
 | 2   | Privacy & publish boundaries   | Udowodnić brak wycieku prywatnych wydarzeń i intentional publish                      | #2, #3             | integration        | not started | —                                    |
 | 3   | AI path contracts              | Schema i taxonomy błędów suggestions/summary bez pełnego e2e UI                       | #4                 | unit + contract    | not started | —                                    |
 | 4   | Image soft-fail + CI gates     | Soft-fail signed URL oraz `npm test` w CI (bez pełnego e2e UI)                        | #5 + cross-cutting | unit + gates       | not started | —                                    |
@@ -79,13 +80,13 @@ plus the MCP/tools actually exposed in the current session. If a useful docs
 or search MCP such as Context7 or Exa.ai is not available, say that instead
 of assuming access.
 
-| Layer              | Tool                      | Version                   | Notes                                                                       |
-| ------------------ | ------------------------- | ------------------------- | --------------------------------------------------------------------------- |
-| unit + integration | Vitest                    | none yet — see §3 Phase 1 | Brak runnera w `package.json` / AGENTS.md; bootstrap w Fazie 1              |
-| API mocking        | none yet — see §3 Phase 1 | —                         | Prefer mock tylko na krawędzi HTTP (OpenRouter), nie wewnętrznych modułów   |
-| e2e                | celowo pominięte na start | —                         | interview Q5: bez pełnego e2e całego UI; re-evaluate przy `--refresh`       |
-| accessibility      | none yet                  | —                         | Poza zakresem pierwszego wdrożenia                                          |
-| AI-native          | none                      | n/a                       | Brak Playwright/browser MCP w sesji; nie dodajemy warstwy vision „na zapas” |
+| Layer              | Tool                      | Version              | Notes                                                                                                                        |
+| ------------------ | ------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| unit + integration | Vitest                    | ^4.1 (devDependency) | Projects: `unit` (`npm test`) vs `integration` (`npm run test:integration`); `npm run test:all` = both. CI wire = §3 Phase 4 |
+| API mocking        | Vitest `vi.mock` (edge)   | —                    | Mock `astro:env/server` / OpenRouter at the edge; never wholesale Supabase client in #1/#3 integration                       |
+| e2e                | celowo pominięte na start | —                    | interview Q5: bez pełnego e2e całego UI; re-evaluate przy `--refresh`                                                        |
+| accessibility      | none yet                  | —                    | Poza zakresem pierwszego wdrożenia                                                                                           |
+| AI-native          | none                      | n/a                  | Brak Playwright/browser MCP w sesji; nie dodajemy warstwy vision „na zapas”                                                  |
 
 **Stack grounding tools (current session):**
 
@@ -117,11 +118,25 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.1 Adding a unit test
 
-- TBD — see §3 Phase 1 for owner-access / path-owner / `route-access` unit pattern.
+- Colocate next to the module: `src/**/*.test.ts` (Vitest project `unit`). Exclude integration via config — `*.integration.test.ts` also matches `*.test.ts`.
+- Prefer **pure helpers** (decision tables, path parsers). Example: `src/lib/route-access.test.ts`, `src/lib/unauthenticated-api-guard.test.ts`, `src/lib/storage/event-image-path.test.ts`.
+- Auth surface: assert public vs protected paths (`isPublicPath` / `requiresAuth`); unauth `/api/*` (except `/api/auth`) → JSON 401 `{ error: "unauthorized" }`, not a page redirect.
+- Suggestions 401-only: call the route `POST` with `locals.user = null`; **must** `vi.mock("astro:env/server")` (or extract a pure check) before importing the handler — top-level `astro:env` otherwise crashes the unit load. Example: `src/pages/api/ai/suggestions.test.ts`.
+- Path-owner (Risk #3 foundation): `isOwnerPath` / `assertOwnerPath` for `{ownerId}/{eventId}/{file}` — foreign owner → false / throw. Example: `src/lib/storage/event-image-path.test.ts`.
+- Do **not** mock the whole Supabase client “just in case.” Unit stays green with `npm test` and **no** Docker / `SUPABASE_*` / user A/B.
+- Run: `npm test` (unit project only).
 
 ### 6.2 Adding an integration test
 
-- TBD — see §3 Phase 1 (owner library list + IDOR 404) and §3 Phase 2 (privacy/publish).
+- Name: `src/**/*.integration.test.ts`. Gate with `describe.skipIf(!hasIntegrationEnv())` from `src/lib/events/__test__/supabase-jwt-fixture.ts`. Missing env → skip + one console line why → **exit 0** (do not fail local `npm test`).
+- Env contract: `SUPABASE_URL`, `SUPABASE_KEY` (anon), `USER_A_EMAIL` / `PASSWORD` / `ID`, `USER_B_EMAIL` / `PASSWORD` / `ID`. Fixture hydrates missing keys from `.env` / `.dev.vars`; refuse non-local `SUPABASE_URL` unless `INTEGRATION_ALLOW_REMOTE=1`.
+- Harness: `createClient` + `signInWithPassword` A/B — **not** Astro SSR `src/lib/supabase`, **not** a wholesale Supabase mock. Call lib helpers (`listOwnLibraryEvents`, `updateOwnEvent`, …) directly.
+- Seed Auth A/B once locally — checklist in `src/lib/events/__test__/README.md` (`npx supabase start` → two Auth users → env → `npm run test:integration` must **run**, not skip).
+- Risk #1 own library: own accepted/maybe; empty → `{ events: [] }`; foreign **published** B must set `is_published=true` **and** `published_at` (CHECK) **and** triage ∈ `{accepted, maybe}` so a dropped `.eq("owner_id")` would leak. Example: `src/lib/events/list-own-events.integration.test.ts`.
+- Risk #3 IDOR mutate: session A + id B → `{ error: "not_found" }` (never 403); no event body; row B still exists after deny. Example: `src/lib/events/update-own-event.integration.test.ts`.
+- Integration project uses `fileParallelism: false` (shared A/B wipes). Seed/cleanup in `beforeAll` / `beforeEach` / `afterEach`; throw on cleanup delete errors.
+- Scripts: `npm test` = unit only; `npm run test:integration` = integration project; `npm run test:all` = both (local full). Authoritative CI + Docker gate = **§3 Phase 4** (not yet wired — do not assume Actions runs integration).
+- Privacy / public-list patterns (Risk #2): TBD — see §3 Phase 2.
 
 ### 6.3 Adding a test for AI contracts
 
@@ -133,11 +148,11 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.5 Wiring CI test gate
 
-- TBD — see §3 Phase 4 — add `npm test` alongside existing lint/build in CI.
+- TBD — see §3 Phase 4 — add `npm test` alongside existing lint/build in CI. Until then, local `npm test` / `test:all` only.
 
 ### 6.6 Per-rollout-phase notes
 
-(Optional. Filled by `/10x-implement` after each phase lands.)
+- **§3 Phase 1 (2026-08-16):** Vitest bootstrap + unit auth/path + JWT integration for own library (#1) and IDOR mutate (#3). Change: `testing-runner-critical-owner-access`. Local full = `npm run test:all` with seeded A/B; CI `npm test` deferred to Phase 4. Optional DELETE IDOR covered alongside PATCH; publish IDOR matrix still deferred if expanded later.
 
 ## 7. What We Deliberately Don't Test
 
@@ -150,8 +165,8 @@ contributors should respect these unless the underlying assumption changes.
 
 ## 8. Freshness Ledger
 
-- Strategy (§1–§5) last reviewed: 2026-08-13 (§2 Risks #1/#3 guidance backported from Phase 1 research)
-- Stack versions last verified: 2026-08-12
+- Strategy (§1–§5) last reviewed: 2026-08-16 (§3 Phase 1 → complete; §4 Vitest row synced)
+- Stack versions last verified: 2026-08-16 (Vitest ^4.1)
 - AI-native tool references last verified: 2026-08-12
 
 Refresh (`/10x-test-plan --refresh`) when:

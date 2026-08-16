@@ -14,6 +14,7 @@ Risks covered: #1, #3. Test types: unit + integration.
 Decisions: Vitest bootstrap; lib+JWT integration (Docker CI later in Phase 4); colocated + skipIf; representative IDOR (PATCH + path unit); suggestions 401-only; foreign-published leak seed; unauth via route-access + pure guard + handler mock.
 Plan-review 2026-08-16: F1–F5 FIXED (astro:env mock, published_at seed, Auth A/B docs, Phase 4 typo, vitest glob exclude). Verdict SOUND.
 Impl-review Phase 4 2026-08-16: APPROVED; F1 FIXED (local URL guard + docs), F2 FIXED (cleanup delete errors), F3 SKIPPED (DTO shape), F4 FIXED (hydrate note). Reviews: reviews/impl-review-phase-4.md
+Phase 5 2026-08-16: updateOwnEvent (+ deleteOwnEvent) IDOR integration; integration fileParallelism false for shared A/B. Commit f0797f5.
 Plan: context/changes/testing-runner-critical-owner-access/plan.md
 Brief: context/changes/testing-runner-critical-owner-access/plan-brief.md
 Research: context/changes/testing-runner-critical-owner-access/research.md
