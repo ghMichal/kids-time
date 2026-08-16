@@ -506,12 +506,12 @@ Brak migracji schematu. Wymagane **dane seed** (Auth users A/B) lokalnie — ins
 
 #### Automatyczne
 
-- [ ] 5.1 Z env: `updateOwnEvent(A, idB)` → `{ error: "not_found" }` bez body event
-- [ ] 5.2 Unit-only `npm test` nadal zielone bez env
+- [x] 5.1 Z env: `updateOwnEvent(A, idB)` → `{ error: "not_found" }` bez body event
+- [x] 5.2 Unit-only `npm test` nadal zielone bez env
 
 #### Ręczne
 
-- [ ] 5.3 Event B nadal istnieje po cross-owner deny
+- [x] 5.3 Event B nadal istnieje po cross-owner deny
 
 ### Faza 6: Cookbook §6 + status sync
 

@@ -37,6 +37,8 @@ export default defineConfig({
           environment: "node",
           include: ["src/**/*.integration.test.ts"],
           passWithNoTests: true,
+          // Suites share disposable Auth A/B and wipe their events; parallel files race.
+          fileParallelism: false,
         },
       },
     ],
