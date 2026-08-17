@@ -17,3 +17,4 @@ After creating the folder, follow the downstream continuation rule.
 Plan decisions (2026-08-16): lib `listPublishedEvents` + RLS probe + self-exclude; publish IDOR on B unpublished + already-published; image IDOR lib + dummy Blob; cookbook §6.2 as final phase. No HTTP/e2e, no CI wire.
 
 Plan review (2026-08-16): REVISE → SOUND after triage. Fixed CHECK vs triage wording; Faza 1 Meta regression honesty; Progress 3.3 image_path-only. Report: `reviews/plan-review.md`.
+Phase 2 impl review (2026-08-17): APPROVED, 0 findings. Report: `reviews/impl-review-phase-2.md`.

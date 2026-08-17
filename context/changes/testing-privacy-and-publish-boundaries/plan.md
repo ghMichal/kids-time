@@ -333,12 +333,12 @@ Brak migracji schematu. Auth A/B seed z Phase 1 (`src/lib/events/__test__/README
 
 #### Automatyczne
 
-- [ ] 3.1 Z env: A→uploadOwnEventImage B + dummy Blob → `not_found`, no `imagePath`
-- [ ] 3.2 `npm test` unit bez env zielone
+- [x] 3.1 Z env: A→uploadOwnEventImage B + dummy Blob → `not_found`, no `imagePath`
+- [x] 3.2 `npm test` unit bez env zielone
 
 #### Ręczne
 
-- [ ] 3.3 B `image_path` unchanged / null po deny (early-return przed storage — nota w kodzie, nie assert bucketa)
+- [x] 3.3 B `image_path` unchanged / null po deny (early-return przed storage — nota w kodzie, nie assert bucketa)
 
 ### Faza 4: Cookbook §6.2 + status sync
 
