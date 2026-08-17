@@ -321,13 +321,13 @@ Brak migracji schematu. Auth A/B seed z Phase 1 (`src/lib/events/__test__/README
 
 #### Automatyczne
 
-- [ ] 2.1 Z env: A→publish B unpublished → `not_found`, no `event`
-- [ ] 2.2 Z env: A→publish B already-published → `not_found` (nie `already_published`)
-- [ ] 2.3 Unit-only `npm test` nadal zielone bez env
+- [x] 2.1 Z env: A→publish B unpublished → `not_found`, no `event`
+- [x] 2.2 Z env: A→publish B already-published → `not_found` (nie `already_published`)
+- [x] 2.3 Unit-only `npm test` nadal zielone bez env
 
 #### Ręczne
 
-- [ ] 2.4 Re-read B: flagi publish nie zmienione po deny A
+- [x] 2.4 Re-read B: flagi publish nie zmienione po deny A
 
 ### Faza 3: Integration — image upload IDOR (Risk #3)
 
