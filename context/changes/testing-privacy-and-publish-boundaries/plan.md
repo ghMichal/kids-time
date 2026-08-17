@@ -333,20 +333,20 @@ Brak migracji schematu. Auth A/B seed z Phase 1 (`src/lib/events/__test__/README
 
 #### Automatyczne
 
-- [x] 3.1 Z env: A→uploadOwnEventImage B + dummy Blob → `not_found`, no `imagePath`
-- [x] 3.2 `npm test` unit bez env zielone
+- [x] 3.1 Z env: A→uploadOwnEventImage B + dummy Blob → `not_found`, no `imagePath` — d05c8d9
+- [x] 3.2 `npm test` unit bez env zielone — d05c8d9
 
 #### Ręczne
 
-- [x] 3.3 B `image_path` unchanged / null po deny (early-return przed storage — nota w kodzie, nie assert bucketa)
+- [x] 3.3 B `image_path` unchanged / null po deny (early-return przed storage — nota w kodzie, nie assert bucketa) — d05c8d9
 
 ### Faza 4: Cookbook §6.2 + status sync
 
 #### Automatyczne
 
-- [ ] 4.1 §6.2 nie zawiera „TBD — see §3 Phase 2”
-- [ ] 4.2 Trzy pliki integration z Faz 1–3 istnieją
+- [x] 4.1 §6.2 nie zawiera „TBD — see §3 Phase 2”
+- [x] 4.2 Trzy pliki integration z Faz 1–3 istnieją
 
 #### Ręczne
 
-- [ ] 4.3 Przegląd cookbook: positive control, RLS probe, dual publish seed, dummy Blob; §3 Phase 2 → complete
+- [x] 4.3 Przegląd cookbook: positive control, RLS probe, dual publish seed, dummy Blob; §3 Phase 2 → complete
