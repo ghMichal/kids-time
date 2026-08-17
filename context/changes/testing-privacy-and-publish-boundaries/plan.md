@@ -344,9 +344,9 @@ Brak migracji schematu. Auth A/B seed z Phase 1 (`src/lib/events/__test__/README
 
 #### Automatyczne
 
-- [x] 4.1 §6.2 nie zawiera „TBD — see §3 Phase 2”
-- [x] 4.2 Trzy pliki integration z Faz 1–3 istnieją
+- [x] 4.1 §6.2 nie zawiera „TBD — see §3 Phase 2” — fbf655c
+- [x] 4.2 Trzy pliki integration z Faz 1–3 istnieją — fbf655c
 
 #### Ręczne
 
-- [x] 4.3 Przegląd cookbook: positive control, RLS probe, dual publish seed, dummy Blob; §3 Phase 2 → complete
+- [x] 4.3 Przegląd cookbook: positive control, RLS probe, dual publish seed, dummy Blob; §3 Phase 2 → complete — fbf655c
