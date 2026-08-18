@@ -6,10 +6,11 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-08-16
+> Last updated: 2026-08-17
 > §2 Risks #1/#3 response guidance backported from Phase 1 research
 > (`testing-runner-critical-owner-access`).
 > §6.1/§6.2 cookbook + §3 Phase 1 status filled after Phase 1 implement.
+> §6.2 privacy/public-list + publish/image IDOR patterns + §3 Phase 2 status filled after Phase 2 implement.
 
 ## 1. Strategy
 
@@ -64,12 +65,12 @@ Each row is a discrete rollout phase that will open its own change folder
 via `/10x-new`. Status moves left-to-right through the values below; the
 orchestrator updates Status as artifacts appear on disk.
 
-| #   | Phase name                     | Goal (one line)                                                                       | Risks covered      | Test types         | Status      | Change folder                        |
-| --- | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------ | ------------------ | ----------- | ------------------------------------ |
-| 1   | Runner + critical owner access | Uruchomić Vitest i bronić regresji dostępu właściciela (#1+#3) na najtańszej warstwie | #1, #3             | unit + integration | complete    | testing-runner-critical-owner-access |
-| 2   | Privacy & publish boundaries   | Udowodnić brak wycieku prywatnych wydarzeń i intentional publish                      | #2, #3             | integration        | not started | —                                    |
-| 3   | AI path contracts              | Schema i taxonomy błędów suggestions/summary bez pełnego e2e UI                       | #4                 | unit + contract    | not started | —                                    |
-| 4   | Image soft-fail + CI gates     | Soft-fail signed URL oraz `npm test` w CI (bez pełnego e2e UI)                        | #5 + cross-cutting | unit + gates       | not started | —                                    |
+| #   | Phase name                     | Goal (one line)                                                                       | Risks covered      | Test types         | Status      | Change folder                          |
+| --- | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------ | ------------------ | ----------- | -------------------------------------- |
+| 1   | Runner + critical owner access | Uruchomić Vitest i bronić regresji dostępu właściciela (#1+#3) na najtańszej warstwie | #1, #3             | unit + integration | complete    | testing-runner-critical-owner-access   |
+| 2   | Privacy & publish boundaries   | Udowodnić brak wycieku prywatnych wydarzeń i intentional publish                      | #2, #3             | integration        | complete    | testing-privacy-and-publish-boundaries |
+| 3   | AI path contracts              | Schema i taxonomy błędów suggestions/summary bez pełnego e2e UI                       | #4                 | unit + contract    | not started | —                                      |
+| 4   | Image soft-fail + CI gates     | Soft-fail signed URL oraz `npm test` w CI (bez pełnego e2e UI)                        | #5 + cross-cutting | unit + gates       | not started | —                                      |
 
 ## 4. Stack
 
@@ -130,13 +131,16 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 - Name: `src/**/*.integration.test.ts`. Gate with `describe.skipIf(!hasIntegrationEnv())` from `src/lib/events/__test__/supabase-jwt-fixture.ts`. Missing env → skip + one console line why → **exit 0** (do not fail local `npm test`).
 - Env contract: `SUPABASE_URL`, `SUPABASE_KEY` (anon), `USER_A_EMAIL` / `PASSWORD` / `ID`, `USER_B_EMAIL` / `PASSWORD` / `ID`. Fixture hydrates missing keys from `.env` / `.dev.vars`; refuse non-local `SUPABASE_URL` unless `INTEGRATION_ALLOW_REMOTE=1`.
-- Harness: `createClient` + `signInWithPassword` A/B — **not** Astro SSR `src/lib/supabase`, **not** a wholesale Supabase mock. Call lib helpers (`listOwnLibraryEvents`, `updateOwnEvent`, …) directly.
+- Harness: `createClient` + `signInWithPassword` A/B — **not** Astro SSR `src/lib/supabase`, **not** a wholesale Supabase mock. Call lib helpers (`listOwnLibraryEvents`, `listPublishedEvents`, `updateOwnEvent`, `publishOwnEvent`, `uploadOwnEventImage`, …) directly.
 - Seed Auth A/B once locally — checklist in `src/lib/events/__test__/README.md` (`npx supabase start` → two Auth users → env → `npm run test:integration` must **run**, not skip).
 - Risk #1 own library: own accepted/maybe; empty → `{ events: [] }`; foreign **published** B must set `is_published=true` **and** `published_at` (CHECK) **and** triage ∈ `{accepted, maybe}` so a dropped `.eq("owner_id")` would leak. Example: `src/lib/events/list-own-events.integration.test.ts`.
+- Risk #2 shared / public list: `listPublishedEvents` + JWT viewer. Seed A unpublished (`is_published=false`, `published_at: null`) **and** A published (`is_published=true` **and** `published_at` ISO, CHECK-valid; triage ∈ `{accepted, maybe}`). Assert unpublished id **absent**, published id **present** (positive control). Required: raw RLS SELECT unpublished A as B → `data === null`; self-exclude `.neq` — own published absent from own shared list. Example: `src/lib/events/list-published-events.integration.test.ts`.
 - Risk #3 IDOR mutate: session A + id B → `{ error: "not_found" }` (never 403); no event body; row B still exists after deny. Example: `src/lib/events/update-own-event.integration.test.ts`.
+- Risk #3 publish IDOR: A→`publishOwnEvent` on B unpublished **and** B already-published → `{ error: "not_found" }` only (never 403 / `already_published`); `not.toHaveProperty("event")`; re-read B publish flags unchanged. Example: `src/lib/events/publish-own-event.integration.test.ts`.
+- Risk #3 image upload IDOR: A→`uploadOwnEventImage` on B with dummy `new Blob([])` → `{ error: "not_found" }`; `not.toHaveProperty("imagePath")`; re-read B `image_path` unchanged. Deny path does not call Storage. Example: `src/lib/events/upload-own-event-image.integration.test.ts`.
+- Anti-patterns for #2/#3: unit-only `toSharedEventDto` as privacy proof; mock whole Supabase client; e2e SharedEventsPage “to be safer.”
 - Integration project uses `fileParallelism: false` (shared A/B wipes). Seed/cleanup in `beforeAll` / `beforeEach` / `afterEach`; throw on cleanup delete errors.
 - Scripts: `npm test` = unit only; `npm run test:integration` = integration project; `npm run test:all` = both (local full). Authoritative CI + Docker gate = **§3 Phase 4** (not yet wired — do not assume Actions runs integration).
-- Privacy / public-list patterns (Risk #2): TBD — see §3 Phase 2.
 
 ### 6.3 Adding a test for AI contracts
 
@@ -152,7 +156,8 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.6 Per-rollout-phase notes
 
-- **§3 Phase 1 (2026-08-16):** Vitest bootstrap + unit auth/path + JWT integration for own library (#1) and IDOR mutate (#3). Change: `testing-runner-critical-owner-access`. Local full = `npm run test:all` with seeded A/B; CI `npm test` deferred to Phase 4. Optional DELETE IDOR covered alongside PATCH; publish IDOR matrix still deferred if expanded later.
+- **§3 Phase 1 (2026-08-16):** Vitest bootstrap + unit auth/path + JWT integration for own library (#1) and IDOR mutate PATCH/DELETE (#3). Change: `testing-runner-critical-owner-access`. Local full = `npm run test:all` with seeded A/B; CI `npm test` deferred to Phase 4.
+- **§3 Phase 2 (2026-08-17):** Shared-list privacy (#2) + publish/image IDOR (#3 remainder). JWT `listPublishedEvents` with unpublished/published positive control, raw RLS probe, and self-exclude `.neq`. Publish dual seed (unpublished + already-published) and image dummy Blob → opaque `not_found`. Change: `testing-privacy-and-publish-boundaries`. CI / Docker integration gate still Phase 4.
 
 ## 7. What We Deliberately Don't Test
 
@@ -165,7 +170,7 @@ contributors should respect these unless the underlying assumption changes.
 
 ## 8. Freshness Ledger
 
-- Strategy (§1–§5) last reviewed: 2026-08-16 (§3 Phase 1 → complete; §4 Vitest row synced)
+- Strategy (§1–§5) last reviewed: 2026-08-17 (§3 Phase 2 → complete; cookbook §6.2 filled)
 - Stack versions last verified: 2026-08-16 (Vitest ^4.1)
 - AI-native tool references last verified: 2026-08-12
 
