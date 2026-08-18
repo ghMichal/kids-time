@@ -1,7 +1,7 @@
 ---
 change_id: testing-privacy-and-publish-boundaries
 title: Privacy and publish boundary integration tests
-status: implemented
+status: impl_reviewed
 created: 2026-08-16
 updated: 2026-08-17
 archived_at: null
@@ -18,3 +18,4 @@ Plan decisions (2026-08-16): lib `listPublishedEvents` + RLS probe + self-exclud
 
 Plan review (2026-08-16): REVISE → SOUND after triage. Fixed CHECK vs triage wording; Faza 1 Meta regression honesty; Progress 3.3 image_path-only. Report: `reviews/plan-review.md`.
 Phase 2 impl review (2026-08-17): APPROVED, 0 findings. Report: `reviews/impl-review-phase-2.md`.
+Full impl review (2026-08-17): APPROVED, 1 observation (FIXED). Report: `reviews/impl-review.md`.
