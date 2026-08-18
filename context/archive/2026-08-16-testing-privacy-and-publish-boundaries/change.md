@@ -1,10 +1,10 @@
 ---
 change_id: testing-privacy-and-publish-boundaries
 title: Privacy and publish boundary integration tests
-status: impl_reviewed
+status: archived
 created: 2026-08-16
-updated: 2026-08-17
-archived_at: null
+updated: 2026-08-18
+archived_at: 2026-08-18T05:22:58Z
 ---
 
 ## Notes
