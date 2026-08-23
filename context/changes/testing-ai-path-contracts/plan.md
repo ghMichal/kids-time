@@ -433,29 +433,29 @@ Brak migracji schematu i zmian produkcyjnych. Tests-only + docs.
 
 #### Automatyczne
 
-- [x] 2.1 `fetch` `!ok` → `upstream` (zły klucz ≠ `configuration`)
-- [x] 2.2 `TimeoutError` → `timeout`; inny throw → `upstream`
-- [x] 2.3 HTTP 200 + zły envelope/content/Zod → `invalid_response`
-- [x] 2.4 HTTP 200 + 1 legalna karta / summary → resolved shape (nie jakość)
-- [x] 2.5 Pusty env → `configuration` bez `fetch`
-- [x] 2.6 `npm test` bez sieci do OpenRouter
+- [x] 2.1 `fetch` `!ok` → `upstream` (zły klucz ≠ `configuration`) — ebdef59
+- [x] 2.2 `TimeoutError` → `timeout`; inny throw → `upstream` — ebdef59
+- [x] 2.3 HTTP 200 + zły envelope/content/Zod → `invalid_response` — ebdef59
+- [x] 2.4 HTTP 200 + 1 legalna karta / summary → resolved shape (nie jakość) — ebdef59
+- [x] 2.5 Pusty env → `configuration` bez `fetch` — ebdef59
+- [x] 2.6 `npm test` bez sieci do OpenRouter — ebdef59
 
 #### Ręczne
 
-- [x] 2.7 Stub `fetch` restored; brak live URL / 25s wait
+- [x] 2.7 Stub `fetch` restored; brak live URL / 25s wait — ebdef59
 
 ### Faza 3: Contract — AI route HTTP map
 
 #### Automatyczne
 
-- [ ] 3.1 Suggestions contract: macierz 503/504/502 + pusty env bez `generateSuggestions`
-- [ ] 3.2 Event-summary: 401 + ta sama macierz + pusty env
-- [ ] 3.3 `suggestions.test.ts` nadal wyłącznie 401
-- [ ] 3.4 `npm test` zielone
+- [x] 3.1 Suggestions contract: macierz 503/504/502 + pusty env bez `generateSuggestions`
+- [x] 3.2 Event-summary: 401 + ta sama macierz + pusty env
+- [x] 3.3 `suggestions.test.ts` nadal wyłącznie 401
+- [x] 3.4 `npm test` zielone
 
 #### Ręczne
 
-- [ ] 3.5 Oracle = status + `error` code; mock `OpenRouterError` class dla `instanceof`; bez ekstrakcji switcha
+- [x] 3.5 Oracle = status + `error` code; mock `OpenRouterError` class dla `instanceof`; bez ekstrakcji switcha
 
 ### Faza 4: Contract — create manual ⊥ AI
 
