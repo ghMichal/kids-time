@@ -12,6 +12,7 @@
 > §6.1/§6.2 cookbook + §3 Phase 1 status filled after Phase 1 implement.
 > §6.2 privacy/public-list + publish/image IDOR patterns + §3 Phase 2 status filled after Phase 2 implement.
 > §6.3 AI contracts + §3 Phase 3 status filled after Phase 3 implement.
+> §3 Phase 4 opened as `testing-image-soft-fail-and-ci-gates`.
 
 ## 1. Strategy
 
@@ -66,12 +67,12 @@ Each row is a discrete rollout phase that will open its own change folder
 via `/10x-new`. Status moves left-to-right through the values below; the
 orchestrator updates Status as artifacts appear on disk.
 
-| #   | Phase name                     | Goal (one line)                                                                       | Risks covered      | Test types         | Status      | Change folder                          |
-| --- | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------ | ------------------ | ----------- | -------------------------------------- |
-| 1   | Runner + critical owner access | Uruchomić Vitest i bronić regresji dostępu właściciela (#1+#3) na najtańszej warstwie | #1, #3             | unit + integration | complete    | testing-runner-critical-owner-access   |
-| 2   | Privacy & publish boundaries   | Udowodnić brak wycieku prywatnych wydarzeń i intentional publish                      | #2, #3             | integration        | complete    | testing-privacy-and-publish-boundaries |
-| 3   | AI path contracts              | Schema i taxonomy błędów suggestions/summary bez pełnego e2e UI                       | #4                 | unit + contract    | complete    | testing-ai-path-contracts              |
-| 4   | Image soft-fail + CI gates     | Soft-fail signed URL oraz `npm test` w CI (bez pełnego e2e UI)                        | #5 + cross-cutting | unit + gates       | not started | —                                      |
+| #   | Phase name                     | Goal (one line)                                                                       | Risks covered      | Test types         | Status   | Change folder                          |
+| --- | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------ | ------------------ | -------- | -------------------------------------- |
+| 1   | Runner + critical owner access | Uruchomić Vitest i bronić regresji dostępu właściciela (#1+#3) na najtańszej warstwie | #1, #3             | unit + integration | complete | testing-runner-critical-owner-access   |
+| 2   | Privacy & publish boundaries   | Udowodnić brak wycieku prywatnych wydarzeń i intentional publish                      | #2, #3             | integration        | complete | testing-privacy-and-publish-boundaries |
+| 3   | AI path contracts              | Schema i taxonomy błędów suggestions/summary bez pełnego e2e UI                       | #4                 | unit + contract    | complete | testing-ai-path-contracts              |
+| 4   | Image soft-fail + CI gates     | Soft-fail signed URL oraz `npm test` w CI (bez pełnego e2e UI)                        | #5 + cross-cutting | unit + gates       | planned  | testing-image-soft-fail-and-ci-gates   |
 
 ## 4. Stack
 
@@ -179,7 +180,7 @@ contributors should respect these unless the underlying assumption changes.
 
 ## 8. Freshness Ledger
 
-- Strategy (§1–§5) last reviewed: 2026-08-23 (§3 Phase 3 → complete; cookbook §6.3 filled)
+- Strategy (§1–§5) last reviewed: 2026-08-23 (§3 Phase 4 → change opened; `testing-image-soft-fail-and-ci-gates`)
 - Stack versions last verified: 2026-08-16 (Vitest ^4.1)
 - AI-native tool references last verified: 2026-08-12
 
