@@ -15,3 +15,10 @@
 - **Problem**: `npm run format` (Prettier `--write .`) formatuje całe repo — w tym wygenerowane lub niepowiązane pliki (np. `src/types/database.generated.ts`) — i zostawia niezacommitowane zmiany poza zakresem commita.
 - **Rule**: Przy commitach i naprawie hooków formatuj wyłącznie pliki ze stage: użyj `npx prettier --write` / `lint-staged` na konkretnych ścieżkach albo `git diff --name-only --cached`, nigdy `prettier --write .` jako skrótu do naprawy jednego commita.
 - **Applies to**: implement, impl-review
+
+## Gdy użytkownik pyta, odpowiedz — nie działaj
+
+- **Context**: Zawsze — każda rozmowa z agentem, niezależnie od skillu, fazy ani folderu zmiany.
+- **Problem**: Użytkownik zadaje pytanie, a agent od razu wprowadza poprawki albo podejmuje inne działanie zamiast najpierw odpowiedzieć.
+- **Rule**: Gdy użytkownik zadaje pytanie, odpowiedz na to pytanie. Nie wprowadzaj poprawek, nie commituj, nie kontynuuj fazy i nie podejmuj innej akcji, dopóki użytkownik nie poleci działania. Pytanie oznacza oczekiwanie odpowiedzi, nie zgody na wykonanie.
+- **Applies to**: all
