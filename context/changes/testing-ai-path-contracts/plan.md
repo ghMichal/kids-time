@@ -473,9 +473,9 @@ Brak migracji schematu i zmian produkcyjnych. Tests-only + docs.
 
 #### Automatyczne
 
-- [x] 5.1 §6.3 nie zawiera „TBD — see §3 Phase 3”
-- [x] 5.2 Pliki test z Faz 1–4 istnieją
+- [x] 5.1 §6.3 nie zawiera „TBD — see §3 Phase 3” — c71c682
+- [x] 5.2 Pliki test z Faz 1–4 istnieją — c71c682
 
 #### Ręczne
 
-- [x] 5.3 Przegląd cookbook: 1 karta, TimeoutError-only, 502 upstream dla złego klucza, create spy; §3 Phase 3 → complete
+- [x] 5.3 Przegląd cookbook: 1 karta, TimeoutError-only, 502 upstream dla złego klucza, create spy; §3 Phase 3 → complete — c71c682
