@@ -448,26 +448,26 @@ Brak migracji schematu i zmian produkcyjnych. Tests-only + docs.
 
 #### Automatyczne
 
-- [x] 3.1 Suggestions contract: macierz 503/504/502 + pusty env bez `generateSuggestions`
-- [x] 3.2 Event-summary: 401 + ta sama macierz + pusty env
-- [x] 3.3 `suggestions.test.ts` nadal wyłącznie 401
-- [x] 3.4 `npm test` zielone
+- [x] 3.1 Suggestions contract: macierz 503/504/502 + pusty env bez `generateSuggestions` — 00130fe
+- [x] 3.2 Event-summary: 401 + ta sama macierz + pusty env — 00130fe
+- [x] 3.3 `suggestions.test.ts` nadal wyłącznie 401 — 00130fe
+- [x] 3.4 `npm test` zielone — 00130fe
 
 #### Ręczne
 
-- [x] 3.5 Oracle = status + `error` code; mock `OpenRouterError` class dla `instanceof`; bez ekstrakcji switcha
+- [x] 3.5 Oracle = status + `error` code; mock `OpenRouterError` class dla `instanceof`; bez ekstrakcji switcha — 00130fe
 
 ### Faza 4: Contract — create manual ⊥ AI
 
 #### Automatyczne
 
-- [ ] 4.1 `manualEventCreateSchema`: omitted / `null` / `""` summary OK
-- [ ] 4.2 `POST /api/events`: `generateEventSummary` not called; 201
-- [ ] 4.3 `npm test` bez env A/B
+- [x] 4.1 `manualEventCreateSchema`: omitted / `null` / `""` summary OK
+- [x] 4.2 `POST /api/events`: `generateEventSummary` not called; 201
+- [x] 4.3 `npm test` bez env A/B
 
 #### Ręczne
 
-- [ ] 4.4 Brak e2e Generate+Save / JWT insert
+- [x] 4.4 Brak e2e Generate+Save / JWT insert
 
 ### Faza 5: Cookbook §6.3 + status sync
 
