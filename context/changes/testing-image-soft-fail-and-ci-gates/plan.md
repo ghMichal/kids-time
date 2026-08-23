@@ -280,26 +280,26 @@ Brak migracji i zmian produkcyjnych poza testami + CI YAML + test-plan docs.
 
 #### Automated
 
-- [x] 2.1 `image_path` null → `imageUrl` null, sign not called
-- [x] 2.2 Path + sign null → `imageUrl` null
-- [x] 2.3 Path + sign URL → `imageUrl` set
-- [x] 2.4 `npm test` exit 0
+- [x] 2.1 `image_path` null → `imageUrl` null, sign not called — 189295e
+- [x] 2.2 Path + sign null → `imageUrl` null — 189295e
+- [x] 2.3 Path + sign URL → `imageUrl` set — 189295e
+- [x] 2.4 `npm test` exit 0 — 189295e
 
 #### Manual
 
-- [x] 2.5 Oracle from test-plan #5, not copied signed URL from prod
+- [x] 2.5 Oracle from test-plan #5, not copied signed URL from prod — 189295e
 
 ### Phase 3: Unit — listOwnLibraryEvents survives sign fail
 
 #### Automated
 
-- [ ] 3.1 Row with path + sign fail → `{ events }` with `imageUrl: null`
-- [ ] 3.2 (Optional) DB error → `{ error: "list_failed" }` distinct from sign soft-fail
-- [ ] 3.3 `npm test` exit 0
+- [x] 3.1 Row with path + sign fail → `{ events }` with `imageUrl: null`
+- [x] 3.2 (Optional) DB error → `{ error: "list_failed" }` distinct from sign soft-fail
+- [x] 3.3 `npm test` exit 0
 
 #### Manual
 
-- [ ] 3.4 No integration upload / Docker
+- [x] 3.4 No integration upload / Docker
 
 ### Phase 4: CI — npm test gate
 
