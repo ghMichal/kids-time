@@ -293,24 +293,24 @@ Brak migracji i zmian produkcyjnych poza testami + CI YAML + test-plan docs.
 
 #### Automated
 
-- [x] 3.1 Row with path + sign fail → `{ events }` with `imageUrl: null`
-- [x] 3.2 (Optional) DB error → `{ error: "list_failed" }` distinct from sign soft-fail
-- [x] 3.3 `npm test` exit 0
+- [x] 3.1 Row with path + sign fail → `{ events }` with `imageUrl: null` — 120139a
+- [x] 3.2 (Optional) DB error → `{ error: "list_failed" }` distinct from sign soft-fail — 120139a
+- [x] 3.3 `npm test` exit 0 — 120139a
 
 #### Manual
 
-- [x] 3.4 No integration upload / Docker
+- [x] 3.4 No integration upload / Docker — 120139a
 
 ### Phase 4: CI — npm test gate
 
 #### Automated
 
-- [ ] 4.1 `ci.yml` runs `npm test` after lint, before build
-- [ ] 4.2 Local `npm test` still green
+- [x] 4.1 `ci.yml` runs `npm test` after lint, before build
+- [x] 4.2 Local `npm test` still green
 
 #### Manual
 
-- [ ] 4.3 CI job does not require Supabase secrets for test step
+- [x] 4.3 CI job does not require Supabase secrets for test step
 
 ### Phase 5: Cookbook §6.4 + §6.5 + test-plan status
 
