@@ -461,21 +461,21 @@ Brak migracji schematu i zmian produkcyjnych. Tests-only + docs.
 
 #### Automatyczne
 
-- [x] 4.1 `manualEventCreateSchema`: omitted / `null` / `""` summary OK
-- [x] 4.2 `POST /api/events`: `generateEventSummary` not called; 201
-- [x] 4.3 `npm test` bez env A/B
+- [x] 4.1 `manualEventCreateSchema`: omitted / `null` / `""` summary OK — 0844b8b
+- [x] 4.2 `POST /api/events`: `generateEventSummary` not called; 201 — 0844b8b
+- [x] 4.3 `npm test` bez env A/B — 0844b8b
 
 #### Ręczne
 
-- [x] 4.4 Brak e2e Generate+Save / JWT insert
+- [x] 4.4 Brak e2e Generate+Save / JWT insert — 0844b8b
 
 ### Faza 5: Cookbook §6.3 + status sync
 
 #### Automatyczne
 
-- [ ] 5.1 §6.3 nie zawiera „TBD — see §3 Phase 3”
-- [ ] 5.2 Pliki test z Faz 1–4 istnieją
+- [x] 5.1 §6.3 nie zawiera „TBD — see §3 Phase 3”
+- [x] 5.2 Pliki test z Faz 1–4 istnieją
 
 #### Ręczne
 
-- [ ] 5.3 Przegląd cookbook: 1 karta, TimeoutError-only, 502 upstream dla złego klucza, create spy; §3 Phase 3 → complete
+- [x] 5.3 Przegląd cookbook: 1 karta, TimeoutError-only, 502 upstream dla złego klucza, create spy; §3 Phase 3 → complete
