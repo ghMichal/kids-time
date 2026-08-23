@@ -1,12 +1,13 @@
 #!/usr/bin/env sh
-# After push completes, print GitHub Actions CI link (background; needs `gh` CLI).
-# Git has no post-push hook — we schedule the link fetch before push starts.
+# Print GitHub Actions list URL. Git has no post-push hook.
 
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-BRANCH="$(git branch --show-current 2>/dev/null || true)"
+# Do not read git's pre-push stdin (TTY or ref list) — that waits for Enter.
+exec </dev/null
 
-if [ -n "$BRANCH" ]; then
-  sh "$ROOT/scripts/print-ci-run-link.sh" "$BRANCH" &
+if [ -n "${KIDS_TIME_CI_LINK_FROM_WRAPPER:-}" ]; then
+  exit 0
 fi
 
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+sh "$ROOT/scripts/print-ci-run-link.sh"
 exit 0
