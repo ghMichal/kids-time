@@ -1,10 +1,10 @@
 ---
 change_id: testing-ai-path-contracts
 title: AI path contracts for suggestions and summary errors
-status: impl_reviewed
+status: archived
 created: 2026-08-18
 updated: 2026-08-23
-archived_at: null
+archived_at: 2026-08-23T11:35:44Z
 ---
 
 ## Notes
