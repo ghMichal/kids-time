@@ -1,7 +1,7 @@
 ---
 change_id: testing-image-soft-fail-and-ci-gates
 title: Image soft-fail and CI test gates
-status: plan_reviewed
+status: implementing
 created: 2026-08-23
 updated: 2026-08-23
 archived_at: null

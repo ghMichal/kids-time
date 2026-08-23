@@ -267,14 +267,14 @@ Brak migracji i zmian produkcyjnych poza testami + CI YAML + test-plan docs.
 
 #### Automated
 
-- [ ] 1.1 Owner mismatch → null, sign not called
-- [ ] 1.2 Storage `{ error, data: null }` and missing/empty `signedUrl` on non-null `data` → null (not `{ data: null, error: null }`)
-- [ ] 1.3 Success → returns signed URL string
-- [ ] 1.4 `npm test` exit 0
+- [x] 1.1 Owner mismatch → null, sign not called
+- [x] 1.2 Storage `{ error, data: null }` and missing/empty `signedUrl` on non-null `data` → null (not `{ data: null, error: null }`)
+- [x] 1.3 Success → returns signed URL string
+- [x] 1.4 `npm test` exit 0
 
 #### Manual
 
-- [ ] 1.5 No live Storage / network
+- [x] 1.5 No live Storage / network
 
 ### Phase 2: Unit — toLibraryEventDto image mapping
 
