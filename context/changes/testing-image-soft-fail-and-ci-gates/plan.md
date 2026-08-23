@@ -305,20 +305,20 @@ Brak migracji i zmian produkcyjnych poza testami + CI YAML + test-plan docs.
 
 #### Automated
 
-- [x] 4.1 `ci.yml` runs `npm test` after lint, before build
-- [x] 4.2 Local `npm test` still green
+- [x] 4.1 `ci.yml` runs `npm test` after lint, before build — 81166b0
+- [x] 4.2 Local `npm test` still green — 81166b0
 
 #### Manual
 
-- [x] 4.3 CI job does not require Supabase secrets for test step
+- [x] 4.3 CI job does not require Supabase secrets for test step — 81166b0
 
 ### Phase 5: Cookbook §6.4 + §6.5 + test-plan status
 
 #### Automated
 
-- [ ] 5.1 §6.4 / §6.5 no longer TBD; §5 + §6.2 say unit CI only
-- [ ] 5.2 Test files from Phases 1–3 exist
+- [x] 5.1 §6.4 / §6.5 no longer TBD; §5 + §6.2 say unit CI only
+- [x] 5.2 Test files from Phases 1–3 exist
 
 #### Manual
 
-- [ ] 5.3 §3 Phase 4 → `complete`; §6.6 rollout note
+- [x] 5.3 §3 Phase 4 → `complete`; §6.6 rollout note
