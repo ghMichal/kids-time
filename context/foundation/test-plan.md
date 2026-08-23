@@ -12,6 +12,8 @@
 > §6.1/§6.2 cookbook + §3 Phase 1 status filled after Phase 1 implement.
 > §6.2 privacy/public-list + publish/image IDOR patterns + §3 Phase 2 status filled after Phase 2 implement.
 > §6.3 AI contracts + §3 Phase 3 status filled after Phase 3 implement.
+> §6.4/§6.5 cookbook + §5/§6.2 unit-CI sync + §3 Phase 4 status filled after Phase 4 implement
+> (`testing-image-soft-fail-and-ci-gates`).
 
 ## 1. Strategy
 
@@ -66,12 +68,12 @@ Each row is a discrete rollout phase that will open its own change folder
 via `/10x-new`. Status moves left-to-right through the values below; the
 orchestrator updates Status as artifacts appear on disk.
 
-| #   | Phase name                     | Goal (one line)                                                                       | Risks covered      | Test types         | Status      | Change folder                          |
-| --- | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------ | ------------------ | ----------- | -------------------------------------- |
-| 1   | Runner + critical owner access | Uruchomić Vitest i bronić regresji dostępu właściciela (#1+#3) na najtańszej warstwie | #1, #3             | unit + integration | complete    | testing-runner-critical-owner-access   |
-| 2   | Privacy & publish boundaries   | Udowodnić brak wycieku prywatnych wydarzeń i intentional publish                      | #2, #3             | integration        | complete    | testing-privacy-and-publish-boundaries |
-| 3   | AI path contracts              | Schema i taxonomy błędów suggestions/summary bez pełnego e2e UI                       | #4                 | unit + contract    | complete    | testing-ai-path-contracts              |
-| 4   | Image soft-fail + CI gates     | Soft-fail signed URL oraz `npm test` w CI (bez pełnego e2e UI)                        | #5 + cross-cutting | unit + gates       | not started | —                                      |
+| #   | Phase name                     | Goal (one line)                                                                       | Risks covered      | Test types         | Status   | Change folder                          |
+| --- | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------ | ------------------ | -------- | -------------------------------------- |
+| 1   | Runner + critical owner access | Uruchomić Vitest i bronić regresji dostępu właściciela (#1+#3) na najtańszej warstwie | #1, #3             | unit + integration | complete | testing-runner-critical-owner-access   |
+| 2   | Privacy & publish boundaries   | Udowodnić brak wycieku prywatnych wydarzeń i intentional publish                      | #2, #3             | integration        | complete | testing-privacy-and-publish-boundaries |
+| 3   | AI path contracts              | Schema i taxonomy błędów suggestions/summary bez pełnego e2e UI                       | #4                 | unit + contract    | complete | testing-ai-path-contracts              |
+| 4   | Image soft-fail + CI gates     | Soft-fail signed URL oraz `npm test` w CI (bez pełnego e2e UI)                        | #5 + cross-cutting | unit + gates       | complete | testing-image-soft-fail-and-ci-gates   |
 
 ## 4. Stack
 
@@ -103,14 +105,15 @@ The full set of gates that must pass before a change reaches production.
 "Required for §3 Phase \<N\>" means the gate is enforced once that rollout
 phase lands; before that, the gate is `planned`.
 
-| Gate                                         | Where      | Required?                 | Catches                             |
-| -------------------------------------------- | ---------- | ------------------------- | ----------------------------------- |
-| lint + typecheck (astro sync + lint + build) | local + CI | required (already wired)  | syntactic / type drift              |
-| unit + integration (`npm test`)              | local + CI | required after §3 Phase 4 | logic / owner / privacy regressions |
-| e2e on full UI                               | —          | not planned               | excluded per interview Q5           |
-| post-edit hook                               | —          | not planned               | no AI-native phase in this rollout  |
-| visual diff / multimodal review              | —          | not planned               | cost × signal; no browser MCP       |
-| pre-prod smoke                               | manual     | optional                  | environment-specific failures       |
+| Gate                                         | Where      | Required?                      | Catches                                     |
+| -------------------------------------------- | ---------- | ------------------------------ | ------------------------------------------- |
+| lint + typecheck (astro sync + lint + build) | local + CI | required (already wired)       | syntactic / type drift                      |
+| unit (`npm test`)                            | local + CI | required                       | logic / owner / image soft-fail regressions |
+| integration (`npm run test:integration`)     | local      | optional (not an Actions gate) | owner / privacy / IDOR with live DB         |
+| e2e on full UI                               | —          | not planned                    | excluded per interview Q5                   |
+| post-edit hook                               | —          | not planned                    | no AI-native phase in this rollout          |
+| visual diff / multimodal review              | —          | not planned                    | cost × signal; no browser MCP               |
+| pre-prod smoke                               | manual     | optional                       | environment-specific failures               |
 
 ## 6. Cookbook Patterns
 
@@ -141,7 +144,7 @@ the relevant rollout phase ships; before that, the sub-section reads
 - Risk #3 image upload IDOR: A→`uploadOwnEventImage` on B with dummy `new Blob([])` → `{ error: "not_found" }`; `not.toHaveProperty("imagePath")`; re-read B `image_path` unchanged. Deny path does not call Storage. Example: `src/lib/events/upload-own-event-image.integration.test.ts`.
 - Anti-patterns for #2/#3: unit-only `toSharedEventDto` as privacy proof; mock whole Supabase client; e2e SharedEventsPage “to be safer.”
 - Integration project uses `fileParallelism: false` (shared A/B wipes). Seed/cleanup in `beforeAll` / `beforeEach` / `afterEach`; throw on cleanup delete errors.
-- Scripts: `npm test` = unit only; `npm run test:integration` = integration project; `npm run test:all` = both (local full). Authoritative CI + Docker gate = **§3 Phase 4** (not yet wired — do not assume Actions runs integration).
+- Scripts: `npm test` = unit only; `npm run test:integration` = integration project; `npm run test:all` = both (local full). CI (`.github/workflows/ci.yml`) runs `npm test` after lint, before build — **unit only**. Docker / `test:integration` stay local (not an Actions gate).
 
 ### 6.3 Adding a test for AI contracts
 
@@ -156,17 +159,27 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.4 Adding a test for image URL soft-fail
 
-- TBD — see §3 Phase 4 for signed-URL null-on-fail without failing the list.
+- Colocate next to the module (Vitest `unit`): `src/lib/storage/event-image.test.ts`, `src/lib/events/library-event-dto.test.ts`, `src/lib/events/list-own-events.test.ts`.
+- Oracle (Risk #5): `imageUrl === null` on missing path / owner mismatch / Storage fail; success → `typeof url === "string"`. List with sign fail → `{ events: [...] }` and `not.toHaveProperty("error")` — never `{ error: "list_failed" }`. Do **not** assert a hardcoded production signed URL.
+- Sign helper: minimal client `{ storage: { from: () => ({ createSignedUrl }) } }` — not wholesale `@supabase/supabase-js`. Force fail with `{ error: { message }, data: null }` or `{ error: null, data: {} }` / `{ signedUrl: "" }`. **Do not** mock `{ data: null, error: null }` (TypeError on `data.signedUrl`).
+- DTO / list: `vi.mock("@/lib/storage/event-image")` for `createEventImageSignedUrl`; import real `toLibraryEventDto` / `listOwnLibraryEvents`. Null `image_path` → sign **not** called.
+- List query stub: partial `from("events")` client; `select` / `eq` / `in` / `order` return the same thenable builder. Cast `as unknown as SupabaseClient<Database>`.
+- Anti-patterns: full e2e upload UI; live Storage; mock whole Supabase client; test `EventCard` `failedImageUrl` as the #5 proof.
+- Run: `npm test` (unit; no Docker / `SUPABASE_*`).
 
 ### 6.5 Wiring CI test gate
 
-- TBD — see §3 Phase 4 — add `npm test` alongside existing lint/build in CI. Until then, local `npm test` / `test:all` only.
+- `.github/workflows/ci.yml` job order: `npm ci` → `npx astro sync` → `npm run lint` → **`npm test`** → `npm run build`.
+- `npm test` is the **unit** project only (`vitest run --project unit`). No `SUPABASE_*` on the test step.
+- Integration stays local: `npm run test:integration` (needs Docker + seeded A/B). Not an Actions gate. `npm run test:all` = both, local full.
+- Do not add a Docker / `test:integration` job in the same change as the unit gate unless a later `--refresh` makes it a top risk.
 
 ### 6.6 Per-rollout-phase notes
 
 - **§3 Phase 1 (2026-08-16):** Vitest bootstrap + unit auth/path + JWT integration for own library (#1) and IDOR mutate PATCH/DELETE (#3). Change: `testing-runner-critical-owner-access`. Local full = `npm run test:all` with seeded A/B; CI `npm test` deferred to Phase 4.
 - **§3 Phase 2 (2026-08-17):** Shared-list privacy (#2) + publish/image IDOR (#3 remainder). JWT `listPublishedEvents` with unpublished/published positive control, raw RLS probe, and self-exclude `.neq`. Publish dual seed (unpublished + already-published) and image dummy Blob → opaque `not_found`. Change: `testing-privacy-and-publish-boundaries`. CI / Docker integration gate still Phase 4.
 - **§3 Phase 3 (2026-08-23):** AI path contracts (#4): Zod response schemas, `openrouter-client` error taxonomy, HTTP map on suggestions/event-summary, create manual ⊥ AI. Change: `testing-ai-path-contracts`. CI `npm test` still §3 Phase 4.
+- **§3 Phase 4 (2026-08-23):** Image soft-fail (#5) unit lock + CI unit gate. Sign helper / DTO / list survive `imageUrl: null`; `.github/workflows/ci.yml` runs `npm test` after lint, before build. Integration stays local (`test:integration`). Change: `testing-image-soft-fail-and-ci-gates`.
 
 ## 7. What We Deliberately Don't Test
 
@@ -179,7 +192,7 @@ contributors should respect these unless the underlying assumption changes.
 
 ## 8. Freshness Ledger
 
-- Strategy (§1–§5) last reviewed: 2026-08-23 (§3 Phase 3 → complete; cookbook §6.3 filled)
+- Strategy (§1–§5) last reviewed: 2026-08-23 (§3 Phase 4 complete; unit CI gate + §5/§6.2 sync; `testing-image-soft-fail-and-ci-gates`)
 - Stack versions last verified: 2026-08-16 (Vitest ^4.1)
 - AI-native tool references last verified: 2026-08-12
 
