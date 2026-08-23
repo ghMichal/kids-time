@@ -72,6 +72,12 @@
     "*.{ts,tsx,astro}": [
       "eslint --max-warnings 0 --no-warn-ignored"
     ],
+    "src/{lib,pages,components}/**/*.{ts,tsx}": [
+      "vitest related --run --project unit --passWithNoTests"
+    ],
+    "src/middleware.ts": [
+      "vitest related --run --project unit --passWithNoTests"
+    ],
     "*.{json,css,md}": [
       "prettier --check"
     ]

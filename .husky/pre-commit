@@ -7,16 +7,18 @@ fi
 cat <<'EOF'
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Pre-commit failed — staged files did not pass lint/format checks.
+  Pre-commit failed — staged files did not pass lint/format/related-test checks.
   Nothing was auto-fixed. Fix the issues below, then commit again.
 
   How to fix:
     npm run lint:fix       # ESLint autofix (TypeScript, TSX, Astro)
     npm run format         # Prettier write (JSON, CSS, MD, and rest)
+    npm test               # unit suite, if related tests failed
 
   Or check without writing (same rules as CI / pre-commit):
     npm run lint
     npm run format:check
+    npm test
 
   Then stage fixes and retry:
     git add -u && git commit

@@ -61,9 +61,9 @@ npm run dev
 
 ### Git hooks (pre-commit)
 
-After `npm install`, Husky runs **lint-staged on staged files only**. The hook **blocks** the commit on failure and prints fix commands; it does **not** modify your files.
+After `npm install`, Husky runs **lint-staged on staged files only**. The hook **blocks** the commit on failure and prints fix commands; it does **not** modify your files. Risk-area TypeScript (`src/lib`, `src/pages`, `src/components`, `src/middleware.ts`) also runs related **unit** tests (`vitest related --run --project unit`).
 
-If the hook fails, run `npm run lint:fix` and/or `npm run format`, review the diff, `git add`, and commit again. Skip only when intentional: `git commit --no-verify`.
+If the hook fails, run `npm run lint:fix` and/or `npm run format` and/or `npm test`, review the diff, `git add`, and commit again. Skip only when intentional: `git commit --no-verify`.
 
 ### CI link after push
 
