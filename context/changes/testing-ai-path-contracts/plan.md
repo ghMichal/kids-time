@@ -420,29 +420,29 @@ Brak migracji schematu i zmian produkcyjnych. Tests-only + docs.
 
 #### Automatyczne
 
-- [x] 1.1 Suggestion schema: reject empty / 6 items / missing / too long / bad URL
-- [x] 1.2 Suggestion schema: accept 1 item; empty `sourceUrl` → omitted
-- [x] 1.3 Event-summary schema: reject empty/whitespace/201; accept 1–200 after trim
-- [x] 1.4 `npm test` exit 0 bez live OpenRouter / Docker
+- [x] 1.1 Suggestion schema: reject empty / 6 items / missing / too long / bad URL — 41aab18
+- [x] 1.2 Suggestion schema: accept 1 item; empty `sourceUrl` → omitted — 41aab18
+- [x] 1.3 Event-summary schema: reject empty/whitespace/201; accept 1–200 after trim — 41aab18
+- [x] 1.4 `npm test` exit 0 bez live OpenRouter / Docker — 41aab18
 
 #### Ręczne
 
-- [x] 1.5 Brak asercji skopiowanej z promptu (3–5, Wikipedia, Polish copy)
+- [x] 1.5 Brak asercji skopiowanej z promptu (3–5, Wikipedia, Polish copy) — 41aab18
 
 ### Faza 2: Unit — openrouter-client taxonomy
 
 #### Automatyczne
 
-- [ ] 2.1 `fetch` `!ok` → `upstream` (zły klucz ≠ `configuration`)
-- [ ] 2.2 `TimeoutError` → `timeout`; inny throw → `upstream`
-- [ ] 2.3 HTTP 200 + zły envelope/content/Zod → `invalid_response`
-- [ ] 2.4 HTTP 200 + 1 legalna karta / summary → resolved shape (nie jakość)
-- [ ] 2.5 Pusty env → `configuration` bez `fetch`
-- [ ] 2.6 `npm test` bez sieci do OpenRouter
+- [x] 2.1 `fetch` `!ok` → `upstream` (zły klucz ≠ `configuration`)
+- [x] 2.2 `TimeoutError` → `timeout`; inny throw → `upstream`
+- [x] 2.3 HTTP 200 + zły envelope/content/Zod → `invalid_response`
+- [x] 2.4 HTTP 200 + 1 legalna karta / summary → resolved shape (nie jakość)
+- [x] 2.5 Pusty env → `configuration` bez `fetch`
+- [x] 2.6 `npm test` bez sieci do OpenRouter
 
 #### Ręczne
 
-- [ ] 2.7 Stub `fetch` restored; brak live URL / 25s wait
+- [x] 2.7 Stub `fetch` restored; brak live URL / 25s wait
 
 ### Faza 3: Contract — AI route HTTP map
 
