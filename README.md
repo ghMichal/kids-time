@@ -67,15 +67,13 @@ If the hook fails, run `npm run lint:fix` and/or `npm run format`, review the di
 
 ### CI link after push
 
-Requires [GitHub CLI](https://cli.github.com/) (`gh auth login`).
+Prints the repo **Actions list** URL (`…/actions`). No GitHub CLI, no waiting, no lookup of a specific run.
 
-| Method                     | Behavior                                                                                                                  |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `git push`                 | Husky **pre-push** schedules a background job; ~few seconds after push you should see the Actions run URL in the terminal |
-| `npm run push`             | Same as `git push`, but waits for the link synchronously (more reliable)                                                  |
-| `npm run setup:push-alias` | Sets `git push` → wrapper (optional; use if the pre-push timing is flaky)                                                 |
-
-The link targets workflow **CI** (`.github/workflows/ci.yml`) on the current branch.
+| Method                     | Behavior                                                  |
+| -------------------------- | --------------------------------------------------------- |
+| `git push`                 | Husky **pre-push** prints the Actions list URL            |
+| `npm run push`             | Push, then print the same URL                             |
+| `npm run setup:push-alias` | Sets `git push` → wrapper (print after a successful push) |
 
 ## Project Structure
 

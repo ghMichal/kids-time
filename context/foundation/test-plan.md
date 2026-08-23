@@ -6,11 +6,12 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-08-17
+> Last updated: 2026-08-23
 > §2 Risks #1/#3 response guidance backported from Phase 1 research
 > (`testing-runner-critical-owner-access`).
 > §6.1/§6.2 cookbook + §3 Phase 1 status filled after Phase 1 implement.
 > §6.2 privacy/public-list + publish/image IDOR patterns + §3 Phase 2 status filled after Phase 2 implement.
+> §6.3 AI contracts + §3 Phase 3 status filled after Phase 3 implement.
 
 ## 1. Strategy
 
@@ -69,7 +70,7 @@ orchestrator updates Status as artifacts appear on disk.
 | --- | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------ | ------------------ | ----------- | -------------------------------------- |
 | 1   | Runner + critical owner access | Uruchomić Vitest i bronić regresji dostępu właściciela (#1+#3) na najtańszej warstwie | #1, #3             | unit + integration | complete    | testing-runner-critical-owner-access   |
 | 2   | Privacy & publish boundaries   | Udowodnić brak wycieku prywatnych wydarzeń i intentional publish                      | #2, #3             | integration        | complete    | testing-privacy-and-publish-boundaries |
-| 3   | AI path contracts              | Schema i taxonomy błędów suggestions/summary bez pełnego e2e UI                       | #4                 | unit + contract    | not started | —                                      |
+| 3   | AI path contracts              | Schema i taxonomy błędów suggestions/summary bez pełnego e2e UI                       | #4                 | unit + contract    | complete    | testing-ai-path-contracts              |
 | 4   | Image soft-fail + CI gates     | Soft-fail signed URL oraz `npm test` w CI (bez pełnego e2e UI)                        | #5 + cross-cutting | unit + gates       | not started | —                                      |
 
 ## 4. Stack
@@ -144,7 +145,14 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 ### 6.3 Adding a test for AI contracts
 
-- TBD — see §3 Phase 3 for suggestions/summary schema + error taxonomy pattern.
+- Colocate `src/lib/ai/*.test.ts` and `src/pages/api/ai/*.test.ts` (Vitest `unit`). Contract = cienki unit HTTP, nie osobny project.
+- Oracle: `status` + `{ error: "<code>" }` albo Zod `safeParse` na fixture. Kody: `configuration` 503, `timeout` 504, `upstream` / `invalid_response` 502. Nie `missing_key` / `invalid_request`.
+- Mock na krawędzi: `vi.mock("astro:env/server")` **z getterami**, jeśli plik przełącza klucz obecny vs pusty; `vi.mock` `generate*` + ta sama klasa `OpenRouterError` gdy testujesz routę; `vi.stubGlobal("fetch")` gdy testujesz `openrouter-client`. Restore globals w `afterEach`.
+- Challenge 200: OpenRouter 200 + śmieci → `invalid_response`; nasz API 200 = kształt Zod, nie jakość. Accept 1 karty / 1–200 znaków **wbrew** promptowi 3–5.
+- Create ⊥ AI: `manualEventCreateSchema` optional summary; `POST /api/events` spy `generateEventSummary` not called. Generate ≠ Save.
+- Suggestions 401 zostaje w `suggestions.test.ts` — nie duplikować. Event-summary 401 w `event-summary.test.ts`.
+- Anti-patterns: asercja z promptu; live OpenRouter; e2e UI; extract mappera „żeby testować raz”; Polish `mapApiError`; zły klucz jako 503.
+- Przykłady: `suggestion-response.schema.test.ts`, `event-summary-response.schema.test.ts`, `openrouter-client.test.ts`, `suggestions.contract.test.ts`, `event-summary.test.ts`, `manual-event-create.schema.test.ts`, `pages/api/events/index.test.ts`.
 
 ### 6.4 Adding a test for image URL soft-fail
 
@@ -158,6 +166,7 @@ the relevant rollout phase ships; before that, the sub-section reads
 
 - **§3 Phase 1 (2026-08-16):** Vitest bootstrap + unit auth/path + JWT integration for own library (#1) and IDOR mutate PATCH/DELETE (#3). Change: `testing-runner-critical-owner-access`. Local full = `npm run test:all` with seeded A/B; CI `npm test` deferred to Phase 4.
 - **§3 Phase 2 (2026-08-17):** Shared-list privacy (#2) + publish/image IDOR (#3 remainder). JWT `listPublishedEvents` with unpublished/published positive control, raw RLS probe, and self-exclude `.neq`. Publish dual seed (unpublished + already-published) and image dummy Blob → opaque `not_found`. Change: `testing-privacy-and-publish-boundaries`. CI / Docker integration gate still Phase 4.
+- **§3 Phase 3 (2026-08-23):** AI path contracts (#4): Zod response schemas, `openrouter-client` error taxonomy, HTTP map on suggestions/event-summary, create manual ⊥ AI. Change: `testing-ai-path-contracts`. CI `npm test` still §3 Phase 4.
 
 ## 7. What We Deliberately Don't Test
 
@@ -170,7 +179,7 @@ contributors should respect these unless the underlying assumption changes.
 
 ## 8. Freshness Ledger
 
-- Strategy (§1–§5) last reviewed: 2026-08-17 (§3 Phase 2 → complete; cookbook §6.2 filled)
+- Strategy (§1–§5) last reviewed: 2026-08-23 (§3 Phase 3 → complete; cookbook §6.3 filled)
 - Stack versions last verified: 2026-08-16 (Vitest ^4.1)
 - AI-native tool references last verified: 2026-08-12
 

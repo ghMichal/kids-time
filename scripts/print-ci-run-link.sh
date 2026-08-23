@@ -1,56 +1,28 @@
 #!/usr/bin/env sh
-# Prints the GitHub Actions CI run URL for the current branch (best effort).
-# Usage: print-ci-run-link.sh [branch]
+# Prints the repo GitHub Actions list URL (no wait, no run lookup).
 
 set -eu
 
-BRANCH="${1:-$(git branch --show-current 2>/dev/null || true)}"
-WORKFLOW="${CI_WORKFLOW_NAME:-CI}"
-MAX_WAIT="${CI_LINK_MAX_WAIT:-20}"
+# Git hooks often leave stdin as a TTY or a ref pipe. Reading it blocks until Enter.
+exec </dev/null
 
-if [ -z "$BRANCH" ]; then
-  exit 0
-fi
+origin="$(git -c core.pager= remote get-url origin 2>/dev/null || true)"
+origin="${origin%.git}"
 
-if ! command -v gh >/dev/null 2>&1; then
-  echo ""
-  echo "CI link: install GitHub CLI (https://cli.github.com/) and run: gh auth login"
-  echo ""
-  exit 0
-fi
-
-if ! gh auth status >/dev/null 2>&1; then
-  echo ""
-  echo "CI link: run: gh auth login"
-  echo ""
-  exit 0
-fi
-
-REPO_URL="$(gh repo view --json url -q '.url' 2>/dev/null || true)"
-ACTIONS_FALLBACK="${REPO_URL:+$REPO_URL/actions}"
-
-i=0
-while [ "$i" -lt "$MAX_WAIT" ]; do
-  URL="$(gh run list --branch "$BRANCH" --workflow "$WORKFLOW" --limit 1 --json url -q '.[0].url' 2>/dev/null || true)"
-  STATUS="$(gh run list --branch "$BRANCH" --workflow "$WORKFLOW" --limit 1 --json status -q '.[0].status' 2>/dev/null || true)"
-
-  if [ -n "$URL" ] && [ "$URL" != "null" ]; then
-    echo ""
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "  GitHub Actions — $WORKFLOW ($STATUS)"
-    echo "  $URL"
-    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo ""
+case "$origin" in
+  git@github.com:*)
+    actions_url="https://github.com/${origin#git@github.com:}/actions"
+    ;;
+  ssh://git@github.com/*)
+    actions_url="https://github.com/${origin#ssh://git@github.com/}/actions"
+    ;;
+  https://github.com/* | http://github.com/*)
+    actions_url="${origin}/actions"
+    ;;
+  *)
     exit 0
-  fi
+    ;;
+esac
 
-  i=$((i + 1))
-  sleep 1
-done
-
-echo ""
-echo "CI link: run not listed yet (workflow: $WORKFLOW, branch: $BRANCH)."
-if [ -n "$ACTIONS_FALLBACK" ]; then
-  echo "  $ACTIONS_FALLBACK"
-fi
-echo ""
+printf 'GitHub Actions: %s\n' "$actions_url" 2>/dev/null >/dev/tty \
+  || printf 'GitHub Actions: %s\n' "$actions_url"
