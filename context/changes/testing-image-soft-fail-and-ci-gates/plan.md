@@ -280,14 +280,14 @@ Brak migracji i zmian produkcyjnych poza testami + CI YAML + test-plan docs.
 
 #### Automated
 
-- [ ] 2.1 `image_path` null → `imageUrl` null, sign not called
-- [ ] 2.2 Path + sign null → `imageUrl` null
-- [ ] 2.3 Path + sign URL → `imageUrl` set
-- [ ] 2.4 `npm test` exit 0
+- [x] 2.1 `image_path` null → `imageUrl` null, sign not called
+- [x] 2.2 Path + sign null → `imageUrl` null
+- [x] 2.3 Path + sign URL → `imageUrl` set
+- [x] 2.4 `npm test` exit 0
 
 #### Manual
 
-- [ ] 2.5 Oracle from test-plan #5, not copied signed URL from prod
+- [x] 2.5 Oracle from test-plan #5, not copied signed URL from prod
 
 ### Phase 3: Unit — listOwnLibraryEvents survives sign fail
 
