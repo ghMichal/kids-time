@@ -47,4 +47,4 @@ jobs:
           command: deploy
           packageManager: npm
           wranglerVersion: "^4.90.0"
-      - run: test "$(curl -fsS -o /dev/null -w '%{http_code}' https://kids-time-mvp.michal-machlowski.workers.dev/)" = "200"
+      - run: test "$(curl -fsS --max-time 15 -o /dev/null -w '%{http_code}' https://kids-time-mvp.michal-machlowski.workers.dev/)" = "200"
