@@ -251,7 +251,7 @@ Changing the model later is env-only: update `OPENROUTER_MODEL` and smoke-test t
 
 ## Deployment
 
-This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/) as worker **kids-time-mvp**.
+This project deploys to [Cloudflare Workers](https://workers.cloudflare.com/) as worker **kids-time-mvp**. Production also deploys from GitHub Actions on push to `main` after a green `ci` job; local `npm run deploy` remains the fallback.
 
 **One command** (Node 24, `.env` for build, `npx wrangler login` once):
 
@@ -276,7 +276,9 @@ Full checklist: [`context/deployment/deploy-plan.md`](context/deployment/deploy-
 
 ## CI
 
-GitHub Actions runs lint + build on every push and PR to `master`. Configure `SUPABASE_URL` and `SUPABASE_KEY` as repository secrets in GitHub for the build step.
+GitHub Actions runs on every push and pull request to `main`. The `ci` job runs lint, `npm test`, and build. Configure `SUPABASE_URL` and `SUPABASE_KEY` as repository secrets for the build step.
+
+The `deploy` job runs only on `push` to `main` after a green `ci` job. It rebuilds, deploys worker `kids-time-mvp`, and smokes `GET /` (`https://kids-time-mvp.michal-machlowski.workers.dev/`). Configure `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as repository secrets for deploy. Do not put `SUPABASE_*` or `OPENROUTER_*` in the Wrangler action `secrets:` input — runtime secrets stay on the Worker.
 
 ## License
 

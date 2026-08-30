@@ -2,7 +2,7 @@
 project: kids-time MVP
 platform: Cloudflare Workers
 approved_at: 2026-05-20
-revised_at: 2026-05-20
+revised_at: 2026-08-30
 execution_status: partial
 deploy_url: https://kids-time-mvp.michal-machlowski.workers.dev
 worker_name: kids-time-mvp
@@ -30,7 +30,7 @@ Plan pierwszego wdrożenia produkcyjnego dla **Astro 6 SSR** z adapterem `@astro
 | Platforma / komenda deploy           | OK            | `npx wrangler deploy` — zgodne z infrastructure     |
 | Worker + assets                      | OK            | `wrangler.jsonc`: `kids-time-mvp`, entrypoint Astro |
 | Sekrety `SUPABASE_*`                 | OK            | Zgodne z `astro.config.mjs` (`astro:env`)           |
-| CI lint/build                        | Częściowo     | Workflow na `main`, Node 24 — brak joba deploy      |
+| CI lint/build                        | OK            | Workflow na `main`, Node 24 — job `deploy` po `ci`  |
 | Supabase Auth URLs                   | Uzupełnione   | Site URL, redirect URLs, szablon maila, PKCE        |
 | Auth callback                        | Uzupełnione   | `/auth/callback` + `emailRedirectTo` w signup       |
 | `nodejs_compat_populate_process_env` | Uzupełnione   | Wymagane dla sekretów `astro:env` na Workerze       |
@@ -51,15 +51,17 @@ flowchart TB
     SupabaseCloud[Supabase cloud]
   end
   subgraph cicd [GitHub]
-    GHA[Actions CI main]
-    SecretsGH[Secrets SUPABASE_*]
+    GHAci[Actions job ci]
+    GHAdeploy[Actions job deploy]
+    SecretsGH[Secrets SUPABASE_* CLOUDFLARE_*]
   end
   User --> Worker
   Worker --> Assets
   Worker --> SupabaseCloud
-  GHA --> SecretsGH
-  GHA -->|build only| Worker
-  WranglerCLI[wrangler deploy] --> Worker
+  GHAci --> SecretsGH
+  GHAci --> GHAdeploy
+  GHAdeploy --> Worker
+  WranglerCLI[wrangler deploy fallback] --> Worker
 ```
 
 | Warstwa     | Technologia                                     | Źródło                                      |
@@ -83,8 +85,8 @@ flowchart TB
 | Szablon maila Confirm signup (TokenHash)               | Checklist — weryfikacja ręczna |
 | Auth PKCE callback w kodzie                            | Done — wymaga redeploy po push |
 | CI workflow na `main` w repo                           | Done                           |
-| GitHub secrets + zielony CI                            | Do weryfikacji                 |
-| Auto-deploy on merge                                   | Nie zrobione (Faza 4)          |
+| GitHub secrets + zielony CI                            | Done                           |
+| Auto-deploy on merge                                   | Done                           |
 
 **Production URL:** https://kids-time-mvp.michal-machlowski.workers.dev
 
@@ -94,7 +96,7 @@ flowchart TB
 
 - [ ] Konto Cloudflare + `npx wrangler login` (lub token API pod CI)
 - [ ] Projekt Supabase **cloud** — URL: `https://<ref>.supabase.co` (bez `/rest/v1/`), klucz **anon**
-- [ ] GitHub [`ghMichal/kids-time`](https://github.com/ghMichal/kids-time) — sekrety `SUPABASE_URL`, `SUPABASE_KEY`
+- [ ] GitHub [`ghMichal/kids-time`](https://github.com/ghMichal/kids-time) — sekrety `SUPABASE_URL`, `SUPABASE_KEY`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
 - [ ] Lokalnie: Node **24** (`.nvmrc`), `.env` + `.dev.vars` z `.env.example`
 
 ---
@@ -175,7 +177,7 @@ Aplikacja: [`signup.ts`](../../src/pages/api/auth/signup.ts) ustawia `emailRedir
 | 5   | Logowanie hasłem                      | Sukces, sesja w cookies                                       |
 | 6   | `npx wrangler tail`                   | Brak 5xx podczas auth                                         |
 
-**CI:** push na `main` → workflow CI zielony (sekrety GitHub).
+**CI:** push na `main` → job `ci` zielony, potem job `deploy` + smoke `GET /` (sekrety GitHub).
 
 ---
 
@@ -183,20 +185,22 @@ Aplikacja: [`signup.ts`](../../src/pages/api/auth/signup.ts) ustawia `emailRedir
 
 Poza pierwszym deployem:
 
-1. Job **deploy** w GitHub Actions po `ci` (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`) lub Cloudflare Workers Builds
-2. Preview branches z osobnymi sekretami Supabase
-3. `OPENROUTER_API_KEY` + `OPENROUTER_MODEL` w Worker (`wrangler secret put`) — wymagane od F-02 (`POST /api/ai/suggestions`)
+1. **Zrobione** — job `deploy` w [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) po zielonym `ci` na `push` do `main` (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`). Smoke: `GET /` na URL produkcji. **Nie** Workers Builds i **nie** `wrangler pages deploy`.
+2. Preview branches z osobnymi sekretami Supabase — nadal follow-up / poza tym change
+3. `OPENROUTER_API_KEY` + `OPENROUTER_MODEL` w Worker (`wrangler secret put`) — wymagane od F-02 (`POST /api/ai/suggestions`); nie jest nowym zadaniem tego change
 
 ---
 
 ## Macierz sekretów
 
-| Zmienna              | `.env` / `.dev.vars` | Worker     | GitHub Actions |
-| -------------------- | -------------------- | ---------- | -------------- |
-| `SUPABASE_URL`       | dev / cloud          | prod cloud | build CI       |
-| `SUPABASE_KEY`       | anon                 | anon       | build CI       |
-| `OPENROUTER_API_KEY` | dev key              | prod key   | —              |
-| `OPENROUTER_MODEL`   | `openai/gpt-4o-mini` | prod value | —              |
+| Zmienna                 | `.env` / `.dev.vars` | Worker     | GitHub Actions |
+| ----------------------- | -------------------- | ---------- | -------------- |
+| `SUPABASE_URL`          | dev / cloud          | prod cloud | build CI       |
+| `SUPABASE_KEY`          | anon                 | anon       | build CI       |
+| `OPENROUTER_API_KEY`    | dev key              | prod key   | —              |
+| `OPENROUTER_MODEL`      | `openai/gpt-4o-mini` | prod value | —              |
+| `CLOUDFLARE_API_TOKEN`  | —                    | —          | deploy         |
+| `CLOUDFLARE_ACCOUNT_ID` | —                    | —          | deploy         |
 
 **Rotacja:** Supabase → GitHub secrets → `wrangler secret put` → opcjonalnie redeploy → smoke test auth.
 
@@ -210,6 +214,8 @@ npx wrangler rollback
 
 Lub: znany commit → `npm run build` → `npx wrangler deploy`.
 
+Pad smoke (`GET /` ≠ 200) oblewa job `deploy` i **nie** uruchamia automatycznego rollbacku — rollback zostaje ręczny.
+
 Migracje Supabase **nie** cofają się z rollbackiem Workera.
 
 ---
@@ -222,7 +228,7 @@ Migracje Supabase **nie** cofają się z rollbackiem Workera.
 | Rozjazd sekretów local/CI/prod  | M   | H   | Macierz + checklist po rotacji    |
 | PKCE / Site URL / szablon maila | M   | M   | Faza 2                            |
 | Preview → prod Supabase         | M   | H   | Osobny projekt na preview         |
-| Brak auto-deploy                | L   | M   | Faza 4                            |
+| Brak auto-deploy                | L   | M   | Zmitigowane — job `deploy` w CI   |
 
 Źródło: [infrastructure.md](../foundation/infrastructure.md) — rejestr ryzyk i anti-bias cross-check.
 
