@@ -173,13 +173,13 @@ Brak migracji DB. Rollback Workera: `npx wrangler rollback` (lub ponowny deploy 
 
 #### Automated
 
-- [x] 1.1 Job `deploy` jest w `.github/workflows/ci.yml` z `needs: ci` oraz `if` ograniczającym do `push` + `main`
-- [x] 1.2 Plik workflow parsuje się jako YAML
-- [x] 1.3 `npm test` i `npm run lint` przechodzą (brak zmian w aplikacji)
+- [x] 1.1 Job `deploy` jest w `.github/workflows/ci.yml` z `needs: ci` oraz `if` ograniczającym do `push` + `main` — 3ae47c6
+- [x] 1.2 Plik workflow parsuje się jako YAML — 3ae47c6
+- [x] 1.3 `npm test` i `npm run lint` przechodzą (brak zmian w aplikacji) — 3ae47c6
 
 #### Manual
 
-- [ ] 1.4 PR do `main`: job `deploy` jest skipped; `ci` nadal leci
+- [x] 1.4 PR do `main`: job `deploy` jest skipped; `ci` nadal leci — 3ae47c6
 - [ ] 1.5 Push/merge na `main` po zielonym `ci`: `deploy` wdraża `kids-time-mvp` i smoke `GET /` zwraca 200
 - [ ] 1.6 Czerwony job `ci` nie uruchamia `deploy`
 
@@ -187,9 +187,9 @@ Brak migracji DB. Rollback Workera: `npx wrangler rollback` (lub ponowny deploy 
 
 #### Automated
 
-- [ ] 2.1 README sekcja CI opisuje branch `main`, `npm test` oraz job deploy po `ci`
-- [ ] 2.2 `deploy-plan.md` oznacza Faza 4 pkt 1 / Auto-deploy jako zrobione i wymienia `CLOUDFLARE_*` w macierzy
+- [x] 2.1 README sekcja CI opisuje branch `main`, `npm test` oraz job deploy po `ci`
+- [x] 2.2 `deploy-plan.md` oznacza Faza 4 pkt 1 / Auto-deploy jako zrobione i wymienia `CLOUDFLARE_*` w macierzy
 
 #### Manual
 
-- [ ] 2.3 Nazwy sekretów, URL smoke i komenda rollback w docs zgadzają się z YAML i `wrangler.jsonc` (`name: kids-time-mvp`)
+- [x] 2.3 Nazwy sekretów, URL smoke i komenda rollback w docs zgadzają się z YAML i `wrangler.jsonc` (`name: kids-time-mvp`)
