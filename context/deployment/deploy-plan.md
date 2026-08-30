@@ -25,16 +25,16 @@ Plan pierwszego wdrożenia produkcyjnego dla **Astro 6 SSR** z adapterem `@astro
 
 ## Ocena poprzedniej wersji planu
 
-| Obszar                               | Ocena         | Uwagi                                               |
-| ------------------------------------ | ------------- | --------------------------------------------------- |
-| Platforma / komenda deploy           | OK            | `npx wrangler deploy` — zgodne z infrastructure     |
-| Worker + assets                      | OK            | `wrangler.jsonc`: `kids-time-mvp`, entrypoint Astro |
-| Sekrety `SUPABASE_*`                 | OK            | Zgodne z `astro.config.mjs` (`astro:env`)           |
-| CI lint/build                        | OK            | Workflow na `main`, Node 24 — job `deploy` po `ci`  |
-| Supabase Auth URLs                   | Uzupełnione   | Site URL, redirect URLs, szablon maila, PKCE        |
-| Auth callback                        | Uzupełnione   | `/auth/callback` + `emailRedirectTo` w signup       |
-| `nodejs_compat_populate_process_env` | Uzupełnione   | Wymagane dla sekretów `astro:env` na Workerze       |
-| OpenRouter                           | Poza zakresem | Faza późniejsza (tech-stack `has_ai: true`)         |
+| Obszar                               | Ocena       | Uwagi                                               |
+| ------------------------------------ | ----------- | --------------------------------------------------- |
+| Platforma / komenda deploy           | OK          | `npx wrangler deploy` — zgodne z infrastructure     |
+| Worker + assets                      | OK          | `wrangler.jsonc`: `kids-time-mvp`, entrypoint Astro |
+| Sekrety `SUPABASE_*`                 | OK          | Zgodne z `astro.config.mjs` (`astro:env`)           |
+| CI lint/build                        | OK          | Workflow na `main`, Node 24 — job `deploy` po `ci`  |
+| Supabase Auth URLs                   | Uzupełnione | Site URL, redirect URLs, szablon maila, PKCE        |
+| Auth callback                        | Uzupełnione | `/auth/callback` + `emailRedirectTo` w signup       |
+| `nodejs_compat_populate_process_env` | Uzupełnione | Wymagane dla sekretów `astro:env` na Workerze       |
+| OpenRouter                           | Uzupełnione | F-02 — sekrety na Workerze (`wrangler secret put`)  |
 
 **Wniosek:** Infrastruktura Workera jest wdrożona. Ten plan opisuje pełną ścieżkę produkcyjną: sekrety, Supabase Auth, weryfikacja E2E oraz follow-up CI/CD.
 
@@ -64,13 +64,13 @@ flowchart TB
   WranglerCLI[wrangler deploy fallback] --> Worker
 ```
 
-| Warstwa     | Technologia                                     | Źródło                                      |
-| ----------- | ----------------------------------------------- | ------------------------------------------- |
-| HTTP/SSR    | Cloudflare Worker + `@astrojs/cloudflare` ^13.5 | infrastructure, tech-stack                  |
-| Statyki     | `./dist` → binding `ASSETS`                     | wrangler.jsonc                              |
-| Sesje Astro | KV `SESSION` (auto-provisioned przy deploy)     | pierwszy deploy Wrangler                    |
-| Auth/dane   | Supabase (hosted)                               | tech-stack `has_auth: true`                 |
-| AI          | OpenRouter (HTTP)                               | tech-stack `has_ai: true` — faza późniejsza |
+| Warstwa     | Technologia                                     | Źródło                                |
+| ----------- | ----------------------------------------------- | ------------------------------------- |
+| HTTP/SSR    | Cloudflare Worker + `@astrojs/cloudflare` ^13.5 | infrastructure, tech-stack            |
+| Statyki     | `./dist` → binding `ASSETS`                     | wrangler.jsonc                        |
+| Sesje Astro | KV `SESSION` (auto-provisioned przy deploy)     | pierwszy deploy Wrangler              |
+| Auth/dane   | Supabase (hosted)                               | tech-stack `has_auth: true`           |
+| AI          | OpenRouter (HTTP)                               | tech-stack `has_ai: true` — F-02 done |
 
 ---
 
