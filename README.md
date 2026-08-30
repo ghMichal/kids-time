@@ -1,8 +1,8 @@
-# 10x Astro Starter
+# kids-time
 
-![](./public/template.png)
+A parent-facing MVP for planning child activities: concise AI-filtered suggestions from place, time, children's age, and indoor/outdoor preference, plus a private events library the parent can publish read-only for others.
 
-A modern, opinionated starter template for building fast, accessible web applications.
+Product scope: [`context/foundation/prd-v2.md`](context/foundation/prd-v2.md).
 
 ## Tech Stack
 
@@ -15,7 +15,7 @@ A modern, opinionated starter template for building fast, accessible web applica
 
 ## Prerequisites
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
+- Node.js v24.15.0 (as specified in `.nvmrc`; CI uses Node 24)
 - npm (comes with Node.js)
 
 ## Getting Started
@@ -23,8 +23,8 @@ A modern, opinionated starter template for building fast, accessible web applica
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
+git clone https://github.com/ghMichal/kids-time.git
+cd kids-time
 ```
 
 2. Install dependencies:
@@ -200,7 +200,7 @@ Users can then sign in immediately after sign-up without clicking a confirmation
 | `/auth/signin`        | Email/password sign-in form                                                                                        |
 | `/auth/signup`        | Email/password sign-up form                                                                                        |
 | `/auth/confirm-email` | Post-signup "check your inbox" page                                                                                |
-| `/dashboard`          | Example protected page (redirects to `/auth/signin` if unauthenticated)                                            |
+| `/dashboard`          | Protected page after sign-in (redirects to `/auth/signin` if unauthenticated)                                      |
 | `/suggestions`        | AI activity suggestions — criteria → proposals → accept/reject/maybe                                               |
 | `/events`             | Own events library — add manually (optional AI summary + image), browse / edit / delete / publish accepted + maybe |
 
