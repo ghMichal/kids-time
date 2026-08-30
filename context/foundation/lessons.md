@@ -22,3 +22,10 @@
 - **Problem**: Użytkownik zadaje pytanie, a agent od razu wprowadza poprawki albo podejmuje inne działanie zamiast najpierw odpowiedzieć.
 - **Rule**: Gdy użytkownik zadaje pytanie, odpowiedz na to pytanie. Nie wprowadzaj poprawek, nie commituj, nie kontynuuj fazy i nie podejmuj innej akcji, dopóki użytkownik nie poleci działania. Pytanie oznacza oczekiwanie odpowiedzi, nie zgody na wykonanie.
 - **Applies to**: all
+
+## Jawnie ustawiaj permissions: w GitHub Actions
+
+- **Context**: `.github/workflows/ci.yml` (poziom workflow) — job `ci` i nowy job `deploy`
+- **Problem**: Workflow nie ma bloku `permissions:`, więc `GITHUB_TOKEN` idzie z defaultów repo (read-only na nowszych, write-all na starszych). Cloudflare token jest osobny i nietknięty, ale least privilege nie jest jawne.
+- **Rule**: W workflowach GitHub Actions ustawiaj `permissions:` jawnie na poziomie workflow (minimum `contents: read`; dopisz write tylko gdy job tego potrzebuje). Nie polegaj na defaultach `GITHUB_TOKEN`.
+- **Applies to**: implement, impl-review
